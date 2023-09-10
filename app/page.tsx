@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { prisma } from "@/db"
-import TodoItem from '../components/TodoItem'
-import { redirect } from 'next/navigation'
+import { prisma } from "./_libs/db"
+import TodoItem from './_components/TodoItem'
+import { revalidatePath } from 'next/cache'
 
 function getTodos(){
   return prisma.todo.findMany()
@@ -17,7 +17,7 @@ async function deleteTodo(id: string){
   "use server"
 
   await prisma.todo.delete({ where: { id }})
-  redirect('/')
+  revalidatePath('/')
 }
 
 export default async function Home() {
@@ -31,7 +31,7 @@ export default async function Home() {
         <Link 
           className='border border-slate-300 text-slate-300 px-2 py-1 rounded hover:bg-slate-700 focus-within:bg-slate-700 focus-within:text-slate-700 outline-none'
           href='/new'>
-          New
+          Create New
         </Link>
       </header>
       <ul className='pl-4'>

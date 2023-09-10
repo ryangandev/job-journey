@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { prisma } from "@/app/_libs/db"
+import { prisma } from "../_libs/db"
 
 function TodoTable() {
     const [todos, setTodos] = useState([])
