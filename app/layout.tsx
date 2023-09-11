@@ -1,3 +1,4 @@
+import { AppProviders } from "./_providers/app-providers";
 import "./globals.css";
 import { Inter } from "next/font/google";
 
@@ -14,11 +15,9 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en">
-            <body
-                className={`${inter.className} bg-slate-50 text-gray-950 container mx-auto p-4`}
-            >
-                {children}
+        <html lang="en" className="dark">
+            <body className={`${inter.className}`}>
+                <AppProviders>{children}</AppProviders>
             </body>
         </html>
     );
