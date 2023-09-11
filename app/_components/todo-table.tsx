@@ -1,8 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react"
-import { prisma } from "../_libs/db"
-import { deleteTodoAction, getTodosAction, toggleTodoAction } from "@/_actions"
+import { deleteTodoAction, toggleTodoAction } from "@/_actions"
 import TodoItem from "./todo-item"
 
 interface Todo {
@@ -13,28 +11,17 @@ interface Todo {
     updatedAt: Date
 }
 
-function TodoTable() {
-    const [todos, setTodos] = useState<Todo[]>()
-
-    useEffect(() => {
-        const fetchTodos = async () => {
-            const response = await getTodosAction()
-            console.log("Todo: ", response)
-            setTodos(response)
-        }
-        fetchTodos()
-    }, [])
-
+function TodoTable({ todos }: { todos: Todo[]}) {
     return (
         <ul className='pl-4'>
-        {todos?.map( todo => (
-          <TodoItem 
-            key={todo.id} 
-            {...todo} 
-            toggleTodo={toggleTodoAction} 
-            deleteTodo={deleteTodoAction} 
-          />
-        ))}
+            {todos?.map( todo => (
+                <TodoItem 
+                    key={todo.id} 
+                    {...todo} 
+                    toggleTodo={toggleTodoAction} 
+                    deleteTodo={deleteTodoAction} 
+                />
+            ))}
       </ul>
     )
 }
