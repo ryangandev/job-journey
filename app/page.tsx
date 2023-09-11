@@ -1,17 +1,16 @@
-import Link from 'next/link'
 import { prisma } from "./_libs/db"
 import TodoItem from './_components/todo-item'
 import { toggleTodoAction, deleteTodoAction } from './_actions'
 import CreateTodoForm from './_components/create-todo-form'
+import TodoTable from "./_components/todo-table"
 
 function getTodos(){
   return prisma.todo.findMany()
 }
 
 export default async function Home() {
-
   const todos = await getTodos()
-
+  console.log("todos are: ", todos)
   return (
     <>
       <header className='flex justify-between items-center mb-4'>
@@ -28,6 +27,7 @@ export default async function Home() {
           />
         ))}
       </ul>
+      <TodoTable />
     </>
   )
 }

@@ -2,7 +2,11 @@
 
 import { prisma } from "@/_libs/db"
 import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
+
+export async function getTodosAction() {
+    const todos = await prisma.todo.findMany()
+    return todos
+}
 
 export async function createTodoAction(data: FormData) {
     const title = data.get("title")?.valueOf()
