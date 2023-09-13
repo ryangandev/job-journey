@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { createTodoAction } from "../_actions";
+import { Button } from "@nextui-org/button";
 
 export default function CreateTodoForm() {
     return (
@@ -12,12 +13,13 @@ export default function CreateTodoForm() {
                 className="border border-slate-300 bg-transparent rounded px-2 py-1 outline-none focus-within:border-slate-100 "
             />
             <div className="flex justify-end gap-2">
-                <button
+                <Button
                     type="submit"
-                    className="border border-slate-300 text-slate-300 px-2 py-1 rounded hover:bg-slate-700 active:bg-slate-800 outline-none"
+                    color="primary"
+                    // className="border border-slate-300 text-slate-300 px-2 py-1 rounded hover:bg-slate-700 active:bg-slate-800 outline-none"
                 >
                     Create
-                </button>
+                </Button>
             </div>
         </form>
     );
