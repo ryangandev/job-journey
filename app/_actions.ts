@@ -18,6 +18,7 @@ export async function createTodoAction(data: FormData) {
 
 export async function toggleTodoAction(id: string, isCompleted: boolean) {
     await prisma.todo.update({ where: { id }, data: { isCompleted } });
+    revalidatePath("/");
 }
 
 export async function deleteTodoAction(id: string) {
