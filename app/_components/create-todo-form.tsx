@@ -16,7 +16,7 @@ export default function CreateTodoForm() {
     }
 
     return (
-        <form action={formAction} className="flex gap-2 flex-col">
+        <form ref={formRef} action={formAction} className="flex gap-2 flex-col">
             <input
                 type="text"
                 name="title"
