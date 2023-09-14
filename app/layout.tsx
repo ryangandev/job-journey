@@ -15,7 +15,10 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en" className="dark flex justify-center items-center">
+        <html
+            lang="en"
+            className="dark h-full flex justify-center items-center"
+        >
             <body className={`${inter.className}`}>
                 <AppProviders>{children}</AppProviders>
             </body>

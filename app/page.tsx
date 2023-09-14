@@ -7,9 +7,9 @@ export default async function Home() {
     const todos = await getTodosAction();
 
     return (
-        <Card className="w-[1000px]">
+        <Card className="w-[1000px] h-[600px] p-4">
             <header className="flex justify-between items-center mb-4">
-                <h1 className="text-2xl">Todos</h1>
+                <h1 className="text-2xl">Your Todo Dashboard</h1>
             </header>
             <CreateTodoForm />
             <TodoTable todos={todos} />
