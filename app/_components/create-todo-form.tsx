@@ -1,12 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { createTodoAction } from "../_actions";
 import { Button } from "@nextui-org/button";
 
 export default function CreateTodoForm() {
+    const formRef = useRef<HTMLFormElement>(null);
+
+    async function formAction(data: FormData) {
+        const title = data.get("title")?.valueOf();
+        if (typeof title !== "string" || title.length === 0) return;
+
+        await createTodoAction(title);
+        formRef.current?.reset();
+    }
+
     return (
-        <form action={createTodoAction} className="flex gap-2 flex-col">
+        <form action={formAction} className="flex gap-2 flex-col">
             <input
                 type="text"
                 name="title"

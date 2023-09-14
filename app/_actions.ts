@@ -8,10 +8,7 @@ export async function getTodosAction() {
     return todos;
 }
 
-export async function createTodoAction(data: FormData) {
-    const title = data.get("title")?.valueOf();
-    if (typeof title !== "string" || title.length === 0) return;
-
+export async function createTodoAction(title: string) {
     await prisma.todo.create({ data: { title, isCompleted: false } });
     revalidatePath("/");
 }
