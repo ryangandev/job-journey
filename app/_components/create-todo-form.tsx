@@ -40,7 +40,7 @@ export default function CreateTodoForm() {
                 onPress={onOpen}
                 endContent={<AiOutlinePlusCircle className="text-xl" />}
                 size="sm"
-                color="warning"
+                color="primary"
                 variant="ghost"
                 radius="md"
             >
@@ -73,14 +73,13 @@ export default function CreateTodoForm() {
                                         endContent={
                                             <FcTodoList className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                                         }
-                                        label="Todo Title"
+                                        label="Title"
                                         placeholder="Enter your new todo"
                                         variant="bordered"
                                     />
                                     <Textarea
                                         name="description"
-                                        autoFocus
-                                        label="Todo Description (Optinoal)"
+                                        label="Description (Optinoal)"
                                         placeholder="Enter your Todo Description"
                                         variant="bordered"
                                     />
@@ -88,7 +87,7 @@ export default function CreateTodoForm() {
                                 <ModalFooter>
                                     <Button
                                         color="danger"
-                                        variant="flat"
+                                        variant="ghost"
                                         onPress={onClose}
                                     >
                                         Close
@@ -96,7 +95,7 @@ export default function CreateTodoForm() {
                                     <Button
                                         type="submit"
                                         color="primary"
-                                        // onPress={onClose}
+                                        variant="ghost"
                                     >
                                         Create
                                     </Button>
