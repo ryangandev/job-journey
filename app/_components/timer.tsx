@@ -14,7 +14,7 @@ function Timer() {
     }, []);
 
     return (
-        <span>
+        <span className="hidden md:block font-mono" suppressHydrationWarning>
             {currentDateTime.toLocaleString("en-US", { hour12: false })}
         </span>
     );
