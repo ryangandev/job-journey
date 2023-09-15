@@ -6,6 +6,7 @@ import TodoItem from "./todo-item";
 interface Todo {
     id: string;
     title: string;
+    description: string | null;
     isCompleted: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -13,7 +14,7 @@ interface Todo {
 
 function TodoTable({ todos }: { todos: Todo[] }) {
     return (
-        <ul className="pl-4 space-y-4">
+        <ul className="space-y-4">
             {todos?.map((todo) => (
                 <TodoItem
                     key={todo.id}
