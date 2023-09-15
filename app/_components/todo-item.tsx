@@ -3,6 +3,7 @@
 interface TodoItemProps {
     id: string;
     title: string;
+    description: string | null;
     isCompleted: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -13,6 +14,7 @@ interface TodoItemProps {
 function TodoItem({
     id,
     title,
+    description,
     isCompleted,
     createdAt,
     updatedAt,
@@ -34,8 +36,13 @@ function TodoItem({
             >
                 {title}
             </label>
-            <span>Created at: {createdAt.toLocaleString()}</span>
-            <span>Updated at: {updatedAt.toLocaleString()}</span>
+            <p>{description}</p>
+            <span suppressHydrationWarning>
+                Created at: {createdAt.toLocaleString()}
+            </span>
+            <span suppressHydrationWarning>
+                Updated at: {updatedAt.toLocaleString()}
+            </span>
             <button
                 className="border py-1 px-2 rounded-md ml-8"
                 onClick={(e) => deleteTodo(id)}

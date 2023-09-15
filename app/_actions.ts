@@ -8,8 +8,10 @@ export async function getTodosAction() {
     return todos;
 }
 
-export async function createTodoAction(title: string) {
-    await prisma.todo.create({ data: { title, isCompleted: false } });
+export async function createTodoAction(title: string, description: string) {
+    await prisma.todo.create({
+        data: { title, description, isCompleted: false },
+    });
     revalidatePath("/");
 }
 
