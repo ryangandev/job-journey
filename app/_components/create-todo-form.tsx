@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { createTodoAction } from "../_actions";
 import { Button } from "@nextui-org/button";
 import { AiOutlinePlusCircle } from "react-icons/ai";
@@ -17,6 +17,7 @@ import {
 import { FcTodoList } from "react-icons/fc";
 
 export default function CreateTodoForm() {
+    const formRef = useRef<HTMLFormElement>(null);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     async function formAction(data: FormData, onClose: () => void) {
@@ -30,21 +31,20 @@ export default function CreateTodoForm() {
             return;
 
         await createTodoAction(title, description);
+        formRef.current?.reset();
         onClose();
     }
 
     return (
         <>
             <Button
-                className="text-md text-slate-50"
                 onPress={onOpen}
-                endContent={<AiOutlinePlusCircle className="text-xl" />}
-                size="sm"
+                size="md"
                 color="primary"
-                variant="ghost"
-                radius="md"
+                variant="light"
+                isIconOnly
             >
-                Create
+                <AiOutlinePlusCircle className="text-2xl" />
             </Button>
             <Modal
                 isOpen={isOpen}
@@ -58,6 +58,7 @@ export default function CreateTodoForm() {
                                 Create New Todo
                             </ModalHeader>
                             <form
+                                ref={formRef}
                                 onSubmit={(e) => {
                                     e.preventDefault();
                                     const formData = new FormData(
