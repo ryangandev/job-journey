@@ -6,15 +6,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 import { Checkbox } from "@nextui-org/checkbox";
 import { Button } from "@nextui-org/button";
 import { AiOutlineCheck, AiOutlineDelete } from "react-icons/ai";
-
-interface Todo {
-    id: string;
-    title: string;
-    description: string | null;
-    isCompleted: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-}
+import { Todo } from "@/_models/todo";
 
 function TodoTable({ todos }: { todos: Todo[] }) {
     return (
