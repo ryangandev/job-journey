@@ -1,5 +1,11 @@
 "use client";
 
+import { Checkbox } from "@nextui-org/checkbox";
+import { Button } from "@nextui-org/button";
+import { AiOutlineDelete } from "react-icons/ai";
+import { useState } from "react";
+import "../_styles/animations.css";
+
 interface TodoItemProps {
     id: string;
     title: string;
@@ -21,34 +27,46 @@ function TodoItem({
     toggleTodo,
     deleteTodo,
 }: TodoItemProps) {
+    const [deleting, setDeleting] = useState(false);
+
+    const handleDelete = (todoId: string) => {
+        setDeleting(true);
+        setTimeout(() => {
+            deleteTodo(todoId);
+        }, 500); // This should match the animation duration
+    };
+
     return (
-        <li className="flex gap-1 items-center">
-            <input
+        <li
+            className={`flex ${
+                isCompleted
+                    ? "bg-slate-200 dark:bg-slate-800"
+                    : "bg-white dark:bg-slate-900"
+            } justify-between gap-1 items-center border-b border-slate-400 border-opacity-40 px-4 py-1 
+            hover:z-50 hover:outline hover:outline-gray-400 hover:shadow-2xl transition-background
+            ${deleting ? "fade-out-left" : ""}`}
+        >
+            <Checkbox
                 id={id}
-                type="checkbox"
-                className="cursor-pointer peer"
-                defaultChecked={isCompleted}
+                className="gap-4"
+                lineThrough={isCompleted}
+                defaultSelected={isCompleted}
                 onChange={(e) => toggleTodo(id, e.target.checked)}
-            />
-            <label
-                htmlFor={id}
-                className="cursor-pointer peer-checked:line-through peer-checked:text-slate-500"
             >
-                {title}
-            </label>
-            <p>{description}</p>
-            <span suppressHydrationWarning>
-                Created at: {createdAt.toLocaleString()}
-            </span>
-            <span suppressHydrationWarning>
-                Updated at: {updatedAt.toLocaleString()}
-            </span>
-            <button
-                className="border py-1 px-2 rounded-md ml-8"
-                onClick={(e) => deleteTodo(id)}
+                <span className="px-1 line-clamp-1 font-extralight">
+                    {title}
+                </span>
+            </Checkbox>
+
+            <Button
+                className=""
+                onClick={() => handleDelete(id)}
+                isIconOnly
+                color="danger"
+                variant="light"
             >
-                Delete
-            </button>
+                <AiOutlineDelete className="text-xl" />
+            </Button>
         </li>
     );
 }
