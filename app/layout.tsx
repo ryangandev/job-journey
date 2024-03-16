@@ -5,8 +5,9 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-    title: "NextJs - Todo App",
-    description: "",
+    title: "Job Journey",
+    description:
+        "An app to help you organize and streamline your job application process.",
 };
 
 export default function RootLayout({
