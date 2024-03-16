@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/_libs/db";
+import { prisma } from "../libs/db";
 import { revalidatePath } from "next/cache";
 
 export async function getTodosAction() {

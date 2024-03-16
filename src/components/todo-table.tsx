@@ -1,12 +1,12 @@
 "use client";
 
-import { deleteTodoAction, toggleTodoAction } from "@/_actions";
+import { deleteTodoAction, toggleTodoAction } from "../actions/actions";
 import TodoItem from "./todo-item";
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 import { Checkbox } from "@nextui-org/checkbox";
 import { Button } from "@nextui-org/button";
 import { AiOutlineCheck, AiOutlineDelete } from "react-icons/ai";
-import { Todo } from "@/_models/todo";
+import { Todo } from "../models/todo";
 
 function TodoTable({ todos }: { todos: Todo[] }) {
     return (
