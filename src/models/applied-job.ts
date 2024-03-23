@@ -1,3 +1,5 @@
+type JobType = "on-site" | "remote";
+
 type JobStatus =
     | "applied"
     | "interviewing"
@@ -5,16 +7,25 @@ type JobStatus =
     | "rejected"
     | "ghosted";
 
+interface QuestionAndAnswer {
+    question: string;
+    answer: string;
+}
+
 interface AppliedJob {
     id: string;
-    title: string;
     company: string;
+    title: string;
     location: string;
-    remote: boolean;
+    remote: JobType;
     status: JobStatus;
-    replied: boolean;
     link: string;
-    updates: string[];
+    replied: boolean;
+    interviewAquired: boolean;
+    applicationQA: readonly QuestionAndAnswer[];
+    updates: readonly string[];
     appliedAt: Date;
     updatedAt: Date;
 }
+
+export type { AppliedJob, JobStatus, JobType, QuestionAndAnswer };
