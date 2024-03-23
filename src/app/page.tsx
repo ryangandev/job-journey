@@ -1,9 +1,9 @@
-import OverviewTable from "../components/overview-table";
+import JobApplicationOverviewTable from "../components/job-application-overview-table";
 
 export default async function Home() {
     return (
         <main>
-            <OverviewTable />
+            <JobApplicationOverviewTable />
         </main>
     );
 }
