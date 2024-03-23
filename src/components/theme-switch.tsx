@@ -13,8 +13,6 @@ export default function ThemeSwitch() {
         theme === "dark" ? setTheme("light") : setTheme("dark");
     };
 
-    const themeIconStyle = `text-2xl`;
-
     useEffect(() => {
         setMounted(true);
     }, []);
@@ -25,15 +23,12 @@ export default function ThemeSwitch() {
         <Button
             isIconOnly
             size="md"
-            color="secondary"
-            variant="light"
+            color="default"
+            variant="bordered"
             onPress={handleThemeSwitch}
+            className="fixed bottom-6 right-6 sm:bottom-10 sm:right-10 text-xl bg-opacity-80"
         >
-            {theme === "dark" ? (
-                <FiMoon className={themeIconStyle} />
-            ) : (
-                <FiSun className={themeIconStyle} />
-            )}
+            {theme === "dark" ? <FiSun /> : <FiMoon />}
         </Button>
     );
 }
