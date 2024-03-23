@@ -19,6 +19,7 @@ interface AppliedJob {
     location: string;
     remote: JobType;
     status: JobStatus;
+    isFavorite: boolean;
     link: string;
     replied: boolean;
     interviewAquired: boolean;
