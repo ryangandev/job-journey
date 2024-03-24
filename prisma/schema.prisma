@@ -27,20 +27,20 @@ enum JobStatus {
 }
 
 model AppliedJob {
-  id                String    @id @default(uuid())
-  company           String
-  title             String
-  location          String
-  remote            JobType
-  status            JobStatus
-  isFavorite        Boolean
-  link              String
-  replied           Boolean
-  interviewRequired Boolean
-  applicationQA     Json
-  updates           Json
-  appliedAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  id               String    @id @default(uuid())
+  company          String
+  title            String
+  location         String
+  remote           JobType
+  status           JobStatus
+  isFavorite       Boolean
+  link             String
+  replied          Boolean
+  interviewAquired Boolean
+  applicationQA    Json
+  updates          Json
+  appliedAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   @@map("applied_jobs")
 }

@@ -1,4 +1,4 @@
-type JobType = "on-site" | "remote";
+type JobType = "on_site" | "remote";
 
 type JobStatus =
     | "applied"
@@ -20,13 +20,22 @@ interface AppliedJob {
     remote: JobType;
     status: JobStatus;
     isFavorite: boolean;
-    link: string;
     replied: boolean;
     interviewAquired: boolean;
-    applicationQA: readonly QuestionAndAnswer[];
-    updates: readonly string[];
     appliedAt: Date;
     updatedAt: Date;
 }
 
-export type { AppliedJob, JobStatus, JobType, QuestionAndAnswer };
+interface AppliedJobDetail extends AppliedJob {
+    link: string;
+    applicationQA: readonly QuestionAndAnswer[];
+    updates: readonly string[];
+}
+
+export type {
+    AppliedJob,
+    AppliedJobDetail,
+    JobStatus,
+    JobType,
+    QuestionAndAnswer,
+};

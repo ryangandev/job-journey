@@ -1,9 +1,12 @@
-import JobApplicationOverviewTable from "../components/job-application-overview-table";
+import { getAppliedJobsListAction } from "../actions/job-applications-management-actions";
+import JobApplicationsDashboard from "../components/job-applications-management/dashboard";
 
 export default async function Home() {
+    const appliedJobs = await getAppliedJobsListAction();
+
     return (
         <main>
-            <JobApplicationOverviewTable />
+            <JobApplicationsDashboard appliedJobs={appliedJobs} />
         </main>
     );
 }

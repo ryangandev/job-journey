@@ -20,15 +20,19 @@ import {
     SortDescriptor,
 } from "@nextui-org/react";
 import { useState, useMemo, useCallback, Key } from "react";
-import { columns, statusOptions, appliedJobs } from "../data/data";
-import { AppliedJob } from "../models/applied-job";
-import { capitalize } from "../libs/string-utils";
+import {
+    columns,
+    jobTypeMap,
+    statusOptions,
+} from "../../data/job-applications-management";
+import { AppliedJob } from "../../models/applied-job";
+import { capitalize } from "../../libs/string-utils";
 import {
     ChevronDownIcon,
     PlusIcon,
     SearchIcon,
     VerticalDotsIcon,
-} from "../assets/svgs";
+} from "../../assets/svgs";
 import { FaCheck } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 
@@ -41,8 +45,8 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 };
 
 const INITIAL_VISIBLE_COLUMNS = [
-    "title",
     "company",
+    "title",
     "status",
     "replied",
     "interviewAquired",
@@ -51,7 +55,12 @@ const INITIAL_VISIBLE_COLUMNS = [
     "actions",
 ];
 
-export default function JobApplicationOverviewTable() {
+export default function JobApplicationsDashboard({
+    appliedJobs,
+}: {
+    appliedJobs: AppliedJob[];
+}) {
+    console.log(appliedJobs);
     const [filterValue, setFilterValue] = useState("");
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
     const [visibleColumns, setVisibleColumns] = useState<Selection>(
@@ -156,7 +165,7 @@ export default function JobApplicationOverviewTable() {
                             {cellValue as string}
                         </p>
                         <p className="text-bold text-tiny capitalize text-default-500">
-                            {appliedJob.remote}
+                            {jobTypeMap[appliedJob.remote]}
                         </p>
                     </div>
                 );
