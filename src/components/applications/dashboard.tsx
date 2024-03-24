@@ -21,12 +21,8 @@ import {
     Spinner,
 } from "@nextui-org/react";
 import { useState, useMemo, useCallback, Key, useEffect } from "react";
-import {
-    columns,
-    jobTypeMap,
-    statusOptions,
-} from "../../data/job-applications-management";
-import { AppliedJob } from "../../models/applied-job";
+import { columns, jobTypeMap, statusOptions } from "../../data/applidations";
+import { Application } from "../../models/application";
 import { capitalize } from "../../libs/string-utils";
 import {
     ChevronDownIcon,
@@ -37,7 +33,7 @@ import {
 import { FaCheck } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { useRouter } from "next/navigation";
-import { getAppliedJobsListAction } from "../../actions/job-applications-management-actions";
+import { getApplicationsListAction } from "../../actions/applications-actions";
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
     applied: "warning",
@@ -58,8 +54,8 @@ const INITIAL_VISIBLE_COLUMNS = [
     "actions",
 ];
 
-export default function JobApplicationsDashboard() {
-    const [appliedJobs, setAppliedJobs] = useState<AppliedJob[]>([]);
+export default function ApplicationsDashboard() {
+    const [applications, setApplications] = useState<Application[]>([]);
     const [loading, setLoading] = useState(true);
     const [filterValue, setFilterValue] = useState("");
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
@@ -85,16 +81,16 @@ export default function JobApplicationsDashboard() {
     };
 
     useEffect(() => {
-        const fetchAppliedJobs = async () => {
-            const appliedJobs = await getAppliedJobsListAction();
-            setAppliedJobs(appliedJobs);
+        const fetchApplications = async () => {
+            const applications = await getApplicationsListAction();
+            setApplications(applications);
             setLoading(false);
         };
 
-        fetchAppliedJobs();
+        fetchApplications();
     }, []);
 
-    const pages = Math.ceil(appliedJobs.length / rowsPerPage);
+    const pages = Math.ceil(applications.length / rowsPerPage);
 
     const hasSearchFilter = Boolean(filterValue);
 
@@ -107,11 +103,11 @@ export default function JobApplicationsDashboard() {
     }, [visibleColumns]);
 
     const filteredItems = useMemo(() => {
-        let filteredAppliedJobs = [...appliedJobs];
+        let filteredApplications = [...applications];
 
         if (hasSearchFilter) {
-            filteredAppliedJobs = filteredAppliedJobs.filter((appliedJob) =>
-                appliedJob.company
+            filteredApplications = filteredApplications.filter((application) =>
+                application.company
                     .toLowerCase()
                     .includes(filterValue.toLowerCase()),
             );
@@ -121,13 +117,13 @@ export default function JobApplicationsDashboard() {
             statusFilter !== "all" &&
             Array.from(statusFilter).length !== statusOptions.length
         ) {
-            filteredAppliedJobs = filteredAppliedJobs.filter((appliedJob) =>
-                Array.from(statusFilter).includes(appliedJob.status),
+            filteredApplications = filteredApplications.filter((application) =>
+                Array.from(statusFilter).includes(application.status),
             );
         }
 
-        return filteredAppliedJobs;
-    }, [appliedJobs, filterValue, statusFilter]);
+        return filteredApplications;
+    }, [applications, filterValue, statusFilter]);
 
     const items = useMemo(() => {
         const start = (page - 1) * rowsPerPage;
@@ -137,9 +133,9 @@ export default function JobApplicationsDashboard() {
     }, [page, filteredItems, rowsPerPage]);
 
     const sortedItems = useMemo(() => {
-        return [...items].sort((a: AppliedJob, b: AppliedJob) => {
-            const first = a[sortDescriptor.column as keyof AppliedJob];
-            const second = b[sortDescriptor.column as keyof AppliedJob];
+        return [...items].sort((a: Application, b: Application) => {
+            const first = a[sortDescriptor.column as keyof Application];
+            const second = b[sortDescriptor.column as keyof Application];
             const cmp = first > second ? 1 : first < second ? -1 : 0;
 
             return sortDescriptor.direction === "ascending" ? cmp : -cmp;
@@ -154,116 +150,119 @@ export default function JobApplicationsDashboard() {
         );
     }, []);
 
-    const renderCell = useCallback((appliedJob: AppliedJob, columnKey: Key) => {
-        const cellValue = appliedJob[columnKey as keyof AppliedJob];
+    const renderCell = useCallback(
+        (application: Application, columnKey: Key) => {
+            const cellValue = application[columnKey as keyof Application];
 
-        switch (columnKey) {
-            case "company":
-                return (
-                    <div className="flex flex-col">
-                        <p className="text-bold text-small capitalize">
-                            {cellValue as string}
-                        </p>
-                        <p className="text-bold text-tiny capitalize text-default-500">
-                            {appliedJob.location}
-                        </p>
-                    </div>
-                );
-            case "title":
-                return (
-                    <div className="flex flex-col">
-                        <p className="text-bold text-small capitalize">
-                            {cellValue as string}
-                        </p>
-                        <p className="text-bold text-tiny capitalize text-default-500">
-                            {jobTypeMap[appliedJob.remote]}
-                        </p>
-                    </div>
-                );
-            case "status":
-                return (
-                    <div>
-                        <Chip
-                            className="capitalize border-none gap-1 text-default-600"
-                            color={statusColorMap[appliedJob.status]}
-                            size="md"
-                            variant="dot"
-                        >
-                            {cellValue as string}
-                        </Chip>
-                    </div>
-                );
-            case "replied":
-                return (
-                    <div className="flex pl-4">
-                        {renderBooleanCell(cellValue as boolean)}
-                    </div>
-                );
-            case "interviewAquired":
-                return (
-                    <div className="flex pl-4">
-                        {renderBooleanCell(cellValue as boolean)}
-                    </div>
-                );
-            case "appliedAt":
-                return (
-                    <div>
-                        <p className="text-bold text-small">
-                            {appliedJob.appliedAt.toLocaleDateString(
-                                "en-US",
-                                dateFormatOption,
-                            )}
-                        </p>
-                    </div>
-                );
-            case "updatedAt":
-                return (
-                    <div>
-                        <p className="text-bold text-small">
-                            {appliedJob.updatedAt.toLocaleDateString(
-                                "en-US",
-                                dateFormatOption,
-                            )}
-                        </p>
-                    </div>
-                );
-            case "actions":
-                return (
-                    <div className="relative flex justify-end items-center gap-2">
-                        <Dropdown className="bg-background border-1 border-default-200">
-                            <DropdownTrigger>
-                                <Button
-                                    isIconOnly
-                                    radius="full"
-                                    size="sm"
-                                    variant="light"
-                                >
-                                    <VerticalDotsIcon
-                                        className="text-default-400"
-                                        width={undefined}
-                                        height={undefined}
-                                    />
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu aria-label="Actions Menu">
-                                <DropdownItem
-                                    onClick={() => {
-                                        router.push(
-                                            `/application-detail/${appliedJob.id}`,
-                                        );
-                                    }}
-                                >
-                                    View
-                                </DropdownItem>
-                                <DropdownItem>Delete</DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                    </div>
-                );
-            default:
-                return <></>;
-        }
-    }, []);
+            switch (columnKey) {
+                case "company":
+                    return (
+                        <div className="flex flex-col">
+                            <p className="text-bold text-small capitalize">
+                                {cellValue as string}
+                            </p>
+                            <p className="text-bold text-tiny capitalize text-default-500">
+                                {application.location}
+                            </p>
+                        </div>
+                    );
+                case "title":
+                    return (
+                        <div className="flex flex-col">
+                            <p className="text-bold text-small capitalize">
+                                {cellValue as string}
+                            </p>
+                            <p className="text-bold text-tiny capitalize text-default-500">
+                                {jobTypeMap[application.type]}
+                            </p>
+                        </div>
+                    );
+                case "status":
+                    return (
+                        <div>
+                            <Chip
+                                className="capitalize border-none gap-1 text-default-600"
+                                color={statusColorMap[application.status]}
+                                size="md"
+                                variant="dot"
+                            >
+                                {cellValue as string}
+                            </Chip>
+                        </div>
+                    );
+                case "replied":
+                    return (
+                        <div className="flex pl-4">
+                            {renderBooleanCell(cellValue as boolean)}
+                        </div>
+                    );
+                case "interviewAquired":
+                    return (
+                        <div className="flex pl-4">
+                            {renderBooleanCell(cellValue as boolean)}
+                        </div>
+                    );
+                case "appliedAt":
+                    return (
+                        <div>
+                            <p className="text-bold text-small">
+                                {application.appliedAt.toLocaleDateString(
+                                    "en-US",
+                                    dateFormatOption,
+                                )}
+                            </p>
+                        </div>
+                    );
+                case "updatedAt":
+                    return (
+                        <div>
+                            <p className="text-bold text-small">
+                                {application.updatedAt.toLocaleDateString(
+                                    "en-US",
+                                    dateFormatOption,
+                                )}
+                            </p>
+                        </div>
+                    );
+                case "actions":
+                    return (
+                        <div className="relative flex justify-end items-center gap-2">
+                            <Dropdown className="bg-background border-1 border-default-200">
+                                <DropdownTrigger>
+                                    <Button
+                                        isIconOnly
+                                        radius="full"
+                                        size="sm"
+                                        variant="light"
+                                    >
+                                        <VerticalDotsIcon
+                                            className="text-default-400"
+                                            width={undefined}
+                                            height={undefined}
+                                        />
+                                    </Button>
+                                </DropdownTrigger>
+                                <DropdownMenu aria-label="Actions Menu">
+                                    <DropdownItem
+                                        onClick={() => {
+                                            router.push(
+                                                `/application-detail/${application.id}`,
+                                            );
+                                        }}
+                                    >
+                                        View
+                                    </DropdownItem>
+                                    <DropdownItem>Delete</DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        </div>
+                    );
+                default:
+                    return <></>;
+            }
+        },
+        [],
+    );
 
     const onRowsPerPageChange = useCallback(
         (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -348,7 +347,7 @@ export default function JobApplicationsDashboard() {
                 </div>
                 <div className="flex justify-between items-center">
                     <span className="text-default-400 text-small">
-                        Total {appliedJobs.length} applied jobs
+                        Total {applications.length} applications
                     </span>
                     <label className="flex items-center text-default-400 text-small">
                         Rows per page:
@@ -370,7 +369,7 @@ export default function JobApplicationsDashboard() {
         visibleColumns,
         onSearchChange,
         onRowsPerPageChange,
-        appliedJobs.length,
+        applications.length,
         hasSearchFilter,
     ]);
 
@@ -427,7 +426,7 @@ export default function JobApplicationsDashboard() {
             isCompact={false}
             // removeWrapper
             fullWidth
-            aria-label="Applied Jobs Table"
+            aria-label="Applications Dashboard"
             bottomContent={bottomContent}
             bottomContentPlacement="outside"
             checkboxesProps={{

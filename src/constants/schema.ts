@@ -10,7 +10,7 @@ const ApplicationDetailSchema = z.object({
     company: z.string(),
     title: z.string(),
     location: z.string(),
-    remote: z.enum(["on_site", "remote"]),
+    type: z.enum(["on_site", "remote"]),
     status: z.enum([
         "applied",
         "interviewing",

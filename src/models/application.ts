@@ -7,17 +7,17 @@ type JobStatus =
     | "rejected"
     | "ghosted";
 
-interface QuestionAndAnswer {
+interface QA {
     question: string;
     answer: string;
 }
 
-interface AppliedJob {
+interface Application {
     id: string;
     company: string;
     title: string;
     location: string;
-    remote: JobType;
+    type: JobType;
     status: JobStatus;
     isFavorite: boolean;
     replied: boolean;
@@ -26,16 +26,10 @@ interface AppliedJob {
     updatedAt: Date;
 }
 
-interface AppliedJobDetail extends AppliedJob {
+interface ApplicationDetail extends Application {
     link: string;
-    applicationQA: readonly QuestionAndAnswer[];
+    applicationQA: readonly QA[];
     updates: readonly string[];
 }
 
-export type {
-    AppliedJob,
-    AppliedJobDetail,
-    JobStatus,
-    JobType,
-    QuestionAndAnswer,
-};
+export type { Application, ApplicationDetail, JobStatus, JobType, QA };

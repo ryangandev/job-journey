@@ -1,5 +1,4 @@
 import dynamic from "next/dynamic";
-// import JobApplicationsDashboard from "../components/job-applications-management/dashboard";
 
 // Problem:
 // Due to this line in dashboard.tsx: selectionMode="multiple" on the nextui table component causing this error:
@@ -11,15 +10,15 @@ import dynamic from "next/dynamic";
 // https://github.com/nextui-org/nextui/issues/1729
 // https://github.com/nextui-org/nextui/issues/779
 
-const JobApplicationsDashboard = dynamic(
-    () => import("../components/job-applications-management/dashboard"),
+const ApplicationsDashboard = dynamic(
+    () => import("../components/applications/dashboard"),
     { ssr: false },
 );
 
 export default async function Home() {
     return (
         <main className="pt-16 pb-10 px-4">
-            <JobApplicationsDashboard />
+            <ApplicationsDashboard />
         </main>
     );
 }

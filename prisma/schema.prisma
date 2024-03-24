@@ -26,12 +26,12 @@ enum JobStatus {
   ghosted
 }
 
-model AppliedJob {
+model Application {
   id               String    @id @default(uuid())
   company          String
   title            String
   location         String
-  remote           JobType
+  type             JobType
   status           JobStatus
   isFavorite       Boolean
   link             String
@@ -42,5 +42,5 @@ model AppliedJob {
   appliedAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  @@map("applied_jobs")
+  @@map("applications")
 }

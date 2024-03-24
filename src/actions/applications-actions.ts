@@ -3,14 +3,14 @@
 import { prisma } from "../libs/db";
 import { revalidatePath } from "next/cache";
 
-async function getAppliedJobsListAction() {
-    const appliedJobs = await prisma.appliedJob.findMany({
+async function getApplicationsListAction() {
+    const applications = await prisma.application.findMany({
         select: {
             id: true,
             company: true,
             title: true,
             location: true,
-            remote: true,
+            type: true,
             status: true,
             isFavorite: true,
             replied: true,
@@ -19,7 +19,7 @@ async function getAppliedJobsListAction() {
             updatedAt: true,
         },
     });
-    return appliedJobs;
+    return applications;
 }
 
-export { getAppliedJobsListAction };
+export { getApplicationsListAction };
