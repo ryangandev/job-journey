@@ -1,12 +1,25 @@
-import { getAppliedJobsListAction } from "../actions/job-applications-management-actions";
-import JobApplicationsDashboard from "../components/job-applications-management/dashboard";
+import dynamic from "next/dynamic";
+// import JobApplicationsDashboard from "../components/job-applications-management/dashboard";
+
+// Problem:
+// Due to this line in dashboard.tsx: selectionMode="multiple" on the nextui table component causing this error:
+// Warning: Prop 'data-key' did not match. Server: "row-header-column-ilm253m8gg" Client: "row-header-column-57c34tinu8f"
+
+// Solution:
+// Using dynamic import for the JobApplicationsDashboard component and disabling server-side rendering (ssr: false)
+// Similar problems found on github by seb350:
+// https://github.com/nextui-org/nextui/issues/1729
+// https://github.com/nextui-org/nextui/issues/779
+
+const JobApplicationsDashboard = dynamic(
+    () => import("../components/job-applications-management/dashboard"),
+    { ssr: false },
+);
 
 export default async function Home() {
-    const appliedJobs = await getAppliedJobsListAction();
-
     return (
-        <main>
-            <JobApplicationsDashboard appliedJobs={appliedJobs} />
+        <main className="pt-16 pb-10 px-4">
+            <JobApplicationsDashboard />
         </main>
     );
 }
