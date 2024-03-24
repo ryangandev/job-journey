@@ -1,5 +1,5 @@
-"use client";
+import { notFound } from "next/navigation";
 
-export default function ApplicationDetail() {
-    return <p>Application Detail Page</p>;
+export default function Page() {
+    return notFound();
 }

@@ -18,8 +18,9 @@ import {
     Selection,
     ChipProps,
     SortDescriptor,
+    Spinner,
 } from "@nextui-org/react";
-import { useState, useMemo, useCallback, Key } from "react";
+import { useState, useMemo, useCallback, Key, useEffect } from "react";
 import {
     columns,
     jobTypeMap,
@@ -35,6 +36,8 @@ import {
 } from "../../assets/svgs";
 import { FaCheck } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
+import { useRouter } from "next/navigation";
+import { getAppliedJobsListAction } from "../../actions/job-applications-management-actions";
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
     applied: "warning",
@@ -55,12 +58,9 @@ const INITIAL_VISIBLE_COLUMNS = [
     "actions",
 ];
 
-export default function JobApplicationsDashboard({
-    appliedJobs,
-}: {
-    appliedJobs: AppliedJob[];
-}) {
-    console.log(appliedJobs);
+export default function JobApplicationsDashboard() {
+    const [appliedJobs, setAppliedJobs] = useState<AppliedJob[]>([]);
+    const [loading, setLoading] = useState(true);
     const [filterValue, setFilterValue] = useState("");
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
     const [visibleColumns, setVisibleColumns] = useState<Selection>(
@@ -73,6 +73,7 @@ export default function JobApplicationsDashboard({
         direction: "ascending",
     });
     const [page, setPage] = useState(1);
+    const router = useRouter();
     const dateFormatOption: {
         month: "2-digit" | "numeric";
         day: "2-digit" | "numeric";
@@ -82,6 +83,16 @@ export default function JobApplicationsDashboard({
         day: "2-digit",
         year: "2-digit",
     };
+
+    useEffect(() => {
+        const fetchAppliedJobs = async () => {
+            const appliedJobs = await getAppliedJobsListAction();
+            setAppliedJobs(appliedJobs);
+            setLoading(false);
+        };
+
+        fetchAppliedJobs();
+    }, []);
 
     const pages = Math.ceil(appliedJobs.length / rowsPerPage);
 
@@ -234,8 +245,16 @@ export default function JobApplicationsDashboard({
                                     />
                                 </Button>
                             </DropdownTrigger>
-                            <DropdownMenu>
-                                <DropdownItem>View</DropdownItem>
+                            <DropdownMenu aria-label="Actions Menu">
+                                <DropdownItem
+                                    onClick={() => {
+                                        router.push(
+                                            `/application-detail/${appliedJob.id}`,
+                                        );
+                                    }}
+                                >
+                                    View
+                                </DropdownItem>
                                 <DropdownItem>Delete</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
@@ -381,7 +400,7 @@ export default function JobApplicationsDashboard({
 
     const classNames = useMemo(
         () => ({
-            wrapper: ["max-h-[382px]", "max-w-7xl"],
+            wrapper: ["max-h-5xl", "max-w-7xl", "min-h-[280px]"],
             th: [
                 "bg-transparent",
                 "text-default-500",
@@ -439,7 +458,9 @@ export default function JobApplicationsDashboard({
                 )}
             </TableHeader>
             <TableBody
-                emptyContent={"There's no applied jobs to show."}
+                isLoading={loading}
+                loadingContent={<Spinner label="Loading job applications..." />}
+                emptyContent={loading ? "" : "There's no applications to show."}
                 items={sortedItems}
             >
                 {(item) => (
