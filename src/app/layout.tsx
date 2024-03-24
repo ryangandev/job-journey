@@ -17,10 +17,11 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en">
-            <body
-                className={`${inter.className} relative flex justify-center pt-16 pb-10`}
-            >
+        // added 'suppressHydrationWarning' to the html tag to avoid warning (solution from reddit below)
+        // https://www.reddit.com/r/nextjs/comments/138smpm/how_to_fix_extra_attributes_from_the_server_error/
+        // https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
+        <html lang="en" suppressHydrationWarning>
+            <body className={`${inter.className} relative flex justify-center`}>
                 <AppProviders>
                     {children}
                     <ThemeSwitch />
