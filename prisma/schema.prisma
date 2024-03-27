@@ -37,8 +37,8 @@ model Application {
   link             String
   replied          Boolean
   interviewAquired Boolean
-  applicationQA    Json
-  updates          Json
+  applicationQA    Json[]
+  updates          String[]
   appliedAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
