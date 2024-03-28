@@ -16,12 +16,16 @@ import {
     Chip,
     Pagination,
     Selection,
-    ChipProps,
     SortDescriptor,
     Spinner,
 } from "@nextui-org/react";
 import { useState, useMemo, useCallback, Key, useEffect } from "react";
-import { columns, jobTypeMap, statusOptions } from "../../data/applidations";
+import {
+    columns,
+    jobTypeMap,
+    statusColorMap,
+    statusOptions,
+} from "../../data/applidations";
 import { Application } from "../../models/application";
 import { capitalize } from "../../libs/string-utils";
 import {
@@ -34,14 +38,6 @@ import { FaCheck } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { useRouter } from "next/navigation";
 import { getApplicationsListAction } from "../../actions/applications-actions";
-
-const statusColorMap: Record<string, ChipProps["color"]> = {
-    applied: "warning",
-    interviewing: "secondary",
-    offered: "success",
-    rejected: "danger",
-    ghosted: "default",
-};
 
 const INITIAL_VISIBLE_COLUMNS = [
     "company",

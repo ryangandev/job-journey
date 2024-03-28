@@ -1,3 +1,5 @@
+import { ChipProps } from "@nextui-org/chip";
+
 interface Column {
     name: string;
     uid: string;
@@ -72,10 +74,18 @@ const statusOptions = [
     { name: "Ghosted", uid: "ghosted" },
 ];
 
+const statusColorMap: Record<string, ChipProps["color"]> = {
+    applied: "warning",
+    interviewing: "secondary",
+    offered: "success",
+    rejected: "danger",
+    ghosted: "default",
+};
+
 const jobTypeMap: Record<string, string> = {
     on_site: "on-site",
     remote: "remote",
 };
 
-export { columns, statusOptions, jobTypeMap };
+export { columns, statusOptions, statusColorMap, jobTypeMap };
 export type { Column };
