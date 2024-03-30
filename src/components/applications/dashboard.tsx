@@ -38,6 +38,7 @@ import { FaCheck } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { useRouter } from "next/navigation";
 import { getApplicationsListAction } from "../../actions/applications-actions";
+import { dateToTwoDigitsString } from "../../libs/time-utils";
 
 const INITIAL_VISIBLE_COLUMNS = [
     "company",
@@ -66,15 +67,6 @@ export default function ApplicationsDashboard() {
     });
     const [page, setPage] = useState(1);
     const router = useRouter();
-    const dateFormatOption: {
-        month: "2-digit" | "numeric";
-        day: "2-digit" | "numeric";
-        year: "2-digit" | "numeric";
-    } = {
-        month: "2-digit",
-        day: "2-digit",
-        year: "2-digit",
-    };
 
     useEffect(() => {
         const fetchApplications = async () => {
@@ -202,10 +194,7 @@ export default function ApplicationsDashboard() {
                     return (
                         <div>
                             <p className="text-bold text-small">
-                                {application.appliedAt.toLocaleDateString(
-                                    "en-US",
-                                    dateFormatOption,
-                                )}
+                                {dateToTwoDigitsString(application.appliedAt)}
                             </p>
                         </div>
                     );
@@ -213,10 +202,7 @@ export default function ApplicationsDashboard() {
                     return (
                         <div>
                             <p className="text-bold text-small">
-                                {application.updatedAt.toLocaleDateString(
-                                    "en-US",
-                                    dateFormatOption,
-                                )}
+                                {dateToTwoDigitsString(application.updatedAt)}
                             </p>
                         </div>
                     );
@@ -318,11 +304,8 @@ export default function ApplicationsDashboard() {
                                 onSelectionChange={setStatusFilter}
                             >
                                 {statusOptions.map((status) => (
-                                    <DropdownItem
-                                        key={status.uid}
-                                        className="capitalize"
-                                    >
-                                        {capitalize(status.name)}
+                                    <DropdownItem key={status.uid}>
+                                        {status.name}
                                     </DropdownItem>
                                 ))}
                             </DropdownMenu>
