@@ -14,6 +14,12 @@ const columns: Column[] = [
         sortable: true,
     },
     {
+        name: "Fav",
+        uid: "isFavorite",
+        width: 50,
+        sortable: true,
+    },
+    {
         name: "COMPANY",
         uid: "company",
         width: 175,

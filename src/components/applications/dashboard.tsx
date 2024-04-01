@@ -27,7 +27,6 @@ import {
     statusOptions,
 } from "../../data/applidations";
 import { Application } from "../../models/application";
-import { capitalize } from "../../libs/string-utils";
 import {
     ChevronDownIcon,
     PlusIcon,
@@ -36,11 +35,13 @@ import {
 } from "../../assets/svgs";
 import { FaCheck } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
+import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { getApplicationsListAction } from "../../actions/applications-actions";
 import { dateToTwoDigitsString } from "../../libs/time-utils";
 
 const INITIAL_VISIBLE_COLUMNS = [
+    "isFavorite",
     "company",
     "title",
     "status",
@@ -143,6 +144,16 @@ export default function ApplicationsDashboard() {
             const cellValue = application[columnKey as keyof Application];
 
             switch (columnKey) {
+                case "isFavorite":
+                    return (
+                        <div>
+                            {application.isFavorite ? (
+                                <MdFavorite className="text-red-500 text-lg" />
+                            ) : (
+                                <MdFavoriteBorder className="text-light-200 dark:text-dark-200 text-lg" />
+                            )}
+                        </div>
+                    );
                 case "company":
                     return (
                         <div className="flex flex-col">
@@ -408,15 +419,15 @@ export default function ApplicationsDashboard() {
             aria-label="Applications Dashboard"
             bottomContent={bottomContent}
             bottomContentPlacement="outside"
-            checkboxesProps={{
-                classNames: {
-                    wrapper:
-                        "after:bg-foreground after:text-background text-background",
-                },
-            }}
+            // checkboxesProps={{
+            //     classNames: {
+            //         wrapper:
+            //             "after:bg-foreground after:text-background text-background",
+            //     },
+            // }}
             classNames={classNames}
             selectedKeys={selectedKeys}
-            selectionMode="multiple"
+            // selectionMode="multiple"
             sortDescriptor={sortDescriptor}
             topContent={topContent}
             topContentPlacement="outside"
