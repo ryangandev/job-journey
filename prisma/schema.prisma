@@ -13,9 +13,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum JobType {
+enum JobSetting {
   on_site
   remote
+  hybrid
+}
+
+enum JobType {
+  full_time
+  part_time
+  contract
+  freelance
+}
+
+enum JobLevel {
+  intern
+  entry
+  junior
+  associate
+  mid
+  mid_senior
+  senior
+  lead
+  manager
+  director
+  executive
 }
 
 enum JobStatus {
@@ -27,20 +49,23 @@ enum JobStatus {
 }
 
 model Application {
-  id               String    @id @default(uuid())
+  id               String     @id @default(uuid())
   company          String
   title            String
   location         String
-  type             JobType
+  setting          JobSetting @default(on_site)
+  type             JobType    @default(full_time)
+  level            JobLevel   @default(entry)
   status           JobStatus
   isFavorite       Boolean
-  link             String
   replied          Boolean
   interviewAquired Boolean
+  appliedAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  salary           String     @default("N/A")
+  link             String
   applicationQA    Json[]
-  updates          String[]
-  appliedAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  updates          Json[]
 
   @@map("applications")
 }

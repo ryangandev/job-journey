@@ -1,4 +1,19 @@
-type JobType = "on_site" | "remote";
+type JobSetting = "on_site" | "remote" | "hybrid";
+
+type JobType = "full_time" | "part_time" | "contract" | "freelance";
+
+type JobLevel =
+    | "intern"
+    | "entry"
+    | "junior"
+    | "associate"
+    | "mid"
+    | "mid_senior"
+    | "senior"
+    | "lead"
+    | "manager"
+    | "director"
+    | "executive";
 
 type JobStatus =
     | "applied"
@@ -12,12 +27,19 @@ interface QA {
     answer: string;
 }
 
+interface Update {
+    date: Date;
+    content: string;
+}
+
 interface Application {
     id: string;
     company: string;
     title: string;
     location: string;
+    setting: JobSetting;
     type: JobType;
+    level: JobLevel;
     status: JobStatus;
     isFavorite: boolean;
     replied: boolean;
@@ -27,9 +49,10 @@ interface Application {
 }
 
 interface ApplicationDetail extends Application {
+    salary: string;
     link: string;
     applicationQA: readonly QA[];
-    updates: readonly string[];
+    updates: readonly Update[];
 }
 
 export type { Application, ApplicationDetail, JobStatus, JobType, QA };

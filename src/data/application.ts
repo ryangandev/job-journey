@@ -88,10 +88,39 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
     ghosted: "default",
 };
 
-const jobTypeMap: Record<string, string> = {
-    on_site: "on-site",
-    remote: "remote",
+const jobSettingMap: Record<string, string> = {
+    on_site: "On-site",
+    remote: "Remote",
+    hybrid: "Hybrid",
 };
 
-export { columns, statusOptions, statusColorMap, jobTypeMap };
+const jobTypeMap: Record<string, string> = {
+    full_time: "Full-time",
+    part_time: "Part-time",
+    contract: "Contract",
+    freelance: "Freelance",
+};
+
+const jobLevelMap: Record<string, string> = {
+    intern: "Intern",
+    entry: "Entry Level",
+    junior: "Junior",
+    associate: "Associate",
+    mid: "Mid Level",
+    mid_senior: "Mid-Senior Level",
+    senior: "Senior Level",
+    lead: "Lead",
+    manager: "Manager",
+    director: "Director",
+    executive: "Executive",
+};
+
+export {
+    columns,
+    statusOptions,
+    statusColorMap,
+    jobSettingMap,
+    jobTypeMap,
+    jobLevelMap,
+};
 export type { Column };
