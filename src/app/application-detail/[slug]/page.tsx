@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ApplicationDetail } from "../../../models/application";
 import { getSpecificApplicationDetailByIdAction } from "../../../actions/applications-actions";
-import { dateToTwoDigitsString } from "../../../libs/time-utils";
+import { dateToTwoDigitsString, timeElapsed } from "../../../libs/time-utils";
 import {
     Divider,
     Chip,
@@ -27,13 +27,15 @@ import {
 } from "@nextui-org/react";
 import FavoriteToggle from "../../../components/favorite-toggle";
 import {
+    jobSettingMap,
     jobTypeMap,
+    jobLevelMap,
     statusColorMap,
     statusOptions,
-} from "../../../data/applidations";
+} from "../../../data/application";
 import { capitalize } from "../../../libs/string-utils";
 import { MdUpdate, MdAddCircleOutline } from "react-icons/md";
-import { AnchorIcon, ChevronDownIcon, PlusIcon } from "../../../assets/svgs";
+import { AnchorIcon, PlusIcon } from "../../../assets/svgs";
 
 export default function Page({ params }: { params: { slug: string } }) {
     const { slug } = params;
@@ -181,6 +183,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                     Application Detail - {applicationDetail.company}
                 </BreadcrumbItem>
             </Breadcrumbs>
+
             <div className="flex flex-row space-x-4 justify-between items-center">
                 <h1 className="text-2xl font-semibold text-light-100 dark:text-dark-100">
                     {applicationDetail.title}
@@ -190,6 +193,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                     onToggle={handleToggleUpdate}
                 />
             </div>
+
             <div className="flex justify-between text-light-200 dark:text-dark-200">
                 <div className="flex items-center space-x-4">
                     <span className="text-lg font-medium">
@@ -207,25 +211,34 @@ export default function Page({ params }: { params: { slug: string } }) {
                     )}
                 </div>
             </div>
-            <div className="flex justify-between text-light-200 dark:text-dark-200">
-                <div className="flex items-center space-x-2">
-                    <span className="text-md capitalize">{}</span>
+
+            <div className="flex justify-between">
+                <div className="flex items-center space-x-4">
                     {renderChipContent(
-                        jobTypeMap[applicationDetail.type],
+                        jobSettingMap[applicationDetail.setting],
                         "success",
                     )}
+                    {renderChipContent(
+                        jobTypeMap[applicationDetail.type],
+                        "secondary",
+                    )}
+                    {renderChipContent(
+                        jobLevelMap[applicationDetail.level],
+                        "warning",
+                    )}
+                    {renderChipContent(applicationDetail.salary, "danger")}
                 </div>
-                <div>
-                    <div className="flex flex-row text-sm space-x-2">
-                        {renderDetailTitle("Last Updated:")}
-                        {renderHighlightString(
-                            dateToTwoDigitsString(applicationDetail.updatedAt),
-                        )}
-                    </div>
+                <div className="flex flex-row text-sm space-x-2">
+                    {renderDetailTitle("Last Updated:")}
+                    {renderHighlightString(
+                        dateToTwoDigitsString(applicationDetail.updatedAt),
+                    )}
                 </div>
             </div>
+
             <div className="flex flex-row space-x-4 items-center">
-                <Dropdown className="bg-background border-1 border-default-200">
+                {/* Status */}
+                <Dropdown>
                     <DropdownTrigger>
                         <Button
                             variant="bordered"
@@ -249,20 +262,71 @@ export default function Page({ params }: { params: { slug: string } }) {
                     </DropdownMenu>
                 </Dropdown>
                 <Divider className="h-5" orientation="vertical" />
-                <div className="flex flex-row space-x-4 bg-gray-300/30 dark:bg-gray-700/30 rounded-xl py-2 px-4">
-                    {renderDetailTitle("Replied?")}
-                    {renderHighlightString(
-                        applicationDetail.replied ? "Yes" : "No",
-                    )}
-                </div>
+                {/* Replied */}
+                <Dropdown>
+                    <DropdownTrigger>
+                        <Button
+                            variant="bordered"
+                            color={
+                                applicationDetail.replied
+                                    ? "warning"
+                                    : "default"
+                            }
+                        >
+                            {applicationDetail.replied ? "Replied" : "No Reply"}
+                        </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                        disallowEmptySelection
+                        aria-label="Replied Selection"
+                        closeOnSelect={true}
+                        selectedKeys={[
+                            applicationDetail.replied ? "Replied" : "No Reply",
+                        ]}
+                        selectionMode="single"
+                    >
+                        <DropdownItem key={"Replied"}>Replied</DropdownItem>
+                        <DropdownItem key={"No Reply"}>No Reply</DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
                 <Divider className="h-5" orientation="vertical" />
-                <div className="flex flex-row space-x-4 bg-gray-300/30 dark:bg-gray-700/30 rounded-xl py-2 px-4">
-                    {renderDetailTitle("Interview Aquired?")}
-                    {renderHighlightString(
-                        applicationDetail.interviewAquired ? "Yes" : "No",
-                    )}
-                </div>
+                {/* Interview Aquired */}
+                <Dropdown>
+                    <DropdownTrigger>
+                        <Button
+                            variant="bordered"
+                            color={
+                                applicationDetail.interviewAquired
+                                    ? "success"
+                                    : "default"
+                            }
+                        >
+                            {applicationDetail.interviewAquired
+                                ? "Interview Aquired"
+                                : "No Interview"}
+                        </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                        disallowEmptySelection
+                        aria-label="Interview Aquired Selection"
+                        closeOnSelect={true}
+                        selectedKeys={[
+                            applicationDetail.interviewAquired
+                                ? "Interview Aquired"
+                                : "No Interview",
+                        ]}
+                        selectionMode="single"
+                    >
+                        <DropdownItem key={"Interview Aquired"}>
+                            Interview Aquired
+                        </DropdownItem>
+                        <DropdownItem key={"No Interview"}>
+                            No Interview
+                        </DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
                 <Divider className="h-5" orientation="vertical" />
+                {/* Job Link */}
                 <NextUiLink
                     className="pl-4"
                     isExternal
@@ -270,6 +334,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                     showAnchorIcon
                     anchorIcon={<AnchorIcon width={20} className="mx-2" />}
                     href={applicationDetail.link}
+                    isDisabled={!applicationDetail.link}
                 >
                     Job Link
                 </NextUiLink>
@@ -301,7 +366,13 @@ export default function Page({ params }: { params: { slug: string } }) {
                         <li className="flex flex-col" key={index}>
                             <div className="flex flex-row items-center space-x-2">
                                 <MdUpdate className="text-2xl" />
-                                <span className="text-sm">{update}</span>
+                                <span className="text-sm ">
+                                    {renderHighlightString(update.content)}
+                                </span>
+                                {renderHighlightString("·")}
+                                <span className="text-sm text-light-400 dark:text-dark-400">
+                                    {timeElapsed(update.date)}
+                                </span>
                             </div>
                             <Divider
                                 className="h-4 ml-3 my-1"

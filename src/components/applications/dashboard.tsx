@@ -18,14 +18,17 @@ import {
     Selection,
     SortDescriptor,
     Spinner,
+    Divider,
 } from "@nextui-org/react";
 import { useState, useMemo, useCallback, Key, useEffect } from "react";
 import {
     columns,
+    jobLevelMap,
+    jobSettingMap,
     jobTypeMap,
     statusColorMap,
     statusOptions,
-} from "../../data/applidations";
+} from "../../data/application";
 import { Application } from "../../models/application";
 import {
     ChevronDownIcon,
@@ -64,7 +67,7 @@ export default function ApplicationsDashboard() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
         column: "appliedAt",
-        direction: "ascending",
+        direction: "descending",
     });
     const [page, setPage] = useState(1);
     const router = useRouter();
@@ -171,9 +174,25 @@ export default function ApplicationsDashboard() {
                             <p className="text-bold text-small capitalize">
                                 {cellValue as string}
                             </p>
-                            <p className="text-bold text-tiny capitalize text-default-500">
-                                {jobTypeMap[application.type]}
-                            </p>
+                            <div className="flex flex-row items-center space-x-2">
+                                <span className="text-bold text-tiny caspanitalize text-default-500">
+                                    {jobSettingMap[application.setting]}
+                                </span>
+                                <Divider
+                                    className="h-2"
+                                    orientation="vertical"
+                                />
+                                <span className="text-bold text-tiny capitalize text-default-500">
+                                    {jobTypeMap[application.type]}
+                                </span>
+                                <Divider
+                                    className="h-2"
+                                    orientation="vertical"
+                                />
+                                <span className="text-bold text-tiny capitalize text-default-500">
+                                    {jobLevelMap[application.level]}
+                                </span>
+                            </div>
                         </div>
                     );
                 case "status":
@@ -378,11 +397,11 @@ export default function ApplicationsDashboard() {
                     variant="light"
                     onChange={setPage}
                 />
-                <span className="text-small text-default-400">
+                {/* <span className="text-small text-default-400">
                     {selectedKeys === "all"
                         ? "All items selected"
                         : `${selectedKeys.size} of ${items.length} selected`}
-                </span>
+                </span> */}
             </div>
         );
     }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
@@ -396,17 +415,17 @@ export default function ApplicationsDashboard() {
                 "border-b",
                 "border-divider",
             ],
-            // td: [
-            //     // changing the rows border radius
-            //     // first
-            //     "group-data-[first=true]:first:before:rounded-none",
-            //     "group-data-[first=true]:last:before:rounded-none",
-            //     // middle
-            //     "group-data-[middle=true]:before:rounded-none",
-            //     // last
-            //     "group-data-[last=true]:first:before:rounded-none",
-            //     "group-data-[last=true]:last:before:rounded-none",
-            // ],
+            td: [
+                // changing the rows border radius
+                // first
+                "group-data-[first=true]:first:before:rounded-none",
+                "group-data-[first=true]:last:before:rounded-none",
+                // middle
+                "group-data-[middle=true]:before:rounded-none",
+                // last
+                "group-data-[last=true]:first:before:rounded-none",
+                "group-data-[last=true]:last:before:rounded-none",
+            ],
         }),
         [],
     );
@@ -414,7 +433,7 @@ export default function ApplicationsDashboard() {
     return (
         <Table
             isCompact={false}
-            // removeWrapper
+            removeWrapper
             fullWidth
             aria-label="Applications Dashboard"
             bottomContent={bottomContent}
