@@ -20,15 +20,15 @@ const columns: Column[] = [
         sortable: true,
     },
     {
-        name: "COMPANY",
-        uid: "company",
-        width: 175,
-        sortable: true,
-    },
-    {
         name: "TITLE",
         uid: "title",
         width: 300,
+        sortable: true,
+    },
+    {
+        name: "COMPANY",
+        uid: "company",
+        width: 175,
         sortable: true,
     },
     {

@@ -53,8 +53,8 @@ const UpdateSchema = z.object({
 
 const ApplicationDetailSchema = z.object({
     id: z.string(),
-    company: z.string(),
     title: z.string(),
+    company: z.string(),
     location: z.string(),
     setting: JobSettingSchema,
     type: JobTypeSchema,

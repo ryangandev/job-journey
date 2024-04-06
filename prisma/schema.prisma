@@ -50,16 +50,16 @@ enum JobStatus {
 
 model Application {
   id               String     @id @default(uuid())
-  company          String
   title            String
+  company          String
   location         String
   setting          JobSetting @default(on_site)
   type             JobType    @default(full_time)
   level            JobLevel   @default(entry)
-  status           JobStatus
-  isFavorite       Boolean
-  replied          Boolean
-  interviewAquired Boolean
+  status           JobStatus  @default(applied)
+  isFavorite       Boolean    @default(false)
+  replied          Boolean    @default(false)
+  interviewAquired Boolean    @default(false)
   appliedAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
   salary           String     @default("N/A")

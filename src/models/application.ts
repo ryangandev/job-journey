@@ -34,8 +34,8 @@ interface Update {
 
 interface Application {
     id: string;
-    company: string;
     title: string;
+    company: string;
     location: string;
     setting: JobSetting;
     type: JobType;
