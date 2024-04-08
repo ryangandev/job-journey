@@ -55,4 +55,13 @@ interface ApplicationDetail extends Application {
     updates: readonly Update[];
 }
 
-export type { Application, ApplicationDetail, JobStatus, JobType, QA };
+export type {
+    Application,
+    ApplicationDetail,
+    JobSetting,
+    JobType,
+    JobLevel,
+    JobStatus,
+    QA,
+    Update,
+};
