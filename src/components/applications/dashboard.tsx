@@ -157,17 +157,6 @@ export default function ApplicationsDashboard() {
                             )}
                         </div>
                     );
-                case "company":
-                    return (
-                        <div className="flex flex-col">
-                            <p className="text-bold text-small capitalize">
-                                {cellValue as string}
-                            </p>
-                            <p className="text-bold text-tiny capitalize text-default-500">
-                                {application.location}
-                            </p>
-                        </div>
-                    );
                 case "title":
                     return (
                         <div className="flex flex-col">
@@ -193,6 +182,17 @@ export default function ApplicationsDashboard() {
                                     {jobLevelMap[application.level]}
                                 </span>
                             </div>
+                        </div>
+                    );
+                case "company":
+                    return (
+                        <div className="flex flex-col">
+                            <p className="text-bold text-small capitalize">
+                                {cellValue as string}
+                            </p>
+                            <p className="text-bold text-tiny capitalize text-default-500">
+                                {application.location}
+                            </p>
                         </div>
                     );
                 case "status":
@@ -239,7 +239,7 @@ export default function ApplicationsDashboard() {
                 case "actions":
                     return (
                         <div className="relative flex justify-end items-center gap-2">
-                            <Dropdown className="bg-background border-1 border-default-200">
+                            <Dropdown>
                                 <DropdownTrigger>
                                     <Button
                                         isIconOnly
@@ -276,14 +276,14 @@ export default function ApplicationsDashboard() {
         [],
     );
 
-    const onRowsPerPageChange = useCallback(
+    const handleOnRowsPerPageChange = useCallback(
         (e: React.ChangeEvent<HTMLSelectElement>) => {
             setRowsPerPage(Number(e.target.value));
         },
         [],
     );
 
-    const onSearchChange = useCallback((value: string) => {
+    const handleOnSearchChange = useCallback((value: string) => {
         if (value) {
             setFilterValue(value);
             setPage(1);
@@ -310,7 +310,7 @@ export default function ApplicationsDashboard() {
                         value={filterValue}
                         variant="bordered"
                         onClear={() => setFilterValue("")}
-                        onValueChange={onSearchChange}
+                        onValueChange={handleOnSearchChange}
                     />
                     <div className="flex gap-3">
                         <Dropdown>
@@ -342,6 +342,7 @@ export default function ApplicationsDashboard() {
                         </Dropdown>
                         <Button
                             className="bg-foreground text-background"
+                            onPress={() => router.push("/add-new-application")}
                             endContent={
                                 <PlusIcon
                                     width={undefined}
@@ -362,7 +363,7 @@ export default function ApplicationsDashboard() {
                         Rows per page:
                         <select
                             className="bg-transparent outline-none text-default-400 text-small"
-                            onChange={onRowsPerPageChange}
+                            onChange={handleOnRowsPerPageChange}
                         >
                             <option value="20">20</option>
                             <option value="30">30</option>
@@ -376,8 +377,8 @@ export default function ApplicationsDashboard() {
         filterValue,
         statusFilter,
         visibleColumns,
-        onSearchChange,
-        onRowsPerPageChange,
+        handleOnSearchChange,
+        handleOnRowsPerPageChange,
         applications.length,
         hasSearchFilter,
     ]);
