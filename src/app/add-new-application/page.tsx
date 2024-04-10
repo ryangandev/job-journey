@@ -1,0 +1,344 @@
+"use client";
+
+import React, { FormEvent, useState } from "react";
+import {
+    Button,
+    Input,
+    DropdownTrigger,
+    Dropdown,
+    DropdownMenu,
+    DropdownItem,
+    Checkbox,
+    Progress,
+} from "@nextui-org/react";
+import {
+    applicationFormQuestions,
+    ApplicationForm,
+    ApplicationFormQuestion,
+    SelectQuestion,
+    CheckboxQuestion,
+    InputQuestion,
+} from "../../data/new-application-form";
+import { motion, AnimatePresence } from "framer-motion";
+import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
+import { FaCheck } from "react-icons/fa6";
+import { ChevronDownIcon } from "../../assets/svgs";
+import { jobLevelMap, jobSettingMap, jobTypeMap } from "../../data/application";
+
+export default function AddNewApplication() {
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [direction, setDirection] = useState(1); // 1: next, -1: previous
+    const [newApplicationForm, setNewApplicationForm] =
+        useState<ApplicationForm>({
+            title: "",
+            company: "",
+            location: "",
+            setting: "on_site",
+            type: "full_time",
+            level: "junior",
+            salary: "",
+            link: "",
+            updates: "",
+            isFavorite: false,
+        });
+
+    const variants = {
+        enter: (direction: number) => {
+            return {
+                x: direction > 0 ? 50 : -50,
+                opacity: 0,
+            };
+        },
+        center: {
+            zIndex: 1, // to make sure the current question is on top
+            x: 0,
+            opacity: 1,
+        },
+        exit: (direction: number) => {
+            return {
+                zIndex: 0, // to make sure the next question is on top
+                x: direction < 0 ? 50 : -50,
+                opacity: 0,
+            };
+        },
+    };
+
+    const transition = {
+        x: { type: "spring", stiffness: 250, damping: 30 },
+        opacity: { duration: 0.5 },
+    };
+
+    const handleOnPrevious = () => {
+        setCurrentQuestionIndex((prev) => prev - 1);
+        setDirection(-1);
+    };
+
+    const handleOnNext = () => {
+        setCurrentQuestionIndex((prev) => prev + 1);
+        setDirection(1);
+    };
+
+    const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        // 1. Check if current question is not the last
+        if (currentQuestionIndex !== applicationFormQuestions.length - 1) {
+            handleOnNext();
+            return; // Exit early
+        }
+
+        // 2. Check if all required fields are filled, jumped to the first unfilled question if not
+        const firstUnfilledIndex = applicationFormQuestions.findIndex(
+            (question) =>
+                question.required && !newApplicationForm[question.key],
+        );
+
+        if (firstUnfilledIndex !== -1) {
+            console.log(
+                "Please fill in all required fields before submitting." +
+                    firstUnfilledIndex,
+            );
+            setCurrentQuestionIndex(firstUnfilledIndex);
+            return; // Exit early
+        }
+
+        // 3. Submit the new application
+        // TODO: use the server action to add this new application
+        console.log("submitting new application", newApplicationForm);
+    };
+
+    const renderInputQuestion = (
+        key: InputQuestion,
+        placeholder: string,
+        required: boolean,
+    ) => {
+        return (
+            <Input
+                variant="underlined"
+                size="lg"
+                placeholder={placeholder}
+                autoFocus
+                isClearable
+                isRequired={required}
+                value={newApplicationForm[key]}
+                onValueChange={(value) =>
+                    setNewApplicationForm((prev) => ({
+                        ...prev,
+                        [key]: value,
+                    }))
+                }
+            />
+        );
+    };
+
+    const renderSelectQuestion = (key: SelectQuestion, options: string[]) => {
+        const typeMaps = {
+            setting: jobSettingMap,
+            type: jobTypeMap,
+            level: jobLevelMap,
+        };
+
+        const currentMap = typeMaps[key];
+
+        if (!currentMap || options.length === 0) {
+            return null;
+        }
+
+        return (
+            <Dropdown>
+                <DropdownTrigger>
+                    <Button
+                        size="md"
+                        endContent={<ChevronDownIcon />}
+                        variant="flat"
+                        color="warning"
+                    >
+                        {currentMap[newApplicationForm[key]]}
+                    </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                    variant="bordered"
+                    disallowEmptySelection
+                    aria-label={"Select " + key}
+                    closeOnSelect={true}
+                    selectedKeys={[newApplicationForm[key]]}
+                    selectionMode="single"
+                    onSelectionChange={(selectedKeys) => {
+                        const selectedKeysArray = Array.from(selectedKeys);
+                        setNewApplicationForm((prev) => ({
+                            ...prev,
+                            [key]: selectedKeysArray[0],
+                        }));
+                    }}
+                >
+                    {options.map((option) => (
+                        <DropdownItem key={option}>
+                            {currentMap[option]}
+                        </DropdownItem>
+                    ))}
+                </DropdownMenu>
+            </Dropdown>
+        );
+    };
+
+    const renderCheckboxQuestion = (
+        key: CheckboxQuestion,
+        placeholder: string,
+    ) => {
+        return (
+            <Checkbox
+                className="text-light-100 dark:text-dark-100 text-sm"
+                isSelected={newApplicationForm[key]}
+                size="lg"
+                color="danger"
+                onValueChange={(value) => {
+                    setNewApplicationForm((prev) => ({
+                        ...prev,
+                        [key]: value,
+                    }));
+                }}
+            >
+                {placeholder}
+            </Checkbox>
+        );
+    };
+
+    const renderQuestion = (
+        applicationFormQuestion: ApplicationFormQuestion,
+    ) => {
+        switch (applicationFormQuestion.type) {
+            case "input": {
+                const { key, placeholder, required } = applicationFormQuestion;
+                const inputQuestionComponent = renderInputQuestion(
+                    key as InputQuestion,
+                    placeholder ?? "",
+                    required,
+                );
+                return inputQuestionComponent;
+            }
+            case "select": {
+                const { key, options } = applicationFormQuestion;
+                const selectQuestionComponent = renderSelectQuestion(
+                    key as SelectQuestion,
+                    options ?? [],
+                );
+                return selectQuestionComponent;
+            }
+            case "checkbox": {
+                const { key, placeholder } = applicationFormQuestion;
+                const checkboxQuestionComponent = renderCheckboxQuestion(
+                    key as CheckboxQuestion,
+                    placeholder ?? "",
+                );
+                return checkboxQuestionComponent;
+            }
+            default:
+                return null;
+        }
+    };
+
+    return (
+        <AnimatePresence>
+            <main className="w-screen h-screen flex flex-col justify-center items-center space-y-10">
+                <motion.form
+                    className="max-w-[36rem] w-full flex flex-col space-y-4"
+                    onSubmit={handleOnSubmit}
+                    key={currentQuestionIndex}
+                    custom={direction}
+                    variants={variants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={transition}
+                >
+                    <span className="text-lg font-semibold text-light-100 dark:text-dark-100">
+                        {currentQuestionIndex + 1}.{" "}
+                        {
+                            applicationFormQuestions[currentQuestionIndex]
+                                .question
+                        }
+                        {applicationFormQuestions[currentQuestionIndex]
+                            .required && (
+                            <span className="text-red-500"> *</span>
+                        )}
+                    </span>
+                    <div className="h-12 flex items-center">
+                        {renderQuestion(
+                            applicationFormQuestions[currentQuestionIndex],
+                        )}
+                    </div>
+                    <div className="flex justify-end space-x-4">
+                        <Button
+                            size="md"
+                            radius="sm"
+                            variant="bordered"
+                            startContent={<IoMdArrowBack />}
+                            color="secondary"
+                            onClick={handleOnPrevious}
+                            isDisabled={currentQuestionIndex === 0}
+                        >
+                            Previous
+                        </Button>
+                        {currentQuestionIndex ===
+                        applicationFormQuestions.length - 1 ? (
+                            <Button
+                                size="md"
+                                radius="sm"
+                                variant="bordered"
+                                endContent={<FaCheck />}
+                                color="success"
+                                type="submit"
+                            >
+                                Submit
+                            </Button>
+                        ) : (
+                            <Button
+                                size="md"
+                                radius="sm"
+                                variant="bordered"
+                                endContent={<IoMdArrowForward />}
+                                color="primary"
+                                onClick={handleOnNext}
+                                isDisabled={
+                                    currentQuestionIndex ===
+                                    applicationFormQuestions.length - 1
+                                }
+                            >
+                                Next
+                            </Button>
+                        )}
+                    </div>
+                </motion.form>
+                <motion.div
+                    className="max-w-[36rem] w-full"
+                    variants={variants}
+                    custom={0} // direction
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={transition}
+                >
+                    <Progress
+                        size="sm"
+                        radius="md"
+                        classNames={{
+                            base: "max-w-[36rem]",
+                            track: "drop-shadow-md border border-default",
+                            indicator:
+                                "bg-gradient-to-r from-pink-500 to-yellow-500",
+                            label: "tracking-wider font-medium text-default-600",
+                            value: "text-foreground/60",
+                        }}
+                        label="Completion"
+                        value={
+                            ((currentQuestionIndex + 1) /
+                                applicationFormQuestions.length) *
+                            100
+                        }
+                        showValueLabel={true}
+                    />
+                </motion.div>
+            </main>
+        </AnimatePresence>
+    );
+}
