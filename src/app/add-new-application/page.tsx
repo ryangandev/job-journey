@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useState, useRef } from "react";
 import {
     Button,
     Input,
@@ -24,6 +24,7 @@ import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
 import { FaCheck } from "react-icons/fa6";
 import { ChevronDownIcon } from "../../assets/svgs";
 import { jobLevelMap, jobSettingMap, jobTypeMap } from "../../data/application";
+import toast from "react-hot-toast";
 
 export default function AddNewApplication() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -41,6 +42,8 @@ export default function AddNewApplication() {
             updates: "",
             isFavorite: false,
         });
+    const [showShakeAnimation, setShowShakeAnimation] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const variants = {
         enter: (direction: number) => {
@@ -63,6 +66,16 @@ export default function AddNewApplication() {
         },
     };
 
+    const shakeAnimationVariants = {
+        shake: {
+            x: [0, -10, 10, 0],
+            transition: { duration: 0.2, repeat: 1 },
+        },
+        static: {
+            x: 0,
+        },
+    };
+
     const transition = {
         x: { type: "spring", stiffness: 250, damping: 30 },
         opacity: { duration: 0.5 },
@@ -74,6 +87,21 @@ export default function AddNewApplication() {
     };
 
     const handleOnNext = () => {
+        if (
+            newApplicationForm[
+                applicationFormQuestions[currentQuestionIndex].key
+            ] === "" &&
+            applicationFormQuestions[currentQuestionIndex].required
+        ) {
+            toast.error("Please fill in the required field.", {
+                duration: 2000,
+            });
+            setShowShakeAnimation(true);
+            inputRef.current?.focus();
+            return;
+        }
+
+        // Move to the next question
         setCurrentQuestionIndex((prev) => prev + 1);
         setDirection(1);
     };
@@ -87,47 +115,37 @@ export default function AddNewApplication() {
             return; // Exit early
         }
 
-        // 2. Check if all required fields are filled, jumped to the first unfilled question if not
-        const firstUnfilledIndex = applicationFormQuestions.findIndex(
-            (question) =>
-                question.required && !newApplicationForm[question.key],
-        );
-
-        if (firstUnfilledIndex !== -1) {
-            console.log(
-                "Please fill in all required fields before submitting." +
-                    firstUnfilledIndex,
-            );
-            setCurrentQuestionIndex(firstUnfilledIndex);
-            return; // Exit early
-        }
-
-        // 3. Submit the new application
+        // 2. Submit the new application
         // TODO: use the server action to add this new application
         console.log("submitting new application", newApplicationForm);
+        toast.success("Application added successfully!");
     };
 
-    const renderInputQuestion = (
-        key: InputQuestion,
-        placeholder: string,
-        required: boolean,
-    ) => {
+    const renderInputQuestion = (key: InputQuestion, placeholder: string) => {
         return (
-            <Input
-                variant="underlined"
-                size="lg"
-                placeholder={placeholder}
-                autoFocus
-                isClearable
-                isRequired={required}
-                value={newApplicationForm[key]}
-                onValueChange={(value) =>
-                    setNewApplicationForm((prev) => ({
-                        ...prev,
-                        [key]: value,
-                    }))
-                }
-            />
+            <motion.div
+                className="w-full"
+                variants={shakeAnimationVariants}
+                animate={showShakeAnimation ? "shake" : "static"}
+                onAnimationComplete={() => setShowShakeAnimation(false)}
+            >
+                <Input
+                    variant="underlined"
+                    size="lg"
+                    color={showShakeAnimation ? "danger" : "default"}
+                    placeholder={placeholder}
+                    autoFocus
+                    isClearable
+                    ref={inputRef}
+                    value={newApplicationForm[key]}
+                    onValueChange={(value) =>
+                        setNewApplicationForm((prev) => ({
+                            ...prev,
+                            [key]: value,
+                        }))
+                    }
+                />
+            </motion.div>
         );
     };
 
@@ -212,7 +230,6 @@ export default function AddNewApplication() {
                 const inputQuestionComponent = renderInputQuestion(
                     key as InputQuestion,
                     placeholder ?? "",
-                    required,
                 );
                 return inputQuestionComponent;
             }
@@ -262,7 +279,7 @@ export default function AddNewApplication() {
                             <span className="text-red-500"> *</span>
                         )}
                     </span>
-                    <div className="h-12 flex items-center">
+                    <div className="h-16 flex items-center">
                         {renderQuestion(
                             applicationFormQuestions[currentQuestionIndex],
                         )}
