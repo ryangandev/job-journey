@@ -127,7 +127,20 @@ const applicationFormQuestions: ApplicationFormQuestion[] = [
     },
 ];
 
-export { applicationFormQuestions };
+const newApplicationFormTemplate: ApplicationForm = {
+    title: "",
+    company: "",
+    location: "",
+    setting: "on_site",
+    type: "full_time",
+    level: "junior",
+    salary: "",
+    link: "",
+    updates: "",
+    isFavorite: false,
+};
+
+export { applicationFormQuestions, newApplicationFormTemplate };
 export type {
     ApplicationForm,
     ApplicationFormQuestion,
