@@ -31,6 +31,11 @@ import toast from "react-hot-toast";
 import isEqual from "lodash/isEqual";
 import { addNewApplicationAction } from "../../actions/applications-actions";
 import { ApplicationFormSchema } from "../../constants/schema";
+import {
+    inputTransitionVariants,
+    shakeAnimationVariants,
+    inputTransition,
+} from "../../constants/framer-motion-variants-transitions";
 
 export default function AddNewApplication() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -41,42 +46,6 @@ export default function AddNewApplication() {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const isFormEdited = !isEqual(newApplicationForm, newApplicationFormData);
-
-    const variants = {
-        enter: (direction: number) => {
-            return {
-                x: direction > 0 ? 50 : -50,
-                opacity: 0,
-            };
-        },
-        center: {
-            zIndex: 1, // to make sure the current question is on top
-            x: 0,
-            opacity: 1,
-        },
-        exit: (direction: number) => {
-            return {
-                zIndex: 0, // to make sure the next question is on top
-                x: direction < 0 ? 50 : -50,
-                opacity: 0,
-            };
-        },
-    };
-
-    const shakeAnimationVariants = {
-        shake: {
-            x: [0, -10, 10, 0],
-            transition: { duration: 0.2, repeat: 1 },
-        },
-        static: {
-            x: 0,
-        },
-    };
-
-    const transition = {
-        x: { type: "spring", stiffness: 250, damping: 30 },
-        opacity: { duration: 0.5 },
-    };
 
     const handleStartNew = () => {
         if (
@@ -149,7 +118,7 @@ export default function AddNewApplication() {
             return;
         }
 
-        // 3. Show success message when no errors
+        // 4. Show success message when no errors
         toast.success("Application added successfully!");
     };
 
@@ -258,7 +227,7 @@ export default function AddNewApplication() {
     ) => {
         switch (applicationFormQuestion.type) {
             case "input": {
-                const { key, placeholder, required } = applicationFormQuestion;
+                const { key, placeholder } = applicationFormQuestion;
                 const inputQuestionComponent = renderInputQuestion(
                     key as InputQuestion,
                     placeholder ?? "",
@@ -313,11 +282,11 @@ export default function AddNewApplication() {
                         onSubmit={handleOnSubmit}
                         key={currentQuestionIndex}
                         custom={direction}
-                        variants={variants}
+                        variants={inputTransitionVariants}
                         initial="enter"
                         animate="center"
                         exit="exit"
-                        transition={transition}
+                        transition={inputTransition}
                     >
                         <span className="text-lg font-semibold text-light-100 dark:text-dark-100">
                             {currentQuestionIndex + 1}.{" "}
@@ -396,12 +365,12 @@ export default function AddNewApplication() {
                     {/* Progress Section */}
                     <motion.div
                         className="w-full"
-                        variants={variants}
+                        variants={inputTransitionVariants}
                         custom={0} // direction
                         initial="enter"
                         animate="center"
                         exit="exit"
-                        transition={transition}
+                        transition={inputTransition}
                     >
                         <Progress
                             size="sm"
