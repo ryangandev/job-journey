@@ -127,7 +127,7 @@ const applicationFormQuestions: ApplicationFormQuestion[] = [
     },
 ];
 
-const newApplicationFormTemplate: ApplicationForm = {
+const newApplicationFormData: ApplicationForm = {
     title: "",
     company: "",
     location: "",
@@ -140,7 +140,7 @@ const newApplicationFormTemplate: ApplicationForm = {
     isFavorite: false,
 };
 
-export { applicationFormQuestions, newApplicationFormTemplate };
+export { applicationFormQuestions, newApplicationFormData };
 export type {
     ApplicationForm,
     ApplicationFormQuestion,

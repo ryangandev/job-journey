@@ -20,7 +20,7 @@ import {
     SelectQuestion,
     CheckboxQuestion,
     InputQuestion,
-    newApplicationFormTemplate,
+    newApplicationFormData,
 } from "../../data/new-application-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoMdRefresh, IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
@@ -29,19 +29,18 @@ import { ChevronDownIcon } from "../../assets/svgs";
 import { jobLevelMap, jobSettingMap, jobTypeMap } from "../../data/application";
 import toast from "react-hot-toast";
 import isEqual from "lodash/isEqual";
+import { addNewApplicationAction } from "../../actions/applications-actions";
+import { ApplicationFormSchema } from "../../constants/schema";
 
 export default function AddNewApplication() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [direction, setDirection] = useState(1); // 1: next, -1: previous
     const [newApplicationForm, setNewApplicationForm] =
-        useState<ApplicationForm>(newApplicationFormTemplate);
+        useState<ApplicationForm>(newApplicationFormData);
     const [showShakeAnimation, setShowShakeAnimation] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const isFormEdited = !isEqual(
-        newApplicationForm,
-        newApplicationFormTemplate,
-    );
+    const isFormEdited = !isEqual(newApplicationForm, newApplicationFormData);
 
     const variants = {
         enter: (direction: number) => {
@@ -89,7 +88,7 @@ export default function AddNewApplication() {
             return;
         }
 
-        setNewApplicationForm(newApplicationFormTemplate);
+        setNewApplicationForm(newApplicationFormData);
         setCurrentQuestionIndex(0);
         setDirection(0);
     };
@@ -119,7 +118,7 @@ export default function AddNewApplication() {
         setDirection(1);
     };
 
-    const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const handleOnSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         // 1. Check if current question is not the last
@@ -128,9 +127,29 @@ export default function AddNewApplication() {
             return; // Exit early
         }
 
-        // 2. Submit the new application
-        // TODO: use the server action to add this new application
-        console.log("submitting new application", newApplicationForm);
+        // 2. Client-side validation
+        const result = ApplicationFormSchema.safeParse(newApplicationForm);
+
+        if (!result.success) {
+            let errorMessages = "";
+
+            result.error.issues.forEach((issue) => {
+                errorMessages += issue.path[0] + ": " + issue.message + ".\n";
+            });
+
+            toast.error("Client side validation: " + errorMessages);
+            return;
+        }
+
+        // 3. Submit the new application
+        const response = await addNewApplicationAction(newApplicationForm);
+
+        if (response?.error) {
+            toast.error(response.error);
+            return;
+        }
+
+        // 3. Show success message when no errors
         toast.success("Application added successfully!");
     };
 

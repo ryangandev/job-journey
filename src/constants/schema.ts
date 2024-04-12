@@ -71,4 +71,22 @@ const ApplicationDetailSchema = z.object({
     updates: z.array(UpdateSchema),
 });
 
-export { ApplicationDetailSchema, QASchema };
+const ApplicationFormSchema = z.object({
+    title: z.string().trim().min(1).max(40),
+    company: z.string().trim().min(1).max(40),
+    location: z.string().trim().min(1).max(40),
+    setting: JobSettingSchema,
+    type: JobTypeSchema,
+    level: JobLevelSchema,
+    salary: z.string().trim().max(40),
+    link: z.string().trim().min(1).max(4000),
+    updates: z.string().trim().max(4000),
+    isFavorite: z.boolean(),
+});
+
+export {
+    QASchema,
+    UpdateSchema,
+    ApplicationDetailSchema,
+    ApplicationFormSchema,
+};

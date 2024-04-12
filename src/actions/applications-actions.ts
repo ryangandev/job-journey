@@ -2,7 +2,11 @@
 
 import { prisma } from "../libs/db";
 import { revalidatePath } from "next/cache";
-import { ApplicationDetailSchema } from "../constants/schema";
+import { redirect } from "next/navigation";
+import {
+    ApplicationDetailSchema,
+    ApplicationFormSchema,
+} from "../constants/schema";
 
 async function getApplicationsListAction() {
     const applications = await prisma.application.findMany({
@@ -53,4 +57,53 @@ async function getSpecificApplicationDetailByIdAction(id: string) {
     return parsedApplicationDetail.data;
 }
 
-export { getApplicationsListAction, getSpecificApplicationDetailByIdAction };
+async function addNewApplicationAction(newApplicationForm: unknown) {
+    // 1. Server-side validation
+    const result = ApplicationFormSchema.safeParse(newApplicationForm);
+    if (!result.success) {
+        let errorMessages = "";
+
+        result.error.issues.forEach((issue) => {
+            errorMessages += issue.path[0] + ": " + issue.message + ".\n";
+        });
+
+        return {
+            error: errorMessages,
+        };
+    }
+
+    // 2. Add the new application to the database if the form data is valid
+    const validatedFormData = result.data;
+    try {
+        await prisma.application.create({
+            data: {
+                title: validatedFormData.title,
+                company: validatedFormData.company,
+                location: validatedFormData.location,
+                setting: validatedFormData.setting,
+                type: validatedFormData.type,
+                level: validatedFormData.level,
+                isFavorite: validatedFormData.isFavorite,
+                salary: validatedFormData.salary,
+                link: validatedFormData.link,
+                updates: [
+                    { content: validatedFormData.updates, date: new Date() },
+                ],
+            },
+        });
+    } catch (dbError) {
+        console.log("Database operation failed:", dbError);
+        return {
+            error: "Failed to add new application.",
+        };
+    }
+
+    // 3. Redirect to dashboard
+    redirect("/");
+}
+
+export {
+    getApplicationsListAction,
+    getSpecificApplicationDetailByIdAction,
+    addNewApplicationAction,
+};
