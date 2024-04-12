@@ -40,7 +40,7 @@ import { FaCheck } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { useRouter } from "next/navigation";
-import { getApplicationsListAction } from "../../actions/applications-actions";
+import { deleteApplicationByIdAction } from "../../actions/applications-actions";
 import { dateToTwoDigitsString } from "../../libs/time-utils";
 import toast from "react-hot-toast";
 
@@ -56,7 +56,11 @@ const INITIAL_VISIBLE_COLUMNS = [
     "actions",
 ];
 
-export default function ApplicationsDashboard() {
+export default function ApplicationsDashboard({
+    applicationsData,
+}: {
+    applicationsData: Application[] | { error: string };
+}) {
     const [applications, setApplications] = useState<Application[]>([]);
     const [loading, setLoading] = useState(true);
     const [filterValue, setFilterValue] = useState("");
@@ -74,19 +78,15 @@ export default function ApplicationsDashboard() {
     const router = useRouter();
 
     useEffect(() => {
-        const fetchApplications = async () => {
-            const response = await getApplicationsListAction();
-            if ("error" in response) {
-                toast.error(response.error);
-                return;
-            }
-
-            setApplications(response);
+        if ("error" in applicationsData) {
+            toast.error(applicationsData.error);
+            setApplications([]);
             setLoading(false);
-        };
-
-        fetchApplications();
-    }, []);
+        } else {
+            setApplications(applicationsData);
+            setLoading(false);
+        }
+    }, [applicationsData]);
 
     const pages = Math.ceil(applications.length / rowsPerPage);
 
@@ -139,6 +139,27 @@ export default function ApplicationsDashboard() {
             return sortDescriptor.direction === "ascending" ? cmp : -cmp;
         });
     }, [sortDescriptor, items]);
+
+    const handleViewApplicationDetail = useCallback(
+        (id: string) => {
+            router.push(`/application-detail/${id}`);
+        },
+        [router],
+    );
+
+    const handleDeleteApplication = useCallback(
+        async (id: string) => {
+            const response = await deleteApplicationByIdAction(id);
+            if (response.error) {
+                toast.error(response.error);
+            }
+
+            if (response.message) {
+                toast.success(response.message);
+            }
+        },
+        [router],
+    );
 
     const renderBooleanCell = useCallback((value: boolean) => {
         return value ? (
@@ -262,15 +283,23 @@ export default function ApplicationsDashboard() {
                                 </DropdownTrigger>
                                 <DropdownMenu aria-label="Actions Menu">
                                     <DropdownItem
-                                        onClick={() => {
-                                            router.push(
-                                                `/application-detail/${application.id}`,
-                                            );
-                                        }}
+                                        onPress={() =>
+                                            handleViewApplicationDetail(
+                                                application.id,
+                                            )
+                                        }
                                     >
                                         View
                                     </DropdownItem>
-                                    <DropdownItem>Delete</DropdownItem>
+                                    <DropdownItem
+                                        onPress={() => {
+                                            handleDeleteApplication(
+                                                application.id,
+                                            );
+                                        }}
+                                    >
+                                        Delete
+                                    </DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
                         </div>

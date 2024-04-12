@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "../libs/db";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
@@ -121,8 +122,33 @@ async function addNewApplicationAction(newApplicationForm: unknown) {
     redirect("/");
 }
 
+async function deleteApplicationByIdAction(id: string) {
+    try {
+        await prisma.application.delete({ where: { id } });
+    } catch (error) {
+        if (
+            error instanceof PrismaClientKnownRequestError &&
+            error.code === "P2025"
+        ) {
+            console.log(`Application with id ${id} not found.`);
+            return {
+                error: `Application not found.`,
+            };
+        }
+
+        console.log("Error:", error);
+        return {
+            error: "There was an error deleting the application.",
+        };
+    }
+
+    revalidatePath("/");
+    return { message: "Application deleted successfully." };
+}
+
 export {
     getApplicationsListAction,
     getSpecificApplicationDetailByIdAction,
     addNewApplicationAction,
+    deleteApplicationByIdAction,
 };

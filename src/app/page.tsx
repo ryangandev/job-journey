@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { getApplicationsListAction } from "../actions/applications-actions";
 
 // Problem:
 // Due to this line in dashboard.tsx: selectionMode="multiple" on the nextui table component causing this error:
@@ -16,9 +17,11 @@ const ApplicationsDashboard = dynamic(
 );
 
 export default async function Home() {
+    const applications = await getApplicationsListAction();
+
     return (
         <main className="pt-16 pb-10 px-4">
-            <ApplicationsDashboard />
+            <ApplicationsDashboard applicationsData={applications} />
         </main>
     );
 }
