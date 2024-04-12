@@ -67,7 +67,6 @@ const ApplicationDetailSchema = z.object({
     appliedAt: z.date(),
     updatedAt: z.date(),
     link: z.string(),
-    applicationQA: z.array(QASchema),
     updates: z.array(UpdateSchema),
 });
 

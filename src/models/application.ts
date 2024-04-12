@@ -51,7 +51,6 @@ interface Application {
 interface ApplicationDetail extends Application {
     salary: string;
     link: string;
-    applicationQA: readonly QA[];
     updates: readonly Update[];
 }
 

@@ -64,7 +64,6 @@ model Application {
   updatedAt        DateTime   @updatedAt
   salary           String     @default("N/A") @db.VarChar(40)
   link             String     @default("N/A") @db.VarChar(4000)
-  applicationQA    Json[]
   updates          Json[]
 
   @@map("applications")

@@ -76,102 +76,7 @@ export default function Page({ params }: { params: { slug: string } }) {
         );
     };
 
-    const renderApplicationQA = (question: string, answer: string) => {
-        return (
-            <>
-                <Button
-                    onPress={onOpen}
-                    size="lg"
-                    color="default"
-                    variant="flat"
-                    className="w-full font-medium text-lg text-light-200 dark:text-dark-200"
-                >
-                    Q: {question}
-                </Button>
-                <Modal
-                    isOpen={isOpen}
-                    onOpenChange={onOpenChange}
-                    scrollBehavior="inside"
-                    size="2xl"
-                    backdrop="blur"
-                    motionProps={{
-                        variants: {
-                            enter: {
-                                y: 0,
-                                opacity: 1,
-                                transition: {
-                                    duration: 0.3,
-                                    ease: "easeOut",
-                                },
-                            },
-                            exit: {
-                                y: -20,
-                                opacity: 0,
-                                transition: {
-                                    duration: 0.2,
-                                    ease: "easeIn",
-                                },
-                            },
-                        },
-                    }}
-                >
-                    <ModalContent>
-                        {(onClose) => (
-                            <>
-                                <ModalHeader className="font-semibold">
-                                    <Textarea
-                                        autoFocus
-                                        label="Question"
-                                        labelPlacement="outside"
-                                        variant="bordered"
-                                        value={question}
-                                        size="lg"
-                                        maxRows={1}
-                                        classNames={{
-                                            label: "text-lg",
-                                        }}
-                                    />
-                                </ModalHeader>
-                                <ModalBody className="font-semibold">
-                                    <Textarea
-                                        label="Answer"
-                                        labelPlacement="outside"
-                                        variant="bordered"
-                                        value={answer}
-                                        size="lg"
-                                        maxRows={30}
-                                        classNames={{
-                                            label: "text-lg",
-                                        }}
-                                    />
-                                </ModalBody>
-                                <ModalFooter className="space-x-2">
-                                    <Button
-                                        onPress={onClose}
-                                        variant="light"
-                                        color="primary"
-                                    >
-                                        Close
-                                    </Button>
-                                    <Button
-                                        onPress={onClose}
-                                        variant="flat"
-                                        color="success"
-                                    >
-                                        Save
-                                    </Button>
-                                </ModalFooter>
-                            </>
-                        )}
-                    </ModalContent>
-                </Modal>
-            </>
-        );
-    };
-
     const handleToggleUpdate = () => {};
-
-    const handleAddNewQA = () => {};
 
     const handleAddNewUpdate = () => {};
 
@@ -361,34 +266,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                         </NextUiLink>
                     </div>
                     <Divider orientation="horizontal" />
-                    <div className="flex flex-col space-y-2">
-                        {renderDetailTitle("Application QAs")}
-                        <ul className="space-y-2">
-                            {applicationDetail.applicationQA.map(
-                                (qa, index) => (
-                                    <li key={index}>
-                                        {renderApplicationQA(
-                                            qa.question,
-                                            qa.answer,
-                                        )}
-                                    </li>
-                                ),
-                            )}
-                            <Button
-                                onPress={handleAddNewQA}
-                                size="lg"
-                                color="default"
-                                variant="flat"
-                                className="w-full font-medium text-lg"
-                            >
-                                <PlusIcon
-                                    width={undefined}
-                                    height={undefined}
-                                />
-                            </Button>
-                        </ul>
-                    </div>
-                    <div className="flex flex-col space-y-2">
+                    <div className="flex flex-col space-y-4">
                         {renderDetailTitle("Updates")}
                         <ul className="ml-3">
                             {applicationDetail.updates.map((update, index) => (
