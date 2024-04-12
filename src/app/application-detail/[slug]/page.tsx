@@ -36,6 +36,7 @@ import {
 import { capitalize } from "../../../libs/string-utils";
 import { MdUpdate, MdAddCircleOutline } from "react-icons/md";
 import { AnchorIcon, PlusIcon } from "../../../assets/svgs";
+import toast from "react-hot-toast";
 
 export default function Page({ params }: { params: { slug: string } }) {
     const { slug } = params;
@@ -47,6 +48,11 @@ export default function Page({ params }: { params: { slug: string } }) {
     useEffect(() => {
         const fetchApplicationDetail = async () => {
             const response = await getSpecificApplicationDetailByIdAction(slug);
+            if ("error" in response) {
+                toast.error(response.error);
+                return;
+            }
+
             setApplicationDetail(response);
         };
 

@@ -9,52 +9,71 @@ import {
 } from "../constants/schema";
 
 async function getApplicationsListAction() {
-    const applications = await prisma.application.findMany({
-        select: {
-            id: true,
-            company: true,
-            title: true,
-            location: true,
-            setting: true,
-            type: true,
-            level: true,
-            status: true,
-            isFavorite: true,
-            replied: true,
-            interviewAquired: true,
-            appliedAt: true,
-            updatedAt: true,
-        },
-    });
-    return applications;
+    try {
+        const applications = await prisma.application.findMany({
+            select: {
+                id: true,
+                company: true,
+                title: true,
+                location: true,
+                setting: true,
+                type: true,
+                level: true,
+                status: true,
+                isFavorite: true,
+                replied: true,
+                interviewAquired: true,
+                appliedAt: true,
+                updatedAt: true,
+            },
+        });
+        return applications;
+    } catch (error) {
+        console.log("Error:", error);
+        return {
+            error: "There was an error fetching the applications.",
+        };
+    }
 }
 
 async function getSpecificApplicationDetailByIdAction(id: string) {
-    const applicationDetail = await prisma.application.findUnique({
-        where: {
-            id: id,
-        },
-    });
+    try {
+        const applicationDetail = await prisma.application.findUnique({
+            where: {
+                id: id,
+            },
+        });
 
-    if (!applicationDetail) {
-        console.log(`Application with id ${id} not found.`);
-        return undefined;
+        if (!applicationDetail) {
+            console.log(`Application with id ${id} not found.`);
+            return {
+                error: `Application not found.`,
+            };
+        }
+
+        // Parse the application detail to ensure it matches the schema
+        // Using zod's safeParse to validate to avoid throwing an error
+        const parsedApplicationDetail =
+            ApplicationDetailSchema.safeParse(applicationDetail);
+
+        // If the application detail does not match the schema, log the error
+        if (!parsedApplicationDetail.success) {
+            console.log(
+                `Application with id ${id} does not match the schema.`,
+                parsedApplicationDetail.error,
+            );
+            return {
+                error: `Application has invalid data.`,
+            };
+        }
+
+        return parsedApplicationDetail.data;
+    } catch (error) {
+        console.log(error);
+        return {
+            error: "There was an error loading the application.",
+        };
     }
-
-    // Parse the application detail to ensure it matches the schema
-    // Using zod's safeParse to validate to avoid throwing an error
-    const parsedApplicationDetail =
-        ApplicationDetailSchema.safeParse(applicationDetail);
-
-    // If the application detail does not match the schema, log the error
-    if (!parsedApplicationDetail.success) {
-        console.log(
-            `Application with id ${id} does not match the schema.`,
-            parsedApplicationDetail.error,
-        );
-        return undefined;
-    }
-    return parsedApplicationDetail.data;
 }
 
 async function addNewApplicationAction(newApplicationForm: unknown) {

@@ -42,6 +42,7 @@ import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { getApplicationsListAction } from "../../actions/applications-actions";
 import { dateToTwoDigitsString } from "../../libs/time-utils";
+import toast from "react-hot-toast";
 
 const INITIAL_VISIBLE_COLUMNS = [
     "isFavorite",
@@ -74,8 +75,13 @@ export default function ApplicationsDashboard() {
 
     useEffect(() => {
         const fetchApplications = async () => {
-            const applications = await getApplicationsListAction();
-            setApplications(applications);
+            const response = await getApplicationsListAction();
+            if ("error" in response) {
+                toast.error(response.error);
+                return;
+            }
+
+            setApplications(response);
             setLoading(false);
         };
 
