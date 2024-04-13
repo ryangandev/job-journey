@@ -47,6 +47,18 @@ export default function AddNewApplication() {
 
     const isFormEdited = !isEqual(newApplicationForm, newApplicationFormData);
 
+    const handleNavigateToDashboard = () => {
+        if (
+            isFormEdited &&
+            !window.confirm(
+                "There are unsaved changes. Are you sure to leave this page?",
+            )
+        ) {
+            return;
+        }
+        window.location.href = "/";
+    };
+
     const handleStartNew = () => {
         if (
             isFormEdited &&
@@ -60,6 +72,7 @@ export default function AddNewApplication() {
         setNewApplicationForm(newApplicationFormData);
         setCurrentQuestionIndex(0);
         setDirection(0);
+        toast.success("Form has been reset.");
     };
 
     const handleOnPrevious = () => {
@@ -106,7 +119,7 @@ export default function AddNewApplication() {
                 errorMessages += issue.path[0] + ": " + issue.message + ".\n";
             });
 
-            toast.error("Client side validation: " + errorMessages);
+            toast.error(errorMessages);
             return;
         }
 
@@ -259,19 +272,7 @@ export default function AddNewApplication() {
         <AnimatePresence>
             <main className="w-screen h-screen flex flex-col items-center pt-10 pb-16">
                 <Breadcrumbs className="max-w-[36rem] w-full">
-                    <BreadcrumbItem
-                        onPress={() => {
-                            if (
-                                isFormEdited &&
-                                !window.confirm(
-                                    "There are unsaved changes. Are you sure to leave this page?",
-                                )
-                            ) {
-                                return;
-                            }
-                            window.location.href = "/";
-                        }}
-                    >
+                    <BreadcrumbItem onPress={handleNavigateToDashboard}>
                         Dashboard
                     </BreadcrumbItem>
                     <BreadcrumbItem>Add New Application</BreadcrumbItem>
@@ -308,24 +309,24 @@ export default function AddNewApplication() {
                         {/* Button Group */}
                         <div className="flex flex-row justify-between items-center">
                             <Button
-                                size="sm"
+                                size="md"
                                 radius="sm"
-                                variant="bordered"
+                                variant="flat"
                                 endContent={<IoMdRefresh />}
                                 color="danger"
+                                onPress={handleStartNew}
                                 isDisabled={!isFormEdited}
-                                onClick={handleStartNew}
                             >
                                 Start New
                             </Button>
                             <div className="flex items-center space-x-4">
                                 <Button
-                                    size="sm"
+                                    size="md"
                                     radius="sm"
-                                    variant="bordered"
+                                    variant="flat"
                                     startContent={<IoMdArrowBack />}
                                     color="secondary"
-                                    onClick={handleOnPrevious}
+                                    onPress={handleOnPrevious}
                                     isDisabled={currentQuestionIndex === 0}
                                 >
                                     Previous
@@ -333,9 +334,9 @@ export default function AddNewApplication() {
                                 {currentQuestionIndex ===
                                 applicationFormQuestions.length - 1 ? (
                                     <Button
-                                        size="sm"
+                                        size="md"
                                         radius="sm"
-                                        variant="bordered"
+                                        variant="flat"
                                         endContent={<FaCheck />}
                                         color="success"
                                         type="submit"
@@ -344,12 +345,12 @@ export default function AddNewApplication() {
                                     </Button>
                                 ) : (
                                     <Button
-                                        size="sm"
+                                        size="md"
                                         radius="sm"
-                                        variant="bordered"
+                                        variant="flat"
                                         endContent={<IoMdArrowForward />}
                                         color="primary"
-                                        onClick={handleOnNext}
+                                        onPress={handleOnNext}
                                         isDisabled={
                                             currentQuestionIndex ===
                                             applicationFormQuestions.length - 1

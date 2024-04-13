@@ -149,6 +149,14 @@ export default function ApplicationsDashboard({
 
     const handleDeleteApplication = useCallback(
         async (id: string) => {
+            if (
+                !window.confirm(
+                    "Are you sure you want to delete this application?",
+                )
+            ) {
+                return;
+            }
+
             const response = await deleteApplicationByIdAction(id);
             if (response.error) {
                 toast.error(response.error);

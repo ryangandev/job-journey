@@ -16,13 +16,6 @@ import {
     Button,
     Breadcrumbs,
     BreadcrumbItem,
-    useDisclosure,
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    Textarea,
-    ModalFooter,
     Spinner,
 } from "@nextui-org/react";
 import FavoriteToggle from "../../../components/favorite-toggle";
@@ -35,7 +28,7 @@ import {
 } from "../../../data/application";
 import { capitalize } from "../../../libs/string-utils";
 import { MdUpdate, MdAddCircleOutline } from "react-icons/md";
-import { AnchorIcon, PlusIcon } from "../../../assets/svgs";
+import { AnchorIcon } from "../../../assets/svgs";
 import toast from "react-hot-toast";
 
 export default function Page({ params }: { params: { slug: string } }) {
@@ -43,7 +36,6 @@ export default function Page({ params }: { params: { slug: string } }) {
     const [applicationDetail, setApplicationDetail] = useState<
         ApplicationDetail | undefined
     >();
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     useEffect(() => {
         const fetchApplicationDetail = async () => {
