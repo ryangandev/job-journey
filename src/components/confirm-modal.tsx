@@ -1,4 +1,6 @@
-import React, { cloneElement } from "react";
+"use client";
+
+import React from "react";
 import {
     Modal,
     ModalContent,
@@ -14,6 +16,7 @@ interface ConfirmModalProps {
     title: string;
     confirmQuestion: string;
     onConfirm: () => void;
+    onClose?: () => void;
 }
 
 export default function ConfirmModal({
@@ -22,6 +25,7 @@ export default function ConfirmModal({
     title,
     confirmQuestion,
     onConfirm,
+    onClose,
 }: ConfirmModalProps) {
     return (
         <Modal
@@ -29,6 +33,7 @@ export default function ConfirmModal({
             backdrop="blur"
             isOpen={isOpen}
             onOpenChange={onOpenChange}
+            onClose={onClose}
         >
             <ModalContent>
                 {(onClose) => (

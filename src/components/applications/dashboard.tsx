@@ -19,6 +19,7 @@ import {
     SortDescriptor,
     Spinner,
     Divider,
+    useDisclosure,
 } from "@nextui-org/react";
 import { useState, useMemo, useCallback, Key, useEffect } from "react";
 import {
@@ -43,6 +44,7 @@ import { useRouter } from "next/navigation";
 import { deleteApplicationByIdAction } from "../../actions/applications-actions";
 import { dateToTwoDigitsString } from "../../libs/time-utils";
 import toast from "react-hot-toast";
+import ConfirmModal from "../confirm-modal";
 
 const INITIAL_VISIBLE_COLUMNS = [
     "isFavorite",
@@ -76,6 +78,8 @@ export default function ApplicationsDashboard({
     });
     const [page, setPage] = useState(1);
     const router = useRouter();
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const [deleteId, setDeleteId] = useState("");
 
     useEffect(() => {
         if ("error" in applicationsData) {
@@ -147,27 +151,22 @@ export default function ApplicationsDashboard({
         [router],
     );
 
-    const handleDeleteApplication = useCallback(
-        async (id: string) => {
-            if (
-                !window.confirm(
-                    "Are you sure you want to delete this application?",
-                )
-            ) {
-                return;
-            }
+    const handleDeleteApplication = useCallback(async (id: string) => {
+        if (!id) return;
 
-            const response = await deleteApplicationByIdAction(id);
-            if (response.error) {
-                toast.error(response.error);
-            }
+        const response = await deleteApplicationByIdAction(id);
+        if (response.error) {
+            toast.error(response.error);
+        }
 
-            if (response.message) {
-                toast.success(response.message);
-            }
-        },
-        [router],
-    );
+        if (response.message) {
+            toast.success(response.message);
+        }
+    }, []);
+
+    const handleResetDeleteId = useCallback(() => {
+        setDeleteId("");
+    }, []);
 
     const renderBooleanCell = useCallback((value: boolean) => {
         return value ? (
@@ -289,7 +288,10 @@ export default function ApplicationsDashboard({
                                         />
                                     </Button>
                                 </DropdownTrigger>
-                                <DropdownMenu aria-label="Actions Menu">
+                                <DropdownMenu
+                                    closeOnSelect
+                                    aria-label="Actions Menu"
+                                >
                                     <DropdownItem
                                         onPress={() =>
                                             handleViewApplicationDetail(
@@ -301,9 +303,8 @@ export default function ApplicationsDashboard({
                                     </DropdownItem>
                                     <DropdownItem
                                         onPress={() => {
-                                            handleDeleteApplication(
-                                                application.id,
-                                            );
+                                            onOpen();
+                                            setDeleteId(application.id);
                                         }}
                                     >
                                         Delete
@@ -475,54 +476,80 @@ export default function ApplicationsDashboard({
     );
 
     return (
-        <Table
-            isCompact={false}
-            removeWrapper
-            fullWidth
-            aria-label="Applications Dashboard"
-            bottomContent={bottomContent}
-            bottomContentPlacement="outside"
-            // checkboxesProps={{
-            //     classNames: {
-            //         wrapper:
-            //             "after:bg-foreground after:text-background text-background",
-            //     },
-            // }}
-            classNames={classNames}
-            selectedKeys={selectedKeys}
-            // selectionMode="multiple"
-            sortDescriptor={sortDescriptor}
-            topContent={topContent}
-            topContentPlacement="outside"
-            onSelectionChange={setSelectedKeys}
-            onSortChange={setSortDescriptor}
-        >
-            <TableHeader columns={headerColumns}>
-                {(column) => (
-                    <TableColumn
-                        key={column.uid}
-                        align={column.uid === "actions" ? "center" : "start"}
-                        allowsSorting={column.sortable}
-                        width={column.width}
-                    >
-                        {column.name}
-                    </TableColumn>
-                )}
-            </TableHeader>
-            <TableBody
-                isLoading={loading}
-                loadingContent={<Spinner label="Loading job applications..." />}
-                emptyContent={loading ? "" : "There's no applications to show."}
-                items={sortedItems}
+        <>
+            <Table
+                isCompact={false}
+                removeWrapper
+                fullWidth
+                aria-label="Applications Dashboard"
+                bottomContent={bottomContent}
+                bottomContentPlacement="outside"
+                // checkboxesProps={{
+                //     classNames: {
+                //         wrapper:
+                //             "after:bg-foreground after:text-background text-background",
+                //     },
+                // }}
+                classNames={classNames}
+                selectedKeys={selectedKeys}
+                // selectionMode="multiple"
+                sortDescriptor={sortDescriptor}
+                topContent={topContent}
+                topContentPlacement="outside"
+                onSelectionChange={setSelectedKeys}
+                onSortChange={setSortDescriptor}
             >
-                {(item) => (
-                    <TableRow key={item.id}>
-                        {(columnKey) => (
-                            <TableCell>{renderCell(item, columnKey)}</TableCell>
-                        )}
-                    </TableRow>
-                )}
-            </TableBody>
-        </Table>
+                <TableHeader columns={headerColumns}>
+                    {(column) => (
+                        <TableColumn
+                            key={column.uid}
+                            align={
+                                column.uid === "actions" ? "center" : "start"
+                            }
+                            allowsSorting={column.sortable}
+                            width={column.width}
+                        >
+                            {column.name}
+                        </TableColumn>
+                    )}
+                </TableHeader>
+                <TableBody
+                    isLoading={loading}
+                    loadingContent={
+                        <Spinner label="Loading job applications..." />
+                    }
+                    emptyContent={
+                        loading ? "" : "There's no applications to show."
+                    }
+                    items={sortedItems}
+                >
+                    {(item) => (
+                        <TableRow key={item.id}>
+                            {(columnKey) => (
+                                <TableCell>
+                                    {renderCell(item, columnKey)}
+                                </TableCell>
+                            )}
+                        </TableRow>
+                    )}
+                </TableBody>
+            </Table>
+            <ConfirmModal
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                title="Delete Application"
+                confirmQuestion={
+                    "Are you sure you want to delete this application?"
+                }
+                onConfirm={() => {
+                    if (deleteId !== "") {
+                        handleDeleteApplication(deleteId);
+                    } else {
+                        toast.error("No application id found to delete.");
+                    }
+                }}
+                onClose={handleResetDeleteId}
+            />
+        </>
     );
 }
