@@ -45,6 +45,7 @@ import { deleteApplicationByIdAction } from "../../actions/applications-actions"
 import { dateToTwoDigitsString } from "../../libs/time-utils";
 import toast from "react-hot-toast";
 import ConfirmModal from "../confirm-modal";
+import Link from "next/link";
 
 const INITIAL_VISIBLE_COLUMNS = [
     "isFavorite",
@@ -194,10 +195,13 @@ export default function ApplicationsDashboard({
                 case "title":
                     return (
                         <div className="flex flex-col">
-                            <p className="text-bold text-small capitalize">
+                            <Link
+                                className="text-bold text-small capitalize"
+                                href={`/application-detail/${application.id}`}
+                            >
                                 {cellValue as string}
-                            </p>
-                            <div className="flex flex-row items-center space-x-2">
+                            </Link>
+                            <div className="flex flex-row items-center space-x-2 select-none">
                                 <span className="text-bold text-tiny caspanitalize text-default-500">
                                     {jobSettingMap[application.setting]}
                                 </span>
