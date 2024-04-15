@@ -3,6 +3,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import ThemeSwitch from "../components/theme-switch";
 import { Toaster } from "react-hot-toast";
+import NavBar from "../components/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,8 +23,9 @@ export default function RootLayout({
         // https://www.reddit.com/r/nextjs/comments/138smpm/how_to_fix_extra_attributes_from_the_server_error/
         // https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
         <html lang="en" suppressHydrationWarning>
-            <body className={`${inter.className} relative flex justify-center`}>
+            <body className={`${inter.className} relative`}>
                 <AppProviders>
+                    <NavBar />
                     {children}
                     <Toaster position="top-center" />
                     <ThemeSwitch />

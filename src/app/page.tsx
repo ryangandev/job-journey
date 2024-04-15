@@ -20,8 +20,10 @@ export default async function Home() {
     const applications = await getApplicationsListAction();
 
     return (
-        <main className="pt-16 pb-10 px-4">
-            <ApplicationsDashboard applicationsData={applications} />
+        <main className="w-screen py-4 px-4">
+            <div className="max-w-7xl w-full mx-auto">
+                <ApplicationsDashboard applicationsData={applications} />
+            </div>
         </main>
     );
 }

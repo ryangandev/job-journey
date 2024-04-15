@@ -79,7 +79,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     const handleAddNewUpdate = () => {};
 
     return (
-        <main className="w-screen flex justify-center py-10 px-4">
+        <main className="w-screen flex justify-center py-4 px-4">
             {applicationDetail ? (
                 <div className="max-w-[48rem] w-full flex flex-col space-y-6">
                     <Breadcrumbs>

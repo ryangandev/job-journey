@@ -290,7 +290,7 @@ export default function AddNewApplication() {
     return (
         <>
             <AnimatePresence>
-                <main className="w-screen h-screen flex flex-col items-center pt-10 pb-16">
+                <main className="w-screen h-screen flex flex-col items-center pt-4 pb-20">
                     <Breadcrumbs className="max-w-[36rem] w-full">
                         <BreadcrumbItem onPress={handleNavigateRequest}>
                             Dashboard
