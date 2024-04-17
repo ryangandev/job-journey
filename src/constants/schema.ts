@@ -83,9 +83,16 @@ const ApplicationFormSchema = z.object({
     isFavorite: z.boolean(),
 });
 
+const PartialApplicationDetailSchema = ApplicationDetailSchema.omit({
+    id: true,
+    appliedAt: true,
+    updatedAt: true,
+}).partial();
+
 export {
     QASchema,
     UpdateSchema,
     ApplicationDetailSchema,
     ApplicationFormSchema,
+    PartialApplicationDetailSchema,
 };

@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import {
     ApplicationDetailSchema,
     ApplicationFormSchema,
+    PartialApplicationDetailSchema,
 } from "../constants/schema";
 
 async function getApplicationsListAction() {
@@ -146,9 +147,49 @@ async function deleteApplicationByIdAction(id: string) {
     return { message: "Application deleted successfully." };
 }
 
+async function patchApplicationDetailAction(id: string, update: unknown) {
+    // 1. Validate the update
+    // 1.1 Validate the update using zod schema to ensure the update is on a valid field
+    const result = PartialApplicationDetailSchema.safeParse(update);
+    if (!result.success) {
+        console.log("Invalid update.", result.error);
+        const issue = result.error.issues[0];
+        return {
+            error:
+                "Invalid update. " + issue.path[0] + ": " + issue.message + ".",
+        };
+    }
+
+    // 1.2 Ensure that only one field is being updated at a time
+    const updateKeys = Object.keys(result.data);
+    if (updateKeys.length !== 1) {
+        console.log("You should update exactly one field at a time.");
+        return {
+            error: "You should update exactly one field at a time.",
+        };
+    }
+
+    // 2. Apply the update
+    try {
+        await prisma.application.update({
+            where: { id },
+            data: result.data,
+        });
+    } catch (error) {
+        console.log("Error:", error);
+        return {
+            error: "Failed to update application.",
+        };
+    }
+
+    revalidatePath(`/applications/${id}`);
+    return { message: `Successfully updated field [${updateKeys[0]}].` };
+}
+
 export {
     getApplicationsListAction,
     getSpecificApplicationDetailByIdAction,
     addNewApplicationAction,
     deleteApplicationByIdAction,
+    patchApplicationDetailAction,
 };
