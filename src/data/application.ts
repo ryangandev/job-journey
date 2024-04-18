@@ -73,12 +73,34 @@ const columns: Column[] = [
 ] as const; // const assertion to infer the type as readonly
 
 const statusOptions = [
-    { name: "Applied", uid: "applied" },
-    { name: "Interviewing", uid: "interviewing" },
-    { name: "Offered", uid: "offered" },
-    { name: "Rejected", uid: "rejected" },
-    { name: "Ghosted", uid: "ghosted" },
+    "applied",
+    "interviewing",
+    "offered",
+    "rejected",
+    "ghosted",
 ];
+
+const settingOptions = ["on_site", "remote", "hybrid"];
+
+const typeOptions = ["full_time", "part_time", "contract", "freelance"];
+
+const levelOptions = [
+    "intern",
+    "entry",
+    "junior",
+    "associate",
+    "mid",
+    "mid_senior",
+    "senior",
+    "lead",
+    "manager",
+    "director",
+    "executive",
+];
+
+const repliedOptions = ["Replied", "No Reply"];
+
+const interviewAquiredOptions = ["Interview Aquired", "No Interview"];
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
     applied: "warning",
@@ -86,6 +108,24 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
     offered: "success",
     rejected: "danger",
     ghosted: "default",
+};
+
+const repliedColorMap: Record<string, ChipProps["color"]> = {
+    Replied: "secondary",
+    "No Reply": "default",
+};
+
+const interviewColorMap: Record<string, ChipProps["color"]> = {
+    "Interview Aquired": "success",
+    "No Interview": "default",
+};
+
+const jobStatusMap: Record<string, string> = {
+    applied: "Applied",
+    interviewing: "Interviewing",
+    offered: "Offered",
+    rejected: "Rejected",
+    ghosted: "Ghosted",
 };
 
 const jobSettingMap: Record<string, string> = {
@@ -118,7 +158,15 @@ const jobLevelMap: Record<string, string> = {
 export {
     columns,
     statusOptions,
+    settingOptions,
+    typeOptions,
+    levelOptions,
+    repliedOptions,
+    interviewAquiredOptions,
     statusColorMap,
+    repliedColorMap,
+    interviewColorMap,
+    jobStatusMap,
     jobSettingMap,
     jobTypeMap,
     jobLevelMap,

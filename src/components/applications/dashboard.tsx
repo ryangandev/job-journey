@@ -24,11 +24,12 @@ import {
 import { useState, useMemo, useCallback, Key, useEffect } from "react";
 import {
     columns,
-    jobLevelMap,
+    statusOptions,
+    jobStatusMap,
     jobSettingMap,
     jobTypeMap,
+    jobLevelMap,
     statusColorMap,
-    statusOptions,
 } from "../../data/application";
 import { Application } from "../../models/application";
 import {
@@ -202,21 +203,21 @@ export default function ApplicationsDashboard({
                                 {cellValue as string}
                             </Link>
                             <div className="flex flex-row items-center space-x-2 select-none">
-                                <span className="text-bold text-tiny caspanitalize text-default-500">
+                                <span className="text-bold text-tiny text-default-500">
                                     {jobSettingMap[application.setting]}
                                 </span>
                                 <Divider
                                     className="h-2"
                                     orientation="vertical"
                                 />
-                                <span className="text-bold text-tiny capitalize text-default-500">
+                                <span className="text-bold text-tiny text-default-500">
                                     {jobTypeMap[application.type]}
                                 </span>
                                 <Divider
                                     className="h-2"
                                     orientation="vertical"
                                 />
-                                <span className="text-bold text-tiny capitalize text-default-500">
+                                <span className="text-bold text-tiny text-default-500">
                                     {jobLevelMap[application.level]}
                                 </span>
                             </div>
@@ -237,12 +238,12 @@ export default function ApplicationsDashboard({
                     return (
                         <div>
                             <Chip
-                                className="capitalize border-none gap-1 text-default-600"
+                                className="border-none gap-1 text-default-600"
                                 color={statusColorMap[application.status]}
                                 size="md"
                                 variant="dot"
                             >
-                                {cellValue as string}
+                                {jobStatusMap[cellValue as string]}
                             </Chip>
                         </div>
                     );
@@ -382,8 +383,8 @@ export default function ApplicationsDashboard({
                                 onSelectionChange={setStatusFilter}
                             >
                                 {statusOptions.map((status) => (
-                                    <DropdownItem key={status.uid}>
-                                        {status.name}
+                                    <DropdownItem key={status}>
+                                        {jobStatusMap[status]}
                                     </DropdownItem>
                                 ))}
                             </DropdownMenu>

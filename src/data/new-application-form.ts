@@ -1,4 +1,5 @@
 import { JobSetting, JobType, JobLevel } from "../models/application";
+import { levelOptions, settingOptions, typeOptions } from "./application";
 
 interface ApplicationForm {
     title: string;
@@ -69,33 +70,21 @@ const applicationFormQuestions: ApplicationFormQuestion[] = [
         question: "What is the work setting?",
         type: "select",
         required: true,
-        options: ["on_site", "remote", "hybrid"],
+        options: settingOptions,
     },
     {
         key: "type",
         question: "What is the job type?",
         type: "select",
         required: true,
-        options: ["full_time", "part_time", "contract", "freelance"],
+        options: typeOptions,
     },
     {
         key: "level",
         question: "What is the job level?",
         type: "select",
         required: true,
-        options: [
-            "intern",
-            "entry",
-            "junior",
-            "associate",
-            "mid",
-            "mid_senior",
-            "senior",
-            "lead",
-            "manager",
-            "director",
-            "executive",
-        ],
+        options: levelOptions,
     },
     {
         key: "salary",
