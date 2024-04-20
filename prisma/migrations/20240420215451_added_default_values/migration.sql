@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "applications" ALTER COLUMN "company" SET DEFAULT 'N/A',
+ALTER COLUMN "title" SET DEFAULT 'N/A',
+ALTER COLUMN "title" SET DATA TYPE VARCHAR(60),
+ALTER COLUMN "location" SET DEFAULT 'N/A';

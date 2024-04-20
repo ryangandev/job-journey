@@ -51,6 +51,14 @@ const UpdateSchema = z.object({
     content: z.string(),
 });
 
+// Custom string validation to reuse in schemas
+const trimmedString = (minLength: number, maxLength: number) =>
+    z
+        .string()
+        .trim()
+        .min(minLength, { message: "Must not be empty." })
+        .max(maxLength);
+
 const ApplicationDetailSchema = z.object({
     id: z.string(),
     title: z.string(),
@@ -71,15 +79,15 @@ const ApplicationDetailSchema = z.object({
 });
 
 const ApplicationFormSchema = z.object({
-    title: z.string().trim().min(1).max(40),
-    company: z.string().trim().min(1).max(40),
-    location: z.string().trim().min(1).max(40),
+    title: trimmedString(1, 60),
+    company: trimmedString(1, 40),
+    location: trimmedString(1, 40),
     setting: JobSettingSchema,
     type: JobTypeSchema,
     level: JobLevelSchema,
-    salary: z.string().trim().max(40),
-    link: z.string().trim().min(1).max(4000),
-    updates: z.string().trim().max(4000),
+    salary: trimmedString(1, 40),
+    link: trimmedString(1, 4000),
+    updates: trimmedString(1, 4000),
     isFavorite: z.boolean(),
 });
 
