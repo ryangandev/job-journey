@@ -197,12 +197,12 @@ export default function ApplicationsDashboard({
                     return (
                         <div className="flex flex-col">
                             <Link
-                                className="text-bold text-small capitalize"
+                                className="text-bold text-small capitalize line-clamp-1"
                                 href={`/application-detail/${application.id}`}
                             >
                                 {cellValue as string}
                             </Link>
-                            <div className="flex flex-row items-center space-x-2 select-none">
+                            <div className="hidden lg:flex flex-row items-center space-x-2 select-none">
                                 <span className="text-bold text-tiny text-default-500">
                                     {jobSettingMap[application.setting]}
                                 </span>
@@ -226,10 +226,10 @@ export default function ApplicationsDashboard({
                 case "company":
                     return (
                         <div className="flex flex-col">
-                            <p className="text-bold text-small capitalize">
+                            <p className="text-bold text-small capitalize line-clamp-1">
                                 {cellValue as string}
                             </p>
-                            <p className="text-bold text-tiny capitalize text-default-500">
+                            <p className="hidden lg:block text-bold text-tiny capitalize text-default-500 line-clamp-1">
                                 {application.location}
                             </p>
                         </div>

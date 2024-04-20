@@ -148,7 +148,7 @@ async function deleteApplicationByIdAction(id: string) {
 }
 
 async function patchApplicationDetailAction(id: string, update: unknown) {
-    // 1. Validate the update
+    // 1. Server-side validation
     // 1.1 Validate the update using zod schema to ensure the update is on a valid field
     const result = PartialApplicationDetailSchema.safeParse(update);
     if (!result.success) {
@@ -183,7 +183,7 @@ async function patchApplicationDetailAction(id: string, update: unknown) {
     }
 
     revalidatePath(`/applications/${id}`);
-    return { message: `Successfully updated field [${updateKeys[0]}].` };
+    return { message: `[${updateKeys[0]}] is updated!` };
 }
 
 export {

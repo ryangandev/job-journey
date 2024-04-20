@@ -103,7 +103,7 @@ const repliedOptions = ["Replied", "No Reply"];
 const interviewAquiredOptions = ["Interview Aquired", "No Interview"];
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
-    applied: "warning",
+    applied: "primary",
     interviewing: "secondary",
     offered: "success",
     rejected: "danger",
@@ -112,12 +112,12 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 
 const repliedColorMap: Record<string, ChipProps["color"]> = {
     Replied: "secondary",
-    "No Reply": "default",
+    "No Reply": "danger",
 };
 
 const interviewColorMap: Record<string, ChipProps["color"]> = {
     "Interview Aquired": "success",
-    "No Interview": "default",
+    "No Interview": "warning",
 };
 
 const jobStatusMap: Record<string, string> = {
