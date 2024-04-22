@@ -1,0 +1,77 @@
+import {
+    Button,
+    Chip,
+    ChipProps,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownTrigger,
+} from "@nextui-org/react";
+import React from "react";
+
+export default function CustomDropdown({
+    triggerType,
+    label,
+    value,
+    valueOptions,
+    handleUpdate,
+    colorMapper = () => "default",
+    displayMapper = (value: string) => value,
+}: {
+    triggerType: "chip" | "button";
+    label: string;
+    value: string;
+    valueOptions: string[];
+    handleUpdate: (selectedKey: string | number) => void;
+    colorMapper?: (value: string) => ChipProps["color"];
+    displayMapper?: (value: string) => string;
+}) {
+    const renderChipTrigger = () => {
+        return (
+            <Chip
+                size="md"
+                variant="flat"
+                color={colorMapper(value)}
+                className="text-sm p-2"
+                as="button"
+            >
+                {displayMapper(value)}
+            </Chip>
+        );
+    };
+
+    const renderButtonTrigger = () => {
+        return (
+            <Button variant="light" color={colorMapper(value)}>
+                {displayMapper(value)}
+            </Button>
+        );
+    };
+
+    return (
+        <Dropdown>
+            <DropdownTrigger>
+                {triggerType === "chip"
+                    ? renderChipTrigger()
+                    : renderButtonTrigger()}
+            </DropdownTrigger>
+            <DropdownMenu
+                disallowEmptySelection
+                aria-label={`${label} Selection`}
+                closeOnSelect={true}
+                selectedKeys={[value]}
+                selectionMode={"single"}
+                onSelectionChange={(selectedKeys) => {
+                    const selectedKey = Array.from(selectedKeys)[0];
+                    handleUpdate(selectedKey);
+                }}
+            >
+                {valueOptions.map((option) => (
+                    <DropdownItem key={option}>
+                        {displayMapper(option)}
+                    </DropdownItem>
+                ))}
+            </DropdownMenu>
+        </Dropdown>
+    );
+}
