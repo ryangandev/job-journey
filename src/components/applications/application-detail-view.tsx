@@ -90,6 +90,18 @@ export default function ApplicationDetailView({
         const [newContent, setNewContent] = useState(contentValue);
 
         const handleConfirmUpdate = () => {
+            // If the new content is the same as the old content, do nothing
+            if (newContent === contentValue) {
+                setIsEditing(false);
+                return;
+            }
+
+            // If the new content is empty, show an error message
+            if (newContent.trim().length === 0) {
+                toast.error("Field cannot be empty.");
+                return;
+            }
+
             handleUpdateField(fieldKey, newContent);
             setIsEditing(false);
         };
@@ -105,6 +117,7 @@ export default function ApplicationDetailView({
                     className="max-w-xs w-full"
                     variant="bordered"
                     autoFocus
+                    minLength={1}
                     value={newContent}
                     onValueChange={(value) => {
                         setNewContent(value);
@@ -219,15 +232,29 @@ export default function ApplicationDetailView({
                             />
                         </div>
                         <div className="flex flex-row  items-center space-x-4">
-                            <NextUiLink
-                                isExternal
-                                isBlock
-                                showAnchorIcon
-                                anchorIcon={
-                                    <AnchorIcon width={20} className="mx-2" />
-                                }
-                                href={applicationDetail.link}
-                                isDisabled={!applicationDetail.link}
+                            <EditableContent
+                                fieldKey="link"
+                                contentValue={applicationDetail.link}
+                                contentComponent={({ onPress }) => (
+                                    <EditTooltip
+                                        onPress={onPress}
+                                        placement="top"
+                                    >
+                                        <NextUiLink
+                                            isExternal
+                                            isBlock
+                                            showAnchorIcon
+                                            anchorIcon={
+                                                <AnchorIcon
+                                                    width={20}
+                                                    className="mx-2"
+                                                />
+                                            }
+                                            href={applicationDetail.link}
+                                            isDisabled={!applicationDetail.link}
+                                        />
+                                    </EditTooltip>
+                                )}
                             />
                             <FavoriteToggle
                                 isFavorite={applicationDetail.isFavorite}
