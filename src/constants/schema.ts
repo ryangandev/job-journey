@@ -33,7 +33,7 @@ const QASchema = z.object({
     answer: z.string(),
 });
 
-const UpdateSchema = z.object({
+const UpdateSchemaForDatabaseValidation = z.object({
     date: z
         .string()
         .refine(
@@ -48,6 +48,11 @@ const UpdateSchema = z.object({
             },
         )
         .transform((val) => new Date(val)), // Transform the valid string into a Date object
+    content: z.string(),
+});
+
+const UpdateSchemaForFormValidation = z.object({
+    date: z.date(),
     content: z.string(),
 });
 
@@ -75,7 +80,7 @@ const ApplicationDetailSchema = z.object({
     appliedAt: z.date(),
     updatedAt: z.date(),
     link: z.string(),
-    updates: z.array(UpdateSchema),
+    updates: z.array(UpdateSchemaForDatabaseValidation),
 });
 
 const ApplicationFormSchema = z.object({
@@ -95,11 +100,15 @@ const PartialApplicationDetailSchema = ApplicationDetailSchema.omit({
     id: true,
     appliedAt: true,
     updatedAt: true,
-}).partial();
+})
+    .extend({
+        updates: z.array(UpdateSchemaForFormValidation),
+    })
+    .partial();
 
 export {
     QASchema,
-    UpdateSchema,
+    UpdateSchemaForDatabaseValidation,
     ApplicationDetailSchema,
     ApplicationFormSchema,
     PartialApplicationDetailSchema,
