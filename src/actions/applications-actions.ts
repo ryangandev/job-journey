@@ -96,6 +96,14 @@ async function addNewApplicationAction(newApplicationForm: unknown) {
     // 2. Add the new application to the database if the form data is valid
     const validatedFormData = result.data;
     try {
+        const salaryData =
+            validatedFormData.salary === "" ? "N/A" : validatedFormData.salary;
+
+        const updatesData =
+            validatedFormData.updates === ""
+                ? []
+                : [{ content: validatedFormData.updates, date: new Date() }];
+
         await prisma.application.create({
             data: {
                 title: validatedFormData.title,
@@ -105,11 +113,9 @@ async function addNewApplicationAction(newApplicationForm: unknown) {
                 type: validatedFormData.type,
                 level: validatedFormData.level,
                 isFavorite: validatedFormData.isFavorite,
-                salary: validatedFormData.salary,
+                salary: salaryData,
                 link: validatedFormData.link,
-                updates: [
-                    { content: validatedFormData.updates, date: new Date() },
-                ],
+                updates: updatesData,
             },
         });
     } catch (dbError) {

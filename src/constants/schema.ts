@@ -90,9 +90,9 @@ const ApplicationFormSchema = z.object({
     setting: JobSettingSchema,
     type: JobTypeSchema,
     level: JobLevelSchema,
-    salary: trimmedString(1, 40),
+    salary: trimmedString(0, 40),
     link: trimmedString(1, 4000),
-    updates: trimmedString(1, 4000),
+    updates: trimmedString(0, 4000),
     isFavorite: z.boolean(),
 });
 
