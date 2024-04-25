@@ -37,6 +37,7 @@ import {
 } from "../../data/application";
 import { MdUpdate, MdAddCircleOutline } from "react-icons/md";
 import { IoMdCheckmark, IoMdClose } from "react-icons/io";
+import { IoTrashOutline } from "react-icons/io5";
 import { AnchorIcon } from "../../assets/svgs";
 import toast from "react-hot-toast";
 import EditTooltip from "../tooltips/edit-tooltip";
@@ -304,6 +305,20 @@ export default function ApplicationDetailView({
         }
     };
 
+    const handleDeleteUpdate = (updateDateTime: number) => {
+        if (!applicationDetail) {
+            toast.error("There's no application loaded.");
+            return;
+        }
+
+        handleUpdateField(
+            "updates",
+            applicationDetail.updates.filter(
+                (update) => update.date.getTime() !== updateDateTime,
+            ),
+        );
+    };
+
     return (
         <>
             {applicationDetail ? (
@@ -565,9 +580,20 @@ export default function ApplicationDetailView({
                                                 {renderHighlightString("·")}
                                             </span>
                                             <span className="text-sm ">
-                                                {timeElapsed(update.date)}
+                                                {renderInfoString(
+                                                    timeElapsed(update.date),
+                                                )}
                                             </span>
                                         </span>
+                                        <button
+                                            onClick={() => {
+                                                handleDeleteUpdate(
+                                                    update.date.getTime(),
+                                                );
+                                            }}
+                                        >
+                                            <IoTrashOutline />
+                                        </button>
                                     </div>
                                     <Divider
                                         className="h-4 ml-3 my-1"
