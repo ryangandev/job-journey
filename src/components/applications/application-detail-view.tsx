@@ -35,12 +35,8 @@ import {
     interviewColorMap,
     interviewAquiredOptions,
 } from "../../data/application";
-import {
-    MdUpdate,
-    MdAddCircleOutline,
-    MdOutlineCheckCircle,
-    MdOutlineCancel,
-} from "react-icons/md";
+import { MdUpdate, MdAddCircleOutline } from "react-icons/md";
+import { IoMdCheckmark, IoMdClose } from "react-icons/io";
 import { AnchorIcon } from "../../assets/svgs";
 import toast from "react-hot-toast";
 import EditTooltip from "../tooltips/edit-tooltip";
@@ -64,13 +60,25 @@ export default function ApplicationDetailView({
         }
     }, [applicationDetailData]);
 
-    const renderDetailTitle = (title: string) => {
-        return <h2 className="text-light-300 dark:text-dark-300">{title}</h2>;
+    const renderSubTitle = (title: string) => {
+        return (
+            <h2 className="text-light-300 dark:text-dark-300 select-none">
+                {title}
+            </h2>
+        );
     };
 
     const renderHighlightString = (content: string) => {
         return (
             <span className="text-light-100 dark:text-dark-100">{content}</span>
+        );
+    };
+
+    const renderInfoString = (content: string) => {
+        return (
+            <span className="text-light-400 dark:text-dark-400 select-none">
+                {content}
+            </span>
         );
     };
 
@@ -138,7 +146,7 @@ export default function ApplicationDetailView({
                     color="success"
                     onPress={handleConfirmUpdate}
                 >
-                    <MdOutlineCheckCircle className="text-lg" />
+                    <IoMdCheckmark className="text-lg" />
                 </Button>
                 <Button
                     isIconOnly={true}
@@ -148,7 +156,7 @@ export default function ApplicationDetailView({
                     color="danger"
                     onPress={handleCancelUpdate}
                 >
-                    <MdOutlineCancel className="text-lg" />
+                    <IoMdClose className="text-lg" />
                 </Button>
             </div>
         ) : (
@@ -161,6 +169,99 @@ export default function ApplicationDetailView({
         );
     };
 
+    const AddUpdateContent = () => {
+        if (!applicationDetail) {
+            toast.error("There's no application loaded.");
+            return;
+        }
+
+        const [isAdding, setIsAdding] = useState(false);
+        const [newUpdate, setNewUpdate] = useState("");
+
+        useEffect(() => {
+            if (isAdding) {
+                window.scrollTo({
+                    top: document.documentElement.scrollHeight,
+                    behavior: "smooth",
+                });
+            }
+        }, [isAdding]);
+
+        const handleConfirmAdd = () => {
+            if (newUpdate.trim().length === 0) {
+                toast.error("Field cannot be empty.");
+                return;
+            }
+
+            handleUpdateField(
+                "updates",
+                applicationDetail.updates.concat({
+                    date: new Date(),
+                    content: newUpdate.trim(),
+                }),
+            );
+        };
+
+        const handleCancelAdd = () => {
+            setIsAdding(false);
+            setNewUpdate("");
+        };
+
+        return isAdding ? (
+            <div className="flex flex-col items-center space-y-2">
+                <Input
+                    variant="bordered"
+                    placeholder="Write your new update here..."
+                    autoFocus
+                    minLength={1}
+                    value={newUpdate}
+                    onValueChange={(value) => {
+                        setNewUpdate(value);
+                    }}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            handleConfirmAdd();
+                        } else if (e.key === "Escape") {
+                            handleCancelAdd();
+                        }
+                    }}
+                />
+                <div className="flex flex-row justify-end space-x-2 w-full">
+                    <Button
+                        aria-label="Save"
+                        variant="light"
+                        size="sm"
+                        color="success"
+                        startContent={<IoMdCheckmark className="text-lg" />}
+                        onPress={handleConfirmAdd}
+                    >
+                        Confirm
+                    </Button>
+                    <Button
+                        aria-label="Cancel"
+                        variant="flat"
+                        size="sm"
+                        color="danger"
+                        startContent={<IoMdClose className="text-lg" />}
+                        onPress={handleCancelAdd}
+                    >
+                        Cancel
+                    </Button>
+                </div>
+            </div>
+        ) : (
+            <button
+                onClick={() => setIsAdding(true)}
+                className="flex flex-row items-center space-x-2 hover:opacity-80 active:opacity-60 active:scale-95 transition-transform-opacity duration-200"
+            >
+                <MdAddCircleOutline className="text-2xl text-light-400 dark:text-dark-400" />
+                <span className="text-sm">
+                    {renderInfoString("click to add")}
+                </span>
+            </button>
+        );
+    };
+
     const handleUpdateField = async <K extends keyof ApplicationDetail>(
         fieldKey: K,
         newValue: ApplicationDetail[K],
@@ -168,7 +269,7 @@ export default function ApplicationDetailView({
         // 1. Client-side validation
         // 1.1 Check if the applicationDetail is loaded
         if (!applicationDetail) {
-            console.error("There's no application loaded.");
+            toast.error("There's no application loaded.");
             return;
         }
 
@@ -178,7 +279,7 @@ export default function ApplicationDetailView({
             fieldKey === "appliedAt" ||
             fieldKey === "updatedAt"
         ) {
-            console.error(`Cannot update field ${fieldKey}`);
+            toast.error(`Cannot update field ${fieldKey}`);
             return;
         }
 
@@ -304,7 +405,7 @@ export default function ApplicationDetailView({
                             />
                         </div>
                         <div className="flex flex-row text-sm space-x-2">
-                            {renderDetailTitle("Applied on:")}
+                            {renderSubTitle("Applied on:")}
                             {renderHighlightString(
                                 dateToTwoDigitsString(
                                     applicationDetail.appliedAt,
@@ -315,7 +416,7 @@ export default function ApplicationDetailView({
 
                     <div className="flex justify-between items-center">
                         <div className="flex items-center space-x-4">
-                            {renderDetailTitle("Salary: ")}
+                            {renderSubTitle("Salary: ")}
                             <EditableContent
                                 fieldKey="salary"
                                 contentValue={applicationDetail.salary}
@@ -330,7 +431,7 @@ export default function ApplicationDetailView({
                             />
                         </div>
                         <div className="flex flex-row text-sm space-x-2">
-                            {renderDetailTitle("Last Updated:")}
+                            {renderSubTitle("Last Updated:")}
                             {renderHighlightString(
                                 dateToTwoDigitsString(
                                     applicationDetail.updatedAt,
@@ -448,18 +549,22 @@ export default function ApplicationDetailView({
                     <Divider orientation="horizontal" />
 
                     <div className="flex flex-col space-y-4">
-                        {renderDetailTitle("Updates")}
+                        {renderSubTitle("Updates")}
                         <ul className="ml-3">
                             {applicationDetail.updates.map((update, index) => (
                                 <li className="flex flex-col" key={index}>
                                     <div className="flex flex-row items-center space-x-2">
-                                        <MdUpdate className="text-2xl" />
+                                        <span>
+                                            <MdUpdate className="text-2xl" />
+                                        </span>
                                         <span className="text-sm space-x-2">
                                             {renderHighlightString(
                                                 update.content,
                                             )}
-                                            {renderHighlightString("·")}
-                                            <span className="text-sm text-light-400 dark:text-dark-400">
+                                            <span className="select-none">
+                                                {renderHighlightString("·")}
+                                            </span>
+                                            <span className="text-sm ">
                                                 {timeElapsed(update.date)}
                                             </span>
                                         </span>
@@ -470,15 +575,7 @@ export default function ApplicationDetailView({
                                     />
                                 </li>
                             ))}
-                            <button
-                                onClick={() => {}}
-                                className="flex flex-row items-center space-x-2 hover:opacity-80 active:opacity-60 active:scale-95 transition-transform-opacity duration-200"
-                            >
-                                <MdAddCircleOutline className="text-2xl text-light-400 dark:text-dark-400" />
-                                <span className="text-sm text-light-400 dark:text-dark-400">
-                                    click to add
-                                </span>
-                            </button>
+                            <AddUpdateContent />
                         </ul>
                     </div>
                 </div>

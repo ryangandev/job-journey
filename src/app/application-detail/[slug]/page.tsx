@@ -8,7 +8,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     );
 
     return (
-        <main className="w-screen flex justify-center py-4 px-4">
+        <main className="w-screen flex justify-center pt-4 pb-8 px-4">
             <ApplicationDetailView
                 applicationDetailData={applicationDetailData}
             />
