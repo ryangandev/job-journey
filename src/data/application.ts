@@ -1,11 +1,5 @@
 import { ChipProps } from "@nextui-org/chip";
-
-interface Column {
-    name: string;
-    uid: string;
-    width?: number;
-    sortable?: boolean;
-}
+import { Column, SearchFilterOption } from "../models/dashboard";
 
 const columns: Column[] = [
     {
@@ -71,6 +65,14 @@ const columns: Column[] = [
         width: 80,
     },
 ] as const; // const assertion to infer the type as readonly
+
+const searchFilterOptions: SearchFilterOption[] = [
+    "title",
+    "company",
+    "location",
+    "appliedAt",
+    "updatedAt",
+];
 
 const statusOptions = [
     "applied",
@@ -157,6 +159,7 @@ const jobLevelMap: Record<string, string> = {
 
 export {
     columns,
+    searchFilterOptions,
     statusOptions,
     settingOptions,
     typeOptions,

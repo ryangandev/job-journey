@@ -1,5 +1,6 @@
 import {
     Button,
+    ButtonProps,
     Chip,
     ChipProps,
     Dropdown,
@@ -8,9 +9,12 @@ import {
     DropdownTrigger,
 } from "@nextui-org/react";
 import React from "react";
+import { ChevronDownIcon } from "../assets/svgs";
 
 export default function CustomDropdown({
     triggerType,
+    chipVariant = "flat",
+    buttonVariant = "light",
     label,
     value,
     valueOptions,
@@ -19,6 +23,8 @@ export default function CustomDropdown({
     displayMapper = (value: string) => value,
 }: {
     triggerType: "chip" | "button";
+    chipVariant?: ChipProps["variant"];
+    buttonVariant?: ButtonProps["variant"];
     label: string;
     value: string;
     valueOptions: string[];
@@ -30,7 +36,7 @@ export default function CustomDropdown({
         return (
             <Chip
                 size="md"
-                variant="flat"
+                variant={chipVariant}
                 color={colorMapper(value)}
                 className="text-sm p-2"
                 as="button"
@@ -42,7 +48,11 @@ export default function CustomDropdown({
 
     const renderButtonTrigger = () => {
         return (
-            <Button variant="light" color={colorMapper(value)}>
+            <Button
+                variant={buttonVariant}
+                color={colorMapper(value)}
+                endContent={<ChevronDownIcon className="text-small" />}
+            >
                 {displayMapper(value)}
             </Button>
         );
