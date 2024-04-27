@@ -30,6 +30,8 @@ import {
     jobTypeMap,
     jobLevelMap,
     statusColorMap,
+    searchFilterOptions,
+    searchFilterOptionsMap,
 } from "../../data/application";
 import { Application } from "../../models/application";
 import {
@@ -47,6 +49,8 @@ import { dateToTwoDigitsString } from "../../libs/time-utils";
 import toast from "react-hot-toast";
 import ConfirmModal from "../confirm-modal";
 import Link from "next/link";
+import CustomDropdown from "../custom-dropdown";
+import { SearchFilterOption } from "../../models/dashboard";
 
 const INITIAL_VISIBLE_COLUMNS = [
     "isFavorite",
@@ -67,8 +71,12 @@ export default function ApplicationsDashboard({
 }) {
     const [applications, setApplications] = useState<Application[]>([]);
     const [loading, setLoading] = useState(true);
-    const [filterValue, setFilterValue] = useState("");
-    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
+    const [searchFilterOption, setSearchFilterOption] =
+        useState<SearchFilterOption>("company");
+    const [searchFilterValue, setSearchFilterValue] = useState("");
+    const [selectedTableKeys, setSelectedTableKeys] = useState<Selection>(
+        new Set([]),
+    );
     const [visibleColumns, setVisibleColumns] = useState<Selection>(
         new Set(INITIAL_VISIBLE_COLUMNS),
     );
@@ -96,7 +104,7 @@ export default function ApplicationsDashboard({
 
     const pages = Math.ceil(applications.length / rowsPerPage);
 
-    const hasSearchFilter = Boolean(filterValue);
+    const hasSearchFilter = Boolean(searchFilterValue);
 
     const headerColumns = useMemo(() => {
         if (visibleColumns === "all") return columns;
@@ -110,10 +118,14 @@ export default function ApplicationsDashboard({
         let filteredApplications = [...applications];
 
         if (hasSearchFilter) {
-            filteredApplications = filteredApplications.filter((application) =>
-                application.company
-                    .toLowerCase()
-                    .includes(filterValue.toLowerCase()),
+            filteredApplications = filteredApplications.filter(
+                (application) => {
+                    const value = application[searchFilterOption] as string;
+
+                    return value
+                        .toLowerCase()
+                        .includes(searchFilterValue.toLowerCase());
+                },
             );
         }
 
@@ -127,7 +139,7 @@ export default function ApplicationsDashboard({
         }
 
         return filteredApplications;
-    }, [applications, filterValue, statusFilter]);
+    }, [applications, searchFilterValue, statusFilter, searchFilterOption]);
 
     const items = useMemo(() => {
         const start = (page - 1) * rowsPerPage;
@@ -334,10 +346,10 @@ export default function ApplicationsDashboard({
 
     const handleOnSearchChange = useCallback((value: string) => {
         if (value) {
-            setFilterValue(value);
+            setSearchFilterValue(value);
             setPage(1);
         } else {
-            setFilterValue("");
+            setSearchFilterValue("");
         }
     }, []);
 
@@ -351,16 +363,35 @@ export default function ApplicationsDashboard({
                             base: "w-full sm:max-w-[44%]",
                             inputWrapper: "border-1",
                         }}
-                        placeholder="Search by company..."
+                        placeholder={`Search by ${searchFilterOptionsMap[searchFilterOption]}`}
                         size="md"
                         startContent={
                             <SearchIcon className="text-default-300" />
                         }
-                        value={filterValue}
+                        value={searchFilterValue}
                         variant="bordered"
-                        onClear={() => setFilterValue("")}
+                        onClear={() => setSearchFilterValue("")}
                         onValueChange={handleOnSearchChange}
                     />
+                    <div className="flex space-x-2 items-center">
+                        <span>Search by: </span>
+                        <CustomDropdown
+                            triggerType="button"
+                            buttonVariant="bordered"
+                            label="Search Filter"
+                            value={searchFilterOption}
+                            valueOptions={searchFilterOptions}
+                            handleUpdate={(selectedKey) => {
+                                setSearchFilterOption(
+                                    selectedKey as SearchFilterOption,
+                                );
+                            }}
+                            displayMapper={(value) =>
+                                searchFilterOptionsMap[value]
+                            }
+                        />
+                    </div>
+
                     <div className="flex gap-3">
                         <Dropdown>
                             <DropdownTrigger className="hidden sm:flex">
@@ -423,7 +454,8 @@ export default function ApplicationsDashboard({
             </div>
         );
     }, [
-        filterValue,
+        searchFilterOption,
+        searchFilterValue,
         statusFilter,
         visibleColumns,
         handleOnSearchChange,
@@ -448,13 +480,13 @@ export default function ApplicationsDashboard({
                     onChange={setPage}
                 />
                 {/* <span className="text-small text-default-400">
-                    {selectedKeys === "all"
+                    {selectedTableKeys === "all"
                         ? "All items selected"
-                        : `${selectedKeys.size} of ${items.length} selected`}
+                        : `${selectedTableKeys.size} of ${items.length} selected`}
                 </span> */}
             </div>
         );
-    }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+    }, [selectedTableKeys, items.length, page, pages, hasSearchFilter]);
 
     const classNames = useMemo(
         () => ({
@@ -496,12 +528,12 @@ export default function ApplicationsDashboard({
                 //     },
                 // }}
                 classNames={classNames}
-                selectedKeys={selectedKeys}
+                selectedKeys={selectedTableKeys}
                 // selectionMode="multiple"
                 sortDescriptor={sortDescriptor}
                 topContent={topContent}
                 topContentPlacement="outside"
-                onSelectionChange={setSelectedKeys}
+                onSelectionChange={setSelectedTableKeys}
                 onSortChange={setSortDescriptor}
             >
                 <TableHeader columns={headerColumns}>

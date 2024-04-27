@@ -70,8 +70,8 @@ const searchFilterOptions: SearchFilterOption[] = [
     "title",
     "company",
     "location",
-    "appliedAt",
-    "updatedAt",
+    // "appliedAt",
+    // "updatedAt",
 ];
 
 const statusOptions = [
@@ -122,6 +122,14 @@ const interviewColorMap: Record<string, ChipProps["color"]> = {
     "No Interview": "warning",
 };
 
+const searchFilterOptionsMap: Record<string, string> = {
+    title: "Title",
+    company: "Company",
+    location: "Location",
+    appliedAt: "Applied At",
+    updatedAt: "Updated At",
+};
+
 const jobStatusMap: Record<string, string> = {
     applied: "Applied",
     interviewing: "Interviewing",
@@ -169,6 +177,7 @@ export {
     statusColorMap,
     repliedColorMap,
     interviewColorMap,
+    searchFilterOptionsMap,
     jobStatusMap,
     jobSettingMap,
     jobTypeMap,

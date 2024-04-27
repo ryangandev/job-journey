@@ -5,11 +5,8 @@ interface Column {
     sortable?: boolean;
 }
 
-type SearchFilterOption =
-    | "title"
-    | "company"
-    | "location"
-    | "appliedAt"
-    | "updatedAt";
+type SearchFilterOption = "title" | "company" | "location";
+// | "appliedAt"
+// | "updatedAt";
 
 export type { Column, SearchFilterOption };
