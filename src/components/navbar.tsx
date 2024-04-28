@@ -6,14 +6,15 @@ import {
     NavbarItem,
     Button,
 } from "@nextui-org/react";
+import Link from "next/link";
 
 export default function NavBar() {
     return (
         <Navbar position="static">
             <NavbarBrand>
-                <p className="font-BeauRivage text-3xl select-none">
+                <Link href="/" className="font-BeauRivage text-3xl select-none">
                     Job Journey
-                </p>
+                </Link>
             </NavbarBrand>
             {/* Utility items go here */}
             <NavbarContent justify="end">
