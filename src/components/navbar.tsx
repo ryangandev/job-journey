@@ -4,11 +4,15 @@ import {
     NavbarBrand,
     NavbarContent,
     NavbarItem,
-    Button,
 } from "@nextui-org/react";
 import Link from "next/link";
+import DailyGoalTracker from "./daily-goal-tracker";
+import { getApplicationsAppliedTodayCount } from "../actions/applications-actions";
 
-export default function NavBar() {
+export default async function NavBar() {
+    const applicationsAppliedTodayCount =
+        await getApplicationsAppliedTodayCount();
+
     return (
         <Navbar position="static">
             <NavbarBrand>
@@ -19,9 +23,9 @@ export default function NavBar() {
             {/* Utility items go here */}
             <NavbarContent justify="end">
                 <NavbarItem>
-                    {/* <Button color="primary" variant="flat">
-                        LinkedIn Profile Icon
-                    </Button> */}
+                    <DailyGoalTracker
+                        goalAchieved={applicationsAppliedTodayCount}
+                    />
                 </NavbarItem>
             </NavbarContent>
         </Navbar>

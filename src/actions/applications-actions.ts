@@ -192,10 +192,29 @@ async function patchApplicationDetailAction(id: string, update: unknown) {
     return { message: `[${updateKeys[0]}] is updated!` };
 }
 
+async function getApplicationsAppliedTodayCount() {
+    try {
+        const applications = await prisma.application.findMany({
+            where: {
+                appliedAt: {
+                    gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                },
+            },
+        });
+        return applications.length;
+    } catch (error) {
+        console.log("Error:", error);
+        return {
+            error: "There was an error fetching the applications.",
+        };
+    }
+}
+
 export {
     getApplicationsListAction,
     getSpecificApplicationDetailByIdAction,
     addNewApplicationAction,
     deleteApplicationByIdAction,
     patchApplicationDetailAction,
+    getApplicationsAppliedTodayCount,
 };
