@@ -16,7 +16,7 @@ export default function DailyGoalTracker({
                 }}
                 size="sm"
                 isIndeterminate
-                className="w-60"
+                className="w-64"
             />
         );
     }
@@ -34,7 +34,7 @@ export default function DailyGoalTracker({
             maxValue={dailyGoal}
             color={progressColorMap(goalAchieved)}
             showValueLabel={true}
-            className="w-60"
+            className="w-64"
         />
     );
 }
