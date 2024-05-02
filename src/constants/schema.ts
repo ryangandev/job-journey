@@ -84,13 +84,13 @@ const ApplicationDetailSchema = z.object({
 });
 
 const ApplicationFormSchema = z.object({
-    title: trimmedString(1, 60),
-    company: trimmedString(1, 40),
-    location: trimmedString(1, 40),
+    title: trimmedString(1, 100),
+    company: trimmedString(1, 100),
+    location: trimmedString(1, 100),
     setting: JobSettingSchema,
     type: JobTypeSchema,
     level: JobLevelSchema,
-    salary: trimmedString(0, 40),
+    salary: trimmedString(0, 100),
     link: trimmedString(1, 4000),
     updates: trimmedString(0, 4000),
     isFavorite: z.boolean(),
