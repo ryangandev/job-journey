@@ -229,24 +229,24 @@ export default function ApplicationDetailView({
                 />
                 <div className="flex flex-row justify-end space-x-2 w-full">
                     <Button
-                        aria-label="Save"
-                        variant="light"
-                        size="sm"
-                        color="success"
-                        startContent={<IoMdCheckmark className="text-lg" />}
-                        onPress={handleConfirmAdd}
-                    >
-                        Confirm
-                    </Button>
-                    <Button
                         aria-label="Cancel"
-                        variant="flat"
+                        variant="light"
                         size="sm"
                         color="danger"
                         startContent={<IoMdClose className="text-lg" />}
                         onPress={handleCancelAdd}
                     >
                         Cancel
+                    </Button>
+                    <Button
+                        aria-label="Save"
+                        variant="flat"
+                        size="sm"
+                        color="success"
+                        startContent={<IoMdCheckmark className="text-lg" />}
+                        onPress={handleConfirmAdd}
+                    >
+                        Confirm
                     </Button>
                 </div>
             </div>
