@@ -4,7 +4,7 @@
 
 **Job Journey** is a comprehensive management application designed to streamline and organize the job search process for individuals actively seeking employment opportunities. Whether you're a seasoned professional or a fresh graduate, Job Journey provides the tools you need to efficiently manage your job applications from start to finish.
 
-### 📌 Key Features
+## 📌 Key Features
 
 -   **Job Applications Dashboard**: Track all your job applications in one intuitive dashboard. View details such as job titles, company names, application statuses, and recent updates, enabling you to stay organized and informed throughout your job search.
 
@@ -14,7 +14,7 @@
 
 -   **Goal Tracker & Analytics**: Set job application goals and monitor your progress with a comprehensive analytics suite. Track daily, weekly, or monthly application activities, analyze trends, and adjust strategies to optimize your job search efforts.
 
-### 🛠️ Quick Start
+## 🛠️ Quick Start
 
 1. **Clone the repository:**
 
@@ -47,10 +47,14 @@
 5. **Initialize Prisma and run migrations:**
 
     - Initialize your Prisma setup, which creates the necessary configuration files.
-    - Run the Prisma migrations to set up your database schema.
 
     ```zsh
     npx prisma init
+    ```
+
+    - Run the Prisma migrations to set up your database schema.
+
+    ```
     npx prisma migrate dev
     ```
 
@@ -60,7 +64,7 @@
     ```
     - Navigate to `http://localhost:3000` in your web browser to view the app.
 
-### ⚙️ Technology Stack
+## ⚙️ Technology Stack
 
 -   **[Next.js 14](https://nextjs.org/)**: Modern framework for building fast and user-friendly server-rendered React applications.
 -   **[React](https://reactjs.org/)**: A JavaScript library for building user interfaces
