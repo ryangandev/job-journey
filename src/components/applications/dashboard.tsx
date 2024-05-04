@@ -141,22 +141,22 @@ export default function ApplicationsDashboard({
         return filteredApplications;
     }, [applications, searchFilterValue, statusFilter, searchFilterOption]);
 
-    const items = useMemo(() => {
-        const start = (page - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-
-        return filteredItems.slice(start, end);
-    }, [page, filteredItems, rowsPerPage]);
-
-    const sortedItems = useMemo(() => {
-        return [...items].sort((a: Application, b: Application) => {
+    const sortedFilteredItems = useMemo(() => {
+        return [...filteredItems].sort((a: Application, b: Application) => {
             const first = a[sortDescriptor.column as keyof Application];
             const second = b[sortDescriptor.column as keyof Application];
             const cmp = first > second ? 1 : first < second ? -1 : 0;
 
             return sortDescriptor.direction === "ascending" ? cmp : -cmp;
         });
-    }, [sortDescriptor, items]);
+    }, [sortDescriptor, filteredItems]);
+
+    const items = useMemo(() => {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        return sortedFilteredItems.slice(start, end);
+    }, [page, sortedFilteredItems, rowsPerPage]);
 
     const handleViewApplicationDetail = useCallback(
         (id: string) => {
@@ -340,6 +340,7 @@ export default function ApplicationsDashboard({
     const handleOnRowsPerPageChange = useCallback(
         (e: React.ChangeEvent<HTMLSelectElement>) => {
             setRowsPerPage(Number(e.target.value));
+            setPage(1);
         },
         [],
     );
@@ -445,6 +446,7 @@ export default function ApplicationsDashboard({
                             className="bg-transparent outline-none text-default-400 text-small"
                             onChange={handleOnRowsPerPageChange}
                         >
+                            <option value="10">10</option>
                             <option value="20">20</option>
                             <option value="30">30</option>
                             <option value="40">40</option>
@@ -558,7 +560,7 @@ export default function ApplicationsDashboard({
                     emptyContent={
                         loading ? "" : "There's no applications to show."
                     }
-                    items={sortedItems}
+                    items={items}
                 >
                     {(item) => (
                         <TableRow key={item.id}>
