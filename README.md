@@ -1,5 +1,9 @@
 <h1 align="center">Job Journey</h1>
 
+<p align="center">
+  <img src="https://github.com/ryangandev/job-journey/blob/main/src/app/favicon.ico" alt="Logo" width="200px">
+</p>
+
 ## 🚀 About
 
 **Job Journey** is a comprehensive management application designed to streamline and organize the job search process for individuals actively seeking employment opportunities. Whether you're a seasoned professional or a fresh graduate, Job Journey provides the tools you need to efficiently manage your job applications from start to finish.
@@ -73,6 +77,7 @@
 -   **[Tailwind CSS](https://tailwindcss.com/)**: A utility-first CSS framework for rapidly building modern applications
 -   **[NextUI](https://nextui.org/)**: UI Library with high-quality React components built on top of Tailwind CSS and React Aria
 -   **[Framer Motion](https://www.framer.com/motion/)**: A flexible library for animating React components
+-   **[Zod](https://zod.dev/)**: TypeScript-first schema validation with static type inference
 
 ## 📝 License
 
