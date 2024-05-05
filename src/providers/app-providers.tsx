@@ -2,6 +2,7 @@
 
 import { NextUIProvider } from "@nextui-org/react";
 import { ThemeProvider as NextThemeProvider } from "next-themes";
+import { NavbarProvider } from "./navbar-provider";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
     return (
@@ -11,7 +12,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
                 defaultTheme="dark"
                 // disableTransitionOnChange
             >
-                {children}
+                <NavbarProvider>{children}</NavbarProvider>
             </NextThemeProvider>
         </NextUIProvider>
     );
