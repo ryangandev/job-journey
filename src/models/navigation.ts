@@ -1,4 +1,5 @@
 type NavbarSection =
+    | "Home"
     | "Dashboard"
     | "Digital Profile"
     | "Interview Prep"

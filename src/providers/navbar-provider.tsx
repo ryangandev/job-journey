@@ -18,8 +18,7 @@ const NavbarContext = createContext<NavbarContextProps | null>(null);
 
 export function NavbarProvider({ children }: NavbarProviderProps) {
     const [navbarVisible, setNavbarVisible] = useState<boolean>(true);
-    const [activeSection, setActiveSection] =
-        useState<NavbarSection>("Dashboard");
+    const [activeSection, setActiveSection] = useState<NavbarSection>("Home");
 
     return (
         <NavbarContext.Provider
