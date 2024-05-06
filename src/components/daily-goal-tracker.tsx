@@ -8,33 +8,36 @@ export default function DailyGoalTracker({
 }) {
     if (typeof goalAchieved === "object" && "error" in goalAchieved) {
         return (
-            <Progress
-                aria-label="Error Loading Daily Goals"
-                label="Loading..."
-                classNames={{
-                    label: "text-xs",
-                }}
-                size="sm"
-                isIndeterminate
-                className="w-64"
-            />
+            <div className="w-52">
+                <Progress
+                    aria-label="Error Loading Daily Goals"
+                    label="Loading..."
+                    classNames={{
+                        label: "text-xs",
+                    }}
+                    size="sm"
+                    isIndeterminate
+                />
+            </div>
         );
     }
 
     return (
-        <Progress
-            aria-label="Daily Goal Tracker"
-            label={`${goalAchieved}/${dailyGoal} Jobs Applied`}
-            classNames={{
-                label: "text-xs text-light-300 dark:text-dark-300",
-                value: "font-semibold text-xs text-light-100 dark:text-dark-100",
-            }}
-            size="sm"
-            value={goalAchieved}
-            maxValue={dailyGoal}
-            color={progressColorMap(goalAchieved)}
-            showValueLabel={true}
-            className="w-64"
-        />
+        <div className="w-52">
+            <Progress
+                aria-label="Daily Goal Tracker"
+                label={`${goalAchieved}/${dailyGoal} Jobs Applied`}
+                classNames={{
+                    label: "text-xs text-light-300 dark:text-dark-300",
+                    value: "font-semibold text-xs text-light-100 dark:text-dark-100",
+                }}
+                size="sm"
+                value={goalAchieved}
+                maxValue={dailyGoal}
+                color={progressColorMap(goalAchieved)}
+                showValueLabel={true}
+                isStriped
+            />
+        </div>
     );
 }
