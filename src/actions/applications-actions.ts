@@ -126,7 +126,7 @@ async function addNewApplicationAction(newApplicationForm: unknown) {
     }
 
     // 3. Redirect to dashboard
-    redirect("/");
+    redirect("/dashboard");
 }
 
 async function deleteApplicationByIdAction(id: string) {
@@ -149,7 +149,7 @@ async function deleteApplicationByIdAction(id: string) {
         };
     }
 
-    revalidatePath("/");
+    revalidatePath("/dashboard");
     return { message: "Application deleted successfully." };
 }
 

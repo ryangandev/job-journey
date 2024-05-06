@@ -324,7 +324,9 @@ export default function ApplicationDetailView({
             {applicationDetail ? (
                 <div className="max-w-[48rem] w-full flex flex-col space-y-6">
                     <Breadcrumbs>
-                        <BreadcrumbItem href="/">Dashboard</BreadcrumbItem>
+                        <BreadcrumbItem href="/dashboard">
+                            Dashboard
+                        </BreadcrumbItem>
                         <BreadcrumbItem>
                             Application Detail - {applicationDetail.company}
                         </BreadcrumbItem>

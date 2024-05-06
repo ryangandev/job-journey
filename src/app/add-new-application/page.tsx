@@ -55,7 +55,7 @@ export default function AddNewApplication() {
 
     const handleNavigateRequest = () => {
         const navigateToDashboard = () => {
-            window.location.href = "/";
+            window.location.href = "/dashboard";
         };
 
         if (!isFormEdited) {
