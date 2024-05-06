@@ -160,7 +160,7 @@ export default function ApplicationsDashboard({
 
     const handleViewApplicationDetail = useCallback(
         (id: string) => {
-            router.push(`/application-detail/${id}`);
+            router.push(`/dashboard/application-detail/${id}`);
         },
         [router],
     );
@@ -210,7 +210,7 @@ export default function ApplicationsDashboard({
                         <div className="flex flex-col">
                             <Link
                                 className="text-bold text-small capitalize line-clamp-1"
-                                href={`/application-detail/${application.id}`}
+                                href={`/dashboard/application-detail/${application.id}`}
                             >
                                 {cellValue as string}
                             </Link>
