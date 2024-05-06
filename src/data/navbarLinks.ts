@@ -17,10 +17,6 @@ const navbarLinks: NavbarLink[] = [
         name: "Goal Tracker",
         url: "/goal-tracker",
     },
-    {
-        name: "Career Sites",
-        url: "/career-sites",
-    },
 ] as const;
 
 export default navbarLinks;

@@ -2,8 +2,7 @@ type NavbarSection =
     | "Dashboard"
     | "Digital Profile"
     | "Interview Prep"
-    | "Goal Tracker"
-    | "Career Sites";
+    | "Goal Tracker";
 
 interface NavbarLink {
     name: NavbarSection;
