@@ -22,22 +22,26 @@ import {
     CheckboxQuestion,
     InputQuestion,
     newApplicationFormData,
-} from "../../data/new-application-form";
+} from "../../../data/new-application-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoMdRefresh, IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
 import { FaCheck } from "react-icons/fa6";
-import { ChevronDownIcon } from "../../assets/svgs";
-import { jobLevelMap, jobSettingMap, jobTypeMap } from "../../data/application";
+import { ChevronDownIcon } from "../../../assets/svgs";
+import {
+    jobLevelMap,
+    jobSettingMap,
+    jobTypeMap,
+} from "../../../data/application";
 import toast from "react-hot-toast";
 import isEqual from "lodash/isEqual";
-import { addNewApplicationAction } from "../../actions/applications-actions";
-import { ApplicationFormSchema } from "../../constants/schema";
+import { addNewApplicationAction } from "../../../actions/applications-actions";
+import { ApplicationFormSchema } from "../../../constants/schema";
 import {
     inputTransitionVariants,
     shakeAnimationVariants,
     inputTransition,
-} from "../../constants/framer-motion-variants-transitions";
-import ConfirmModal from "../../components/confirm-modal";
+} from "../../../constants/framer-motion-variants-transitions";
+import ConfirmModal from "../../../components/confirm-modal";
 
 export default function AddNewApplication() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);

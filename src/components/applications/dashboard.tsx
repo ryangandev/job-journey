@@ -423,7 +423,9 @@ export default function ApplicationsDashboard({
                         </Dropdown>
                         <Button
                             className="bg-foreground text-background"
-                            onPress={() => router.push("/add-new-application")}
+                            onPress={() =>
+                                router.push("/dashboard/add-new-application")
+                            }
                             endContent={
                                 <PlusIcon
                                     width={undefined}
