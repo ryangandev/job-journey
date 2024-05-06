@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useState, useRef } from "react";
+import React, { FormEvent, useState, useRef, useEffect } from "react";
 import {
     Button,
     Input,
@@ -42,6 +42,7 @@ import {
     inputTransition,
 } from "../../../constants/framer-motion-variants-transitions";
 import ConfirmModal from "../../../components/confirm-modal";
+import useNavbar from "../../../hooks/useNavbar";
 
 export default function AddNewApplication() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -54,6 +55,11 @@ export default function AddNewApplication() {
     const [confirmModalQuestion, setConfirmModalQuestion] = useState("");
     const [confirmAction, setConfirmAction] = useState<() => void>(() => {});
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const { setNavbarVisible } = useNavbar();
+
+    useEffect(() => {
+        setNavbarVisible(false);
+    }, []);
 
     const isFormEdited = !isEqual(newApplicationForm, newApplicationFormData);
 
@@ -294,7 +300,7 @@ export default function AddNewApplication() {
     return (
         <>
             <AnimatePresence>
-                <main className="w-screen h-screen flex flex-col items-center pt-4 pb-20">
+                <main className="w-screen h-screen flex flex-col items-center pt-8 pb-12">
                     <Breadcrumbs className="max-w-[36rem] w-full">
                         <BreadcrumbItem onPress={handleNavigateRequest}>
                             Dashboard

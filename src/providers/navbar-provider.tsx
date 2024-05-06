@@ -1,12 +1,6 @@
 "use client";
 
-import {
-    createContext,
-    useState,
-    useEffect,
-    Dispatch,
-    SetStateAction,
-} from "react";
+import { createContext, useState, Dispatch, SetStateAction } from "react";
 import { NavbarSection } from "../models/navigation";
 
 interface NavbarProviderProps {
@@ -14,6 +8,8 @@ interface NavbarProviderProps {
 }
 
 interface NavbarContextProps {
+    navbarVisible: boolean;
+    setNavbarVisible: Dispatch<SetStateAction<boolean>>;
     activeSection: NavbarSection;
     setActiveSection: Dispatch<SetStateAction<NavbarSection>>;
 }
@@ -21,11 +17,19 @@ interface NavbarContextProps {
 const NavbarContext = createContext<NavbarContextProps | null>(null);
 
 export function NavbarProvider({ children }: NavbarProviderProps) {
+    const [navbarVisible, setNavbarVisible] = useState<boolean>(true);
     const [activeSection, setActiveSection] =
         useState<NavbarSection>("Dashboard");
 
     return (
-        <NavbarContext.Provider value={{ activeSection, setActiveSection }}>
+        <NavbarContext.Provider
+            value={{
+                navbarVisible,
+                setNavbarVisible,
+                activeSection,
+                setActiveSection,
+            }}
+        >
             {children}
         </NavbarContext.Provider>
     );
