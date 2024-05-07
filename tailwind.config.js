@@ -24,10 +24,6 @@ module.exports = {
                     400: "#5c5c5e",
                 },
             },
-            fontFamily: {
-                BeauRivage: ["Beau Rivage", "cursive"],
-                MySoul: ["My Soul", "cursive"],
-            },
         },
     },
     darkMode: "class",

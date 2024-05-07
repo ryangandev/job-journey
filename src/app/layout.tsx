@@ -1,11 +1,9 @@
 import { AppProviders } from "../providers/app-providers";
 import "./globals.css";
-import { Inter } from "next/font/google";
 import ThemeSwitch from "../components/theme-switch";
 import { Toaster } from "react-hot-toast";
 import NavBar from "../components/navbar";
-
-const inter = Inter({ subsets: ["latin"] });
+import { inter } from "../assets/fonts";
 
 export const metadata = {
     title: "Job Journey",

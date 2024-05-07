@@ -15,6 +15,7 @@ import Link from "next/link";
 import DailyGoalTracker from "./daily-goal-tracker";
 import navbarLinks from "../data/navbarLinks";
 import useNavbar from "../hooks/useNavbar";
+import { beauRivage } from "../assets/fonts";
 
 export default function NavBar() {
     const { navbarVisible, activeSection, setActiveSection } = useNavbar();
@@ -39,7 +40,7 @@ export default function NavBar() {
             <NavbarContent justify="center" className="space-x-4">
                 <Link
                     href="/"
-                    className="hidden lg:block font-BeauRivage text-3xl select-none"
+                    className={`hidden lg:block ${beauRivage.className} text-3xl select-none`}
                     onClick={() => setActiveSection("Home")}
                 >
                     Job Journey
