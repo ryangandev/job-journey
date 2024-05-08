@@ -65,6 +65,20 @@ model Application {
   salary           String     @default("N/A") @db.VarChar(100)
   link             String     @default("N/A") @db.VarChar(4000)
   updates          Json[]
+  userId           String
+  user             User       @relation(fields: [userId], references: [id])
 
   @@map("applications")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  password     String
+  firstName    String        @db.VarChar(20)
+  lastName     String        @db.VarChar(20)
+  avatar       String?
+  applications Application[]
+
+  @@map("users")
 }
