@@ -81,9 +81,11 @@ const ApplicationDetailSchema = z.object({
     updatedAt: z.date(),
     link: z.string(),
     updates: z.array(UpdateSchemaForDatabaseValidation),
+    userId: z.string(),
 });
 
 const ApplicationFormSchema = z.object({
+    userId: z.string(),
     title: trimmedString(1, 100),
     company: trimmedString(1, 100),
     location: trimmedString(1, 100),

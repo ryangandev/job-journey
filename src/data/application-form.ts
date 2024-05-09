@@ -2,6 +2,7 @@ import { JobSetting, JobType, JobLevel } from "../models/application";
 import { levelOptions, settingOptions, typeOptions } from "./application";
 
 interface ApplicationForm {
+    userId: string;
     title: string;
     company: string;
     location: string;
@@ -116,7 +117,8 @@ const applicationFormQuestions: ApplicationFormQuestion[] = [
     },
 ];
 
-const newApplicationFormData: ApplicationForm = {
+const applicationFormTemplate: ApplicationForm = {
+    userId: "",
     title: "",
     company: "",
     location: "",
@@ -129,7 +131,7 @@ const newApplicationFormData: ApplicationForm = {
     isFavorite: false,
 };
 
-export { applicationFormQuestions, newApplicationFormData };
+export { applicationFormQuestions, applicationFormTemplate };
 export type {
     ApplicationForm,
     ApplicationFormQuestion,

@@ -52,6 +52,7 @@ interface ApplicationDetail extends Application {
     salary: string;
     link: string;
     updates: readonly Update[];
+    userId: string;
 }
 
 export type {

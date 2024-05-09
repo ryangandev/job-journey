@@ -116,6 +116,7 @@ async function addNewApplicationAction(newApplicationForm: unknown) {
                 salary: salaryData,
                 link: validatedFormData.link,
                 updates: updatesData,
+                userId: validatedFormData.userId,
             },
         });
     } catch (dbError) {

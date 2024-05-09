@@ -21,8 +21,8 @@ import {
     SelectQuestion,
     CheckboxQuestion,
     InputQuestion,
-    newApplicationFormData,
-} from "../../../data/new-application-form";
+    applicationFormTemplate,
+} from "../../../data/application-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoMdRefresh, IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
 import { FaCheck } from "react-icons/fa6";
@@ -43,8 +43,14 @@ import {
 } from "../../../constants/framer-motion-variants-transitions";
 import ConfirmModal from "../../../components/confirm-modal";
 import useNavbar from "../../../hooks/useNavbar";
+import useAuth from "../../../hooks/useAuth";
 
 export default function AddNewApplication() {
+    const { userId } = useAuth();
+    const newApplicationFormData = {
+        ...applicationFormTemplate,
+        userId: userId,
+    };
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [direction, setDirection] = useState(1); // 1: next, -1: previous
     const [newApplicationForm, setNewApplicationForm] =
