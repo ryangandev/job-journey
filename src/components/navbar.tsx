@@ -10,15 +10,19 @@ import {
     Avatar,
     DropdownMenu,
     DropdownItem,
+    Button,
+    Link as NextUiLink,
 } from "@nextui-org/react";
 import Link from "next/link";
 import DailyGoalTracker from "./daily-goal-tracker";
+import { beauRivage } from "../assets/fonts";
 import navbarLinks from "../data/navbarLinks";
 import useNavbar from "../hooks/useNavbar";
-import { beauRivage } from "../assets/fonts";
+import useAuth from "../hooks/useAuth";
 
 export default function NavBar() {
-    const { navbarVisible, activeSection, setActiveSection } = useNavbar();
+    const { isAuthenticated } = useAuth();
+    const { navbarVisible, activeSectionPath } = useNavbar();
 
     return (
         <Navbar
@@ -41,7 +45,6 @@ export default function NavBar() {
                 <Link
                     href="/"
                     className={`hidden lg:block ${beauRivage.className} text-3xl select-none`}
-                    onClick={() => setActiveSection("Home")}
                 >
                     Job Journey
                 </Link>
@@ -52,13 +55,9 @@ export default function NavBar() {
                     {navbarLinks.map((link) => (
                         <NavbarItem
                             key={link.url}
-                            isActive={activeSection === link.name}
+                            isActive={activeSectionPath === link.url}
                         >
-                            <Link
-                                href={link.url}
-                                className="text-sm"
-                                onClick={() => setActiveSection(link.name)}
-                            >
+                            <Link href={link.url} className="text-sm">
                                 {link.name}
                             </Link>
                         </NavbarItem>
@@ -73,30 +72,44 @@ export default function NavBar() {
             </NavbarContent>
 
             <NavbarContent justify="center">
-                <Dropdown placement="bottom-end">
-                    <DropdownTrigger>
-                        <Avatar
-                            isBordered
-                            as="button"
-                            className="transition-transform"
-                            color="secondary"
-                            name="Ryan Gan"
-                            size="sm"
-                            src=""
-                        />
-                    </DropdownTrigger>
-                    <DropdownMenu aria-label="Profile Actions" variant="flat">
-                        <DropdownItem key="profile" className="h-7">
-                            <p className="font-semibold">
-                                ryangan.dev@gmail.com
-                            </p>
-                        </DropdownItem>
-                        <DropdownItem key="settings">Settings</DropdownItem>
-                        <DropdownItem key="logout" color="danger">
-                            Log Out
-                        </DropdownItem>
-                    </DropdownMenu>
-                </Dropdown>
+                {isAuthenticated ? (
+                    <Dropdown placement="bottom-end">
+                        <DropdownTrigger>
+                            <Avatar
+                                isBordered
+                                as="button"
+                                className="transition-transform"
+                                color="secondary"
+                                name="Ryan Gan"
+                                size="sm"
+                                src=""
+                            />
+                        </DropdownTrigger>
+                        <DropdownMenu
+                            aria-label="Profile Actions"
+                            variant="flat"
+                        >
+                            <DropdownItem key="profile" className="h-7">
+                                <p className="font-semibold">
+                                    ryangan.dev@gmail.com
+                                </p>
+                            </DropdownItem>
+                            <DropdownItem key="settings">Settings</DropdownItem>
+                            <DropdownItem key="logout" color="danger">
+                                Log Out
+                            </DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                ) : (
+                    <Button
+                        as={NextUiLink}
+                        color="primary"
+                        href="/login"
+                        variant="flat"
+                    >
+                        Login
+                    </Button>
+                )}
             </NavbarContent>
         </Navbar>
     );

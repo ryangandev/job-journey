@@ -1,4 +1,4 @@
-type NavbarSection =
+type NavbarSectionName =
     | "Home"
     | "Dashboard"
     | "Digital Profile"
@@ -6,8 +6,8 @@ type NavbarSection =
     | "Goal Tracker";
 
 interface NavbarLink {
-    name: NavbarSection;
+    name: NavbarSectionName;
     url: string;
 }
 
-export type { NavbarSection, NavbarLink };
+export type { NavbarSectionName, NavbarLink };
