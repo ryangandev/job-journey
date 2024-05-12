@@ -22,28 +22,28 @@ import {
     CheckboxQuestion,
     InputQuestion,
     applicationFormTemplate,
-} from "../../../data/application-form";
+} from "../../../../data/application-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoMdRefresh, IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
 import { FaCheck } from "react-icons/fa6";
-import { ChevronDownIcon } from "../../../assets/svgs";
+import { ChevronDownIcon } from "../../../../assets/svgs";
 import {
     jobLevelMap,
     jobSettingMap,
     jobTypeMap,
-} from "../../../data/application";
+} from "../../../../data/application";
 import toast from "react-hot-toast";
 import isEqual from "lodash/isEqual";
-import { addNewApplicationAction } from "../../../actions/applications-actions";
-import { ApplicationFormSchema } from "../../../constants/schema";
+import { addNewApplicationAction } from "../../../../actions/applications-actions";
+import { ApplicationFormSchema } from "../../../../constants/schema";
 import {
     inputTransitionVariants,
     shakeAnimationVariants,
     inputTransition,
-} from "../../../constants/framer-motion-variants-transitions";
-import ConfirmModal from "../../../components/confirm-modal";
-import useNavbar from "../../../hooks/useNavbar";
-import useAuth from "../../../hooks/useAuth";
+} from "../../../../constants/framer-motion-variants-transitions";
+import ConfirmModal from "../../../../components/confirm-modal";
+import useNavbar from "../../../../hooks/useNavbar";
+import useAuth from "../../../../hooks/useAuth";
 
 export default function AddNewApplication() {
     const { userId } = useAuth();

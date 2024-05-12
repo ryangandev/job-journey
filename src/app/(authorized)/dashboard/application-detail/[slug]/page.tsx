@@ -1,5 +1,5 @@
-import { getSpecificApplicationDetailByIdAction } from "../../../../actions/applications-actions";
-import ApplicationDetailView from "../../../../components/applications/application-detail-view";
+import { getSpecificApplicationDetailByIdAction } from "../../../../../actions/applications-actions";
+import ApplicationDetailView from "../../../../../components/applications/application-detail-view";
 
 export default async function Page({ params }: { params: { slug: string } }) {
     const { slug } = params;

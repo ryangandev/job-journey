@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { getApplicationsListAction } from "../../actions/applications-actions";
+import { getApplicationsListAction } from "../../../actions/applications-actions";
 
 // Problem:
 // Due to this line in dashboard.tsx: selectionMode="multiple" on the nextui table component causing this error:
@@ -12,7 +12,7 @@ import { getApplicationsListAction } from "../../actions/applications-actions";
 // https://github.com/nextui-org/nextui/issues/779
 
 const ApplicationsDashboard = dynamic(
-    () => import("../../components/applications/dashboard"),
+    () => import("../../../components/applications/dashboard"),
     { ssr: false },
 );
 
