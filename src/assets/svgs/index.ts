@@ -4,3 +4,5 @@ export * from "./search-icon";
 export * from "./vertical-dot-icon";
 export * from "./anchor-icon";
 export * from "./heart-icon";
+export * from "./mail-icon";
+export * from "./lock-icon";
