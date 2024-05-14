@@ -1,16 +1,16 @@
 import React from "react";
-import LoginForm from "../../../components/login-form";
+import RegisterForm from "../../../components/register-form";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Login",
-    description: "Login page",
+    title: "Register",
+    description: "Register page",
 };
 
-export default function LoginPage() {
+export default function RegisterPage() {
     return (
         <div className="h-screen flex justify-center items-center">
-            <LoginForm />
+            <RegisterForm />
         </div>
     );
 }

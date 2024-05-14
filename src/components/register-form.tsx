@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { LoginSchema } from "../schemas/auth-schema";
+import { RegisterSchema } from "../schemas/auth-schema";
 import {
     Input,
     Card,
@@ -13,34 +13,35 @@ import {
     Button,
     Link,
 } from "@nextui-org/react";
-import { LockIcon, MailIcon } from "../assets/svgs";
+import { LockIcon, MailIcon, UserIcon } from "../assets/svgs";
 import OAuthLogins from "./oAuth-logins";
 import Divider from "./divider";
-import { loginAction } from "../actions/auth-actions";
+import { registerAction } from "../actions/auth-actions";
 import { useState } from "react";
 import FormMessage from "./auth/form-message";
 
-export default function LoginForm() {
+export default function RegisterForm() {
     const [errorMsg, setErrorMsg] = useState<string | undefined>("");
     const [successMsg, setSuccessMsg] = useState<string | undefined>("");
     const {
         handleSubmit,
         register,
         formState: { errors, isSubmitting, isDirty, isValid },
-    } = useForm<z.infer<typeof LoginSchema>>({
-        resolver: zodResolver(LoginSchema),
+    } = useForm<z.infer<typeof RegisterSchema>>({
+        resolver: zodResolver(RegisterSchema),
         defaultValues: {
+            name: "",
             email: "",
             password: "",
         },
     });
 
-    const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+    const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
         console.log("onSubmit", values);
         setErrorMsg("");
         setSuccessMsg("");
 
-        loginAction(values).then((res) => {
+        registerAction(values).then((res) => {
             setErrorMsg(res.error);
             setSuccessMsg(res.success);
         });
@@ -50,12 +51,12 @@ export default function LoginForm() {
         <Card className="max-w-md w-full p-6">
             <CardHeader className="flex flex-col items-start space-y-2">
                 <div className="w-full flex justify-between items-center">
-                    <h2 className="text-xl font-semibold">Sign in</h2>
+                    <h2 className="text-xl font-semibold">Register</h2>
                     <FormMessage type="error" message={errorMsg} />
                     <FormMessage type="success" message={successMsg} />
                 </div>
                 <p className="text-base text-light-400 dark:text-dark-400 line-clamp-1">
-                    to your account
+                    to create an account
                 </p>
             </CardHeader>
             <CardBody className="space-y-4">
@@ -64,6 +65,25 @@ export default function LoginForm() {
                     onSubmit={handleSubmit(onSubmit)}
                     className="space-y-2"
                 >
+                    <Input
+                        {...register("name", { required: true })}
+                        name="name"
+                        type="text"
+                        classNames={{
+                            label: "max-h-5", // Restrict label to 1 line
+                        }}
+                        endContent={
+                            <UserIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                        }
+                        label={`Name ${
+                            errors?.name ? `- ${errors?.name?.message}` : ""
+                        }`}
+                        placeholder="Enter your name"
+                        variant="bordered"
+                        isInvalid={!!errors?.name}
+                        autoComplete="off"
+                        autoFocus
+                    />
                     <Input
                         {...register("email", { required: true })}
                         name="email"
@@ -81,7 +101,6 @@ export default function LoginForm() {
                         variant="bordered"
                         isInvalid={!!errors?.email}
                         autoComplete="off"
-                        autoFocus
                     />
                     <Input
                         {...register("password", { required: true })}
@@ -110,16 +129,16 @@ export default function LoginForm() {
                         isLoading={isSubmitting}
                         isDisabled={isSubmitting}
                     >
-                        Login
+                        Create an account
                     </Button>
                 </form>
                 <Divider label="or" />
                 <OAuthLogins />
             </CardBody>
             <CardFooter className="flex space-x-2 text-sm">
-                <span className="line-clamp-1">Need an account?</span>
-                <Link href="/auth/register" size="sm" color="primary">
-                    Register
+                <span className="line-clamp-1">Already have an account?</span>
+                <Link href="/auth/login" size="sm" color="primary">
+                    Login
                 </Link>
             </CardFooter>
         </Card>
