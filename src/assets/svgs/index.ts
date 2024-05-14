@@ -6,3 +6,4 @@ export * from "./anchor-icon";
 export * from "./heart-icon";
 export * from "./mail-icon";
 export * from "./lock-icon";
+export * from "./user-icon";
