@@ -30,7 +30,7 @@ export default function RegisterForm() {
     } = useForm<z.infer<typeof RegisterSchema>>({
         resolver: zodResolver(RegisterSchema),
         defaultValues: {
-            name: "",
+            username: "",
             email: "",
             password: "",
         },
@@ -66,8 +66,8 @@ export default function RegisterForm() {
                     className="space-y-2"
                 >
                     <Input
-                        {...register("name", { required: true })}
-                        name="name"
+                        {...register("username", { required: true })}
+                        name="username"
                         type="text"
                         classNames={{
                             label: "max-h-5", // Restrict label to 1 line
@@ -76,11 +76,13 @@ export default function RegisterForm() {
                             <UserIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                         }
                         label={`Name ${
-                            errors?.name ? `- ${errors?.name?.message}` : ""
+                            errors?.username
+                                ? `- ${errors?.username?.message}`
+                                : ""
                         }`}
-                        placeholder="Enter your name"
+                        placeholder="Enter your username"
                         variant="bordered"
-                        isInvalid={!!errors?.name}
+                        isInvalid={!!errors?.username}
                         autoComplete="off"
                         autoFocus
                     />
