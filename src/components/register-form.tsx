@@ -41,7 +41,7 @@ export default function RegisterForm() {
         setErrorMsg("");
         setSuccessMsg("");
 
-        registerAction(values).then((res) => {
+        await registerAction(values).then((res) => {
             setErrorMsg(res.error);
             setSuccessMsg(res.success);
         });
@@ -75,7 +75,7 @@ export default function RegisterForm() {
                         endContent={
                             <UserIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                         }
-                        label={`Name ${
+                        label={`Username ${
                             errors?.username
                                 ? `- ${errors?.username?.message}`
                                 : ""

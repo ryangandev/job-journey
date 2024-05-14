@@ -40,7 +40,7 @@ export default function LoginForm() {
         setErrorMsg("");
         setSuccessMsg("");
 
-        loginAction(values).then((res) => {
+        await loginAction(values).then((res) => {
             setErrorMsg(res.error);
             setSuccessMsg(res.success);
         });
