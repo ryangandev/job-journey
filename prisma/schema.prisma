@@ -50,6 +50,7 @@ enum JobStatus {
 
 model Application {
   id               String     @id @default(uuid())
+  userId           String     @map("user_id")
   title            String     @default("N/A") @db.VarChar(100)
   company          String     @default("N/A") @db.VarChar(100)
   location         String     @default("N/A") @db.VarChar(100)
@@ -57,28 +58,48 @@ model Application {
   type             JobType    @default(full_time)
   level            JobLevel   @default(entry)
   status           JobStatus  @default(applied)
-  isFavorite       Boolean    @default(false)
+  isFavorite       Boolean    @default(false) @map("is_favorite")
   replied          Boolean    @default(false)
-  interviewAquired Boolean    @default(false)
-  appliedAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  interviewAquired Boolean    @default(false) @map("interview_aquired")
+  appliedAt        DateTime   @default(now()) @map("applied_at")
+  updatedAt        DateTime   @updatedAt @map("updated_at")
   salary           String     @default("N/A") @db.VarChar(100)
   link             String     @default("N/A") @db.VarChar(4000)
   updates          Json[]
-  userId           String
   user             User       @relation(fields: [userId], references: [id])
 
   @@map("applications")
 }
 
 model User {
-  id           String        @id @default(uuid())
-  email        String        @unique
-  password     String
-  firstName    String        @db.VarChar(20)
-  lastName     String        @db.VarChar(20)
-  avatar       String?
-  applications Application[]
+  id            String        @id @default(cuid())
+  name          String?
+  email         String?       @unique
+  emailVerified DateTime?     @map("email_verified")
+  image         String?       @map("image")
+  password      String?
+  accounts      Account[]
+  applications  Application[]
 
   @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
 }
