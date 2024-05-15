@@ -1,9 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { RegisterSchema } from "../schemas/auth-schema";
 import {
     Input,
     Card,
@@ -13,12 +13,13 @@ import {
     Button,
     Link,
 } from "@nextui-org/react";
-import { LockIcon, MailIcon, UserIcon } from "../assets/svgs";
-import OAuthLogins from "./oAuth-logins";
-import Divider from "./divider";
+
+import { RegisterSchema } from "../schemas/auth-schema";
 import { registerAction } from "../actions/auth-actions";
-import { useState } from "react";
+import { LockIcon, MailIcon, UserIcon } from "../assets/svgs";
+import Divider from "./divider";
 import FormMessage from "./auth/form-message";
+import OAuthLogins from "./oAuth-logins";
 
 export default function RegisterForm() {
     const [errorMsg, setErrorMsg] = useState<string | undefined>("");
@@ -30,7 +31,7 @@ export default function RegisterForm() {
     } = useForm<z.infer<typeof RegisterSchema>>({
         resolver: zodResolver(RegisterSchema),
         defaultValues: {
-            username: "",
+            name: "",
             email: "",
             password: "",
         },
@@ -66,8 +67,8 @@ export default function RegisterForm() {
                     className="space-y-2"
                 >
                     <Input
-                        {...register("username", { required: true })}
-                        name="username"
+                        {...register("name", { required: true })}
+                        name="name"
                         type="text"
                         classNames={{
                             label: "max-h-5", // Restrict label to 1 line
@@ -75,14 +76,12 @@ export default function RegisterForm() {
                         endContent={
                             <UserIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                         }
-                        label={`Username ${
-                            errors?.username
-                                ? `- ${errors?.username?.message}`
-                                : ""
+                        label={`Name ${
+                            errors?.name ? `- ${errors?.name?.message}` : ""
                         }`}
-                        placeholder="Enter your username"
+                        placeholder="Enter your name"
                         variant="bordered"
-                        isInvalid={!!errors?.username}
+                        isInvalid={!!errors?.name}
                         autoComplete="off"
                         autoFocus
                     />

@@ -43,13 +43,11 @@ import {
 } from "../../../../constants/framer-motion-variants-transitions";
 import ConfirmModal from "../../../../components/confirm-modal";
 import useNavbar from "../../../../hooks/useNavbar";
-import useAuth from "../../../../hooks/useAuth";
 
 export default function AddNewApplication() {
-    const { userId } = useAuth();
     const newApplicationFormData = {
         ...applicationFormTemplate,
-        userId: userId,
+        userId: "3f0c7659-b023-422b-9b49-9b9d43cf2e26",
     };
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [direction, setDirection] = useState(1); // 1: next, -1: previous

@@ -1,9 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { LoginSchema } from "../schemas/auth-schema";
 import {
     Input,
     Card,
@@ -13,12 +13,13 @@ import {
     Button,
     Link,
 } from "@nextui-org/react";
-import { LockIcon, MailIcon } from "../assets/svgs";
-import OAuthLogins from "./oAuth-logins";
-import Divider from "./divider";
+
+import { LoginSchema } from "../schemas/auth-schema";
 import { loginAction } from "../actions/auth-actions";
-import { useState } from "react";
+import { LockIcon, MailIcon } from "../assets/svgs";
+import Divider from "./divider";
 import FormMessage from "./auth/form-message";
+import OAuthLogins from "./oAuth-logins";
 
 export default function LoginForm() {
     const [errorMsg, setErrorMsg] = useState<string | undefined>("");
@@ -41,6 +42,7 @@ export default function LoginForm() {
         setSuccessMsg("");
 
         await loginAction(values).then((res) => {
+            if (!res) return;
             setErrorMsg(res.error);
             setSuccessMsg(res.success);
         });
@@ -80,7 +82,7 @@ export default function LoginForm() {
                         placeholder="Enter your email"
                         variant="bordered"
                         isInvalid={!!errors?.email}
-                        autoComplete="off"
+                        autoComplete="on"
                         autoFocus
                     />
                     <Input

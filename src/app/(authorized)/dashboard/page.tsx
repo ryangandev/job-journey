@@ -1,5 +1,7 @@
 import dynamic from "next/dynamic";
+
 import { getApplicationsListAction } from "../../../actions/applications-actions";
+import { auth, signOut } from "../../../auth";
 
 // Problem:
 // Due to this line in dashboard.tsx: selectionMode="multiple" on the nextui table component causing this error:
@@ -17,11 +19,26 @@ const ApplicationsDashboard = dynamic(
 );
 
 export default async function Dashboard() {
+    const session = await auth();
     const applications = await getApplicationsListAction();
 
+    console.log("session", session);
     return (
         <main className="w-screen py-4 px-4">
             <div className="max-w-7xl w-full mx-auto">
+                <form
+                    action={async () => {
+                        "use server";
+
+                        await signOut({
+                            redirectTo: "/auth/login",
+                        });
+                    }}
+                >
+                    <button type="submit" className="bg-gray">
+                        Sign out
+                    </button>
+                </form>
                 <ApplicationsDashboard applicationsData={applications} />
             </div>
         </main>
