@@ -13,6 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  USER
+}
+
 enum JobSetting {
   on_site
   remote
@@ -48,44 +53,29 @@ enum JobStatus {
   ghosted
 }
 
-enum UserRole {
-  ADMIN
-  USER
-}
-
-model Application {
-  id               String     @id @default(uuid())
-  userId           String     @map("user_id")
-  title            String     @default("N/A") @db.VarChar(100)
-  company          String     @default("N/A") @db.VarChar(100)
-  location         String     @default("N/A") @db.VarChar(100)
-  setting          JobSetting @default(on_site)
-  type             JobType    @default(full_time)
-  level            JobLevel   @default(entry)
-  status           JobStatus  @default(applied)
-  isFavorite       Boolean    @default(false) @map("is_favorite")
-  replied          Boolean    @default(false)
-  interviewAquired Boolean    @default(false) @map("interview_aquired")
-  appliedAt        DateTime   @default(now()) @map("applied_at")
-  updatedAt        DateTime   @updatedAt @map("updated_at")
-  salary           String     @default("N/A") @db.VarChar(100)
-  link             String     @default("N/A") @db.VarChar(4000)
-  updates          Json[]
-  user             User       @relation(fields: [userId], references: [id])
-
-  @@map("applications")
+enum ProfilePlatform {
+  discord
+  github
+  gmail
+  hackerrank
+  leetcode
+  linkedin
+  twitter
+  portfolio
 }
 
 model User {
-  id            String        @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String?       @unique
-  emailVerified DateTime?     @map("email_verified")
-  image         String?       @map("image")
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?   @map("image")
   password      String?
-  role          UserRole      @default(USER)
-  accounts      Account[]
-  applications  Application[]
+
+  role         UserRole      @default(USER)
+  accounts     Account[]
+  applications Application[]
+  profileLinks ProfileLink[]
 
   @@map("users")
 }
@@ -108,4 +98,39 @@ model Account {
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
+}
+
+model Application {
+  id               String     @id @default(uuid())
+  userId           String     @map("user_id")
+  title            String     @default("N/A") @db.VarChar(100)
+  company          String     @default("N/A") @db.VarChar(100)
+  location         String     @default("N/A") @db.VarChar(100)
+  setting          JobSetting @default(on_site)
+  type             JobType    @default(full_time)
+  level            JobLevel   @default(entry)
+  status           JobStatus  @default(applied)
+  isFavorite       Boolean    @default(false) @map("is_favorite")
+  replied          Boolean    @default(false)
+  interviewAquired Boolean    @default(false) @map("interview_aquired")
+  appliedAt        DateTime   @default(now()) @map("applied_at")
+  updatedAt        DateTime   @updatedAt @map("updated_at")
+  salary           String     @default("N/A") @db.VarChar(100)
+  link             String     @default("N/A") @db.VarChar(4000)
+  updates          Json[]
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("applications")
+}
+
+model ProfileLink {
+  id       String @id @default(cuid())
+  userId   String @map("user_id")
+  platform String
+  url      String
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("profile_links")
 }
