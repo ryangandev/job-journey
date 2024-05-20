@@ -1,14 +1,58 @@
 "use server";
 
-import { prisma } from "../libs/db";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import {
-    ApplicationDetailSchema,
-    ApplicationFormSchema,
-    PartialApplicationDetailSchema,
-} from "../constants/schema";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+
+import { prisma } from "../libs/db";
+import { PartialApplicationDetailSchema } from "../constants/schema";
+import { NewApplicationFormSchema } from "../schemas/application-schema";
+
+async function addNewApplicationAction(
+    newApplicationForm: z.infer<typeof NewApplicationFormSchema>,
+) {
+    // 1. Server-side validation
+    const result = NewApplicationFormSchema.safeParse(newApplicationForm);
+    if (!result.success) {
+        let errorMessages = "";
+
+        result.error.issues.forEach((issue) => {
+            errorMessages += issue.path[0] + ": " + issue.message + ".\n";
+        });
+
+        return {
+            error: errorMessages,
+        };
+    }
+
+    // 2. Add the new application to the database if the form data is valid
+    const parsedFormData = result.data;
+    try {
+        await prisma.application.create({
+            data: {
+                userId: parsedFormData.userId,
+                title: parsedFormData.title,
+                company: parsedFormData.company,
+                location: parsedFormData.location,
+                setting: parsedFormData.setting,
+                type: parsedFormData.type,
+                level: parsedFormData.level,
+                salary: parsedFormData.salary,
+                jobPostingLink: [parsedFormData.jobPostingLink],
+                isFavorite: parsedFormData.isFavorite,
+            },
+        });
+    } catch (dbError) {
+        console.log("Database operation failed:", dbError);
+        return {
+            error: "Failed to add new application.",
+        };
+    }
+
+    // 3. Redirect to dashboard
+    redirect("/dashboard");
+}
 
 async function getApplicationsListAction() {
     try {
@@ -53,81 +97,13 @@ async function getSpecificApplicationDetailByIdAction(id: string) {
             };
         }
 
-        // Parse the application detail to ensure it matches the schema
-        // Using zod's safeParse to validate to avoid throwing an error
-        const parsedApplicationDetail =
-            ApplicationDetailSchema.safeParse(applicationDetail);
-
-        // If the application detail does not match the schema, log the error
-        if (!parsedApplicationDetail.success) {
-            console.log(
-                `Application with id ${id} does not match the schema.`,
-                parsedApplicationDetail.error,
-            );
-            return {
-                error: `Application has invalid data.`,
-            };
-        }
-
-        return parsedApplicationDetail.data;
+        return applicationDetail;
     } catch (error) {
         console.log(error);
         return {
             error: "There was an error loading the application.",
         };
     }
-}
-
-async function addNewApplicationAction(newApplicationForm: unknown) {
-    // 1. Server-side validation
-    const result = ApplicationFormSchema.safeParse(newApplicationForm);
-    if (!result.success) {
-        let errorMessages = "";
-
-        result.error.issues.forEach((issue) => {
-            errorMessages += issue.path[0] + ": " + issue.message + ".\n";
-        });
-
-        return {
-            error: errorMessages,
-        };
-    }
-
-    // 2. Add the new application to the database if the form data is valid
-    const validatedFormData = result.data;
-    try {
-        const salaryData =
-            validatedFormData.salary === "" ? "N/A" : validatedFormData.salary;
-
-        const updatesData =
-            validatedFormData.updates === ""
-                ? []
-                : [{ content: validatedFormData.updates, date: new Date() }];
-
-        await prisma.application.create({
-            data: {
-                title: validatedFormData.title,
-                company: validatedFormData.company,
-                location: validatedFormData.location,
-                setting: validatedFormData.setting,
-                type: validatedFormData.type,
-                level: validatedFormData.level,
-                isFavorite: validatedFormData.isFavorite,
-                salary: salaryData,
-                link: validatedFormData.link,
-                updates: updatesData,
-                userId: validatedFormData.userId,
-            },
-        });
-    } catch (dbError) {
-        console.log("Database operation failed:", dbError);
-        return {
-            error: "Failed to add new application.",
-        };
-    }
-
-    // 3. Redirect to dashboard
-    redirect("/dashboard");
 }
 
 async function deleteApplicationByIdAction(id: string) {
@@ -177,17 +153,17 @@ async function patchApplicationDetailAction(id: string, update: unknown) {
     }
 
     // 2. Apply the update
-    try {
-        await prisma.application.update({
-            where: { id },
-            data: result.data,
-        });
-    } catch (error) {
-        console.log("Error:", error);
-        return {
-            error: "Failed to update application.",
-        };
-    }
+    // try {
+    //     await prisma.application.update({
+    //         where: { id },
+    //         data: result.data,
+    //     });
+    // } catch (error) {
+    //     console.log("Error:", error);
+    //     return {
+    //         error: "Failed to update application.",
+    //     };
+    // }
 
     revalidatePath(`/applications/${id}`);
     return { message: `[${updateKeys[0]}] is updated!` };

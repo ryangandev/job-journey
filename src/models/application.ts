@@ -16,6 +16,7 @@ type JobLevel =
     | "executive";
 
 type JobStatus =
+    | "not_applied"
     | "applied"
     | "interviewing"
     | "offered"

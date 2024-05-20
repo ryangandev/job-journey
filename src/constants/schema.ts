@@ -21,17 +21,13 @@ const JobLevelSchema = z.enum([
     "executive",
 ]);
 const JobStatusSchema = z.enum([
+    "not_applied",
     "applied",
     "interviewing",
     "offered",
     "rejected",
     "ghosted",
 ]);
-
-const QASchema = z.object({
-    question: z.string(),
-    answer: z.string(),
-});
 
 const UpdateSchemaForDatabaseValidation = z.object({
     date: z
@@ -56,14 +52,6 @@ const UpdateSchemaForFormValidation = z.object({
     content: z.string(),
 });
 
-// Custom string validation to reuse in schemas
-const trimmedString = (minLength: number, maxLength: number) =>
-    z
-        .string()
-        .trim()
-        .min(minLength, { message: "Must not be empty." })
-        .max(maxLength);
-
 const ApplicationDetailSchema = z.object({
     id: z.string(),
     title: z.string(),
@@ -84,20 +72,6 @@ const ApplicationDetailSchema = z.object({
     userId: z.string(),
 });
 
-const ApplicationFormSchema = z.object({
-    userId: z.string(),
-    title: trimmedString(1, 100),
-    company: trimmedString(1, 100),
-    location: trimmedString(1, 100),
-    setting: JobSettingSchema,
-    type: JobTypeSchema,
-    level: JobLevelSchema,
-    salary: trimmedString(0, 100),
-    link: trimmedString(1, 4000),
-    updates: trimmedString(0, 4000),
-    isFavorite: z.boolean(),
-});
-
 const PartialApplicationDetailSchema = ApplicationDetailSchema.omit({
     id: true,
     appliedAt: true,
@@ -109,9 +83,7 @@ const PartialApplicationDetailSchema = ApplicationDetailSchema.omit({
     .partial();
 
 export {
-    QASchema,
     UpdateSchemaForDatabaseValidation,
     ApplicationDetailSchema,
-    ApplicationFormSchema,
     PartialApplicationDetailSchema,
 };

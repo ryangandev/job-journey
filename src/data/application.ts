@@ -75,6 +75,7 @@ const searchFilterOptions: SearchFilterOption[] = [
 ];
 
 const statusOptions = [
+    "not_applied",
     "applied",
     "interviewing",
     "offered",
@@ -105,6 +106,7 @@ const repliedOptions = ["Replied", "No Reply"];
 const interviewAquiredOptions = ["Interview Aquired", "No Interview"];
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
+    not_applied: "warning",
     applied: "primary",
     interviewing: "secondary",
     offered: "success",
@@ -131,6 +133,7 @@ const searchFilterOptionsMap: Record<string, string> = {
 };
 
 const jobStatusMap: Record<string, string> = {
+    not_applied: "Not Applied",
     applied: "Applied",
     interviewing: "Interviewing",
     offered: "Offered",

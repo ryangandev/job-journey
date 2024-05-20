@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 function capitalize(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
@@ -11,4 +13,12 @@ function getNavbarSectionPath(path: string): string {
     return segments.length > 0 && segments[0] !== "" ? "/" + segments[0] : "/";
 }
 
-export { capitalize, getNavbarSectionPath };
+function trimmedStringSchema(minLength: number, maxLength: number) {
+    return z
+        .string()
+        .trim()
+        .min(minLength, { message: "Must not be empty." })
+        .max(maxLength);
+}
+
+export { capitalize, getNavbarSectionPath, trimmedStringSchema };
