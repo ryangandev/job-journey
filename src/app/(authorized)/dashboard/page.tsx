@@ -1,7 +1,15 @@
 import dynamic from "next/dynamic";
+import { Metadata } from "next";
 
-import { getApplicationsListAction } from "../../../actions/applications-actions";
-import { auth, signOut } from "../../../auth";
+import { auth } from "../../../auth";
+import { getApplicationsDashboardByUserId } from "../../../data/dashboard";
+import NotAuthorized from "../../../components/not-authorized";
+
+export const metadata: Metadata = {
+    title: "Dashboard",
+    description:
+        "An intuitive dashboard that keeps track of your job applications in one place.",
+};
 
 // Problem:
 // Due to this line in dashboard.tsx: selectionMode="multiple" on the nextui table component causing this error:
@@ -14,31 +22,24 @@ import { auth, signOut } from "../../../auth";
 // https://github.com/nextui-org/nextui/issues/779
 
 const ApplicationsDashboard = dynamic(
-    () => import("../../../components/applications/dashboard"),
+    () => import("../../../components/dashboard/dashboard"),
     { ssr: false },
 );
 
 export default async function Dashboard() {
     const session = await auth();
-    const applications = await getApplicationsListAction();
 
-    console.log("session", session);
+    if (!session || !session.user || !session.user.id) {
+        return <NotAuthorized />;
+    }
+
+    const applications = await getApplicationsDashboardByUserId(
+        session.user.id,
+    );
+
     return (
-        <main className="w-screen py-4 px-4">
+        <main className="p-4">
             <div className="max-w-7xl w-full mx-auto">
-                <form
-                    action={async () => {
-                        "use server";
-
-                        await signOut({
-                            redirectTo: "/auth/login",
-                        });
-                    }}
-                >
-                    <button type="submit" className="bg-gray">
-                        Sign out
-                    </button>
-                </form>
                 <ApplicationsDashboard applicationsData={applications} />
             </div>
         </main>

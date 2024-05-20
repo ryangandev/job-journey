@@ -1,5 +1,9 @@
 "use client";
 
+import { useState, useMemo, useCallback, Key, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import toast from "react-hot-toast";
 import {
     Table,
     TableHeader,
@@ -21,48 +25,35 @@ import {
     Divider,
     useDisclosure,
 } from "@nextui-org/react";
-import { useState, useMemo, useCallback, Key, useEffect } from "react";
-import {
-    columns,
-    statusOptions,
-    jobStatusMap,
-    jobSettingMap,
-    jobTypeMap,
-    jobLevelMap,
-    statusColorMap,
-    searchFilterOptions,
-    searchFilterOptionsMap,
-} from "../../data/application";
-import { Application } from "../../models/application";
+import { FaCheck } from "react-icons/fa6";
+import { RxCross1 } from "react-icons/rx";
+import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
+
 import {
     ChevronDownIcon,
     PlusIcon,
     SearchIcon,
     VerticalDotsIcon,
 } from "../../assets/svgs";
-import { FaCheck } from "react-icons/fa6";
-import { RxCross2 } from "react-icons/rx";
-import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
-import { useRouter } from "next/navigation";
+import ConfirmModal from "../confirm-modal";
+import CustomDropdown from "../custom-dropdown";
+import {
+    statusOptions,
+    jobStatusMap,
+    jobSettingMap,
+    jobTypeMap,
+    jobLevelMap,
+    statusColorMap,
+} from "../../data/application";
+import {
+    columns,
+    searchFilterOptions,
+    searchFilterOptionsMap,
+} from "../../data/dashboard";
+import { Application } from "../../models/application";
+import { SearchFilterOption } from "../../models/dashboard";
 import { deleteApplicationByIdAction } from "../../actions/applications-actions";
 import { dateToTwoDigitsString } from "../../libs/time-utils";
-import toast from "react-hot-toast";
-import ConfirmModal from "../confirm-modal";
-import Link from "next/link";
-import CustomDropdown from "../custom-dropdown";
-import { SearchFilterOption } from "../../models/dashboard";
-
-const INITIAL_VISIBLE_COLUMNS = [
-    "isFavorite",
-    "company",
-    "title",
-    "status",
-    "replied",
-    "interviewAquired",
-    "appliedAt",
-    "updatedAt",
-    "actions",
-];
 
 export default function ApplicationsDashboard({
     applicationsData,
@@ -74,14 +65,8 @@ export default function ApplicationsDashboard({
     const [searchFilterOption, setSearchFilterOption] =
         useState<SearchFilterOption>("company");
     const [searchFilterValue, setSearchFilterValue] = useState("");
-    const [selectedTableKeys, setSelectedTableKeys] = useState<Selection>(
-        new Set([]),
-    );
-    const [visibleColumns, setVisibleColumns] = useState<Selection>(
-        new Set(INITIAL_VISIBLE_COLUMNS),
-    );
     const [statusFilter, setStatusFilter] = useState<Selection>("all");
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(20);
     const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
         column: "appliedAt",
         direction: "descending",
@@ -102,17 +87,7 @@ export default function ApplicationsDashboard({
         }
     }, [applicationsData]);
 
-    const pages = Math.ceil(applications.length / rowsPerPage);
-
     const hasSearchFilter = Boolean(searchFilterValue);
-
-    const headerColumns = useMemo(() => {
-        if (visibleColumns === "all") return columns;
-
-        return columns.filter((column) =>
-            Array.from(visibleColumns).includes(column.uid),
-        );
-    }, [visibleColumns]);
 
     const filteredItems = useMemo(() => {
         let filteredApplications = [...applications];
@@ -158,6 +133,8 @@ export default function ApplicationsDashboard({
         return sortedFilteredItems.slice(start, end);
     }, [page, sortedFilteredItems, rowsPerPage]);
 
+    const pages = Math.ceil(filteredItems.length / rowsPerPage) || 1;
+
     const handleViewApplicationDetail = useCallback(
         (id: string) => {
             router.push(`/dashboard/application-detail/${id}`);
@@ -184,9 +161,9 @@ export default function ApplicationsDashboard({
 
     const renderBooleanCell = useCallback((value: boolean) => {
         return value ? (
-            <FaCheck className="text-green-500 text-medium" />
+            <FaCheck className="text-green-500" size={16} />
         ) : (
-            <RxCross2 className="text-rose-500 text-large" />
+            <RxCross1 className="text-rose-500" size={16} />
         );
     }, []);
 
@@ -199,9 +176,15 @@ export default function ApplicationsDashboard({
                     return (
                         <div>
                             {application.isFavorite ? (
-                                <MdFavorite className="text-red-500 text-lg" />
+                                <MdFavorite
+                                    className="text-red-500"
+                                    size={18}
+                                />
                             ) : (
-                                <MdFavoriteBorder className="text-light-200 dark:text-dark-200 text-lg" />
+                                <MdFavoriteBorder
+                                    className="text-light-200 dark:text-dark-200"
+                                    size={18}
+                                />
                             )}
                         </div>
                     );
@@ -250,7 +233,7 @@ export default function ApplicationsDashboard({
                     return (
                         <div>
                             <Chip
-                                className="border-none gap-1 text-default-600"
+                                className="border-none gap-1 text-default-600 select-none"
                                 color={statusColorMap[application.status]}
                                 size="md"
                                 variant="dot"
@@ -267,7 +250,7 @@ export default function ApplicationsDashboard({
                     );
                 case "interviewAquired":
                     return (
-                        <div className="flex pl-4">
+                        <div className="flex pl-6">
                             {renderBooleanCell(cellValue as boolean)}
                         </div>
                     );
@@ -362,36 +345,41 @@ export default function ApplicationsDashboard({
                         isClearable
                         classNames={{
                             base: "w-full sm:max-w-[44%]",
-                            inputWrapper: "border-1",
+                            inputWrapper: "border-1 px-2",
                         }}
                         placeholder={`Search by ${searchFilterOptionsMap[searchFilterOption]}`}
                         size="md"
                         startContent={
-                            <SearchIcon className="text-default-300" />
+                            <CustomDropdown
+                                triggerType="custom"
+                                customTrigger={
+                                    <button className="flex space-x-1 p-1">
+                                        <SearchIcon className="text-default-800" />
+                                        <ChevronDownIcon
+                                            className="text-default-800"
+                                            width="0.75em"
+                                        />
+                                    </button>
+                                }
+                                buttonVariant="light"
+                                label="Search Filter"
+                                value={searchFilterOption}
+                                valueOptions={searchFilterOptions}
+                                handleUpdate={(selectedKey) => {
+                                    setSearchFilterOption(
+                                        selectedKey as SearchFilterOption,
+                                    );
+                                }}
+                                displayMapper={(value) =>
+                                    searchFilterOptionsMap[value]
+                                }
+                            />
                         }
                         value={searchFilterValue}
                         variant="bordered"
                         onClear={() => setSearchFilterValue("")}
                         onValueChange={handleOnSearchChange}
                     />
-                    <div className="flex space-x-2 items-center">
-                        <span>Search by: </span>
-                        <CustomDropdown
-                            triggerType="button"
-                            buttonVariant="bordered"
-                            label="Search Filter"
-                            value={searchFilterOption}
-                            valueOptions={searchFilterOptions}
-                            handleUpdate={(selectedKey) => {
-                                setSearchFilterOption(
-                                    selectedKey as SearchFilterOption,
-                                );
-                            }}
-                            displayMapper={(value) =>
-                                searchFilterOptionsMap[value]
-                            }
-                        />
-                    </div>
 
                     <div className="flex gap-3">
                         <Dropdown>
@@ -446,10 +434,10 @@ export default function ApplicationsDashboard({
                             className="bg-transparent outline-none text-default-400 text-small"
                             onChange={handleOnRowsPerPageChange}
                         >
-                            <option value="10">10</option>
                             <option value="20">20</option>
                             <option value="30">30</option>
                             <option value="40">40</option>
+                            <option value="50">50</option>
                         </select>
                     </label>
                 </div>
@@ -459,7 +447,6 @@ export default function ApplicationsDashboard({
         searchFilterOption,
         searchFilterValue,
         statusFilter,
-        visibleColumns,
         handleOnSearchChange,
         handleOnRowsPerPageChange,
         applications.length,
@@ -481,18 +468,12 @@ export default function ApplicationsDashboard({
                     variant="light"
                     onChange={setPage}
                 />
-                {/* <span className="text-small text-default-400">
-                    {selectedTableKeys === "all"
-                        ? "All items selected"
-                        : `${selectedTableKeys.size} of ${items.length} selected`}
-                </span> */}
             </div>
         );
-    }, [selectedTableKeys, items.length, page, pages, hasSearchFilter]);
+    }, [page, pages, hasSearchFilter]);
 
     const classNames = useMemo(
         () => ({
-            wrapper: ["max-h-5xl", "max-w-7xl", "min-h-[280px]"],
             th: [
                 "bg-transparent",
                 "text-default-500",
@@ -523,22 +504,13 @@ export default function ApplicationsDashboard({
                 aria-label="Applications Dashboard"
                 bottomContent={bottomContent}
                 bottomContentPlacement="outside"
-                // checkboxesProps={{
-                //     classNames: {
-                //         wrapper:
-                //             "after:bg-foreground after:text-background text-background",
-                //     },
-                // }}
                 classNames={classNames}
-                selectedKeys={selectedTableKeys}
-                // selectionMode="multiple"
                 sortDescriptor={sortDescriptor}
                 topContent={topContent}
                 topContentPlacement="outside"
-                onSelectionChange={setSelectedTableKeys}
                 onSortChange={setSortDescriptor}
             >
-                <TableHeader columns={headerColumns}>
+                <TableHeader columns={columns}>
                     {(column) => (
                         <TableColumn
                             key={column.uid}

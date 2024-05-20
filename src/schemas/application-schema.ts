@@ -26,6 +26,7 @@ const JobLevelSchema = z.enum([
 ]);
 
 const JobStatusSchema = z.enum([
+    "not_applied",
     "applied",
     "interviewing",
     "offered",

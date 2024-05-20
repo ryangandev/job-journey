@@ -1,78 +1,29 @@
 import { ChipProps } from "@nextui-org/chip";
-import { Column, SearchFilterOption } from "../models/dashboard";
 
-const columns: Column[] = [
-    {
-        name: "ID",
-        uid: "id",
-        sortable: true,
-    },
-    {
-        name: "Fav",
-        uid: "isFavorite",
-        width: 50,
-        sortable: true,
-    },
-    {
-        name: "TITLE",
-        uid: "title",
-        width: 300,
-        sortable: true,
-    },
-    {
-        name: "COMPANY",
-        uid: "company",
-        width: 175,
-        sortable: true,
-    },
-    {
-        name: "STATUS",
-        uid: "status",
-        width: 150,
-        sortable: true,
-    },
-    {
-        name: "REPLIED",
-        uid: "replied",
-        width: 100,
-        sortable: true,
-    },
-    {
-        name: "INTERVIEW",
-        uid: "interviewAquired",
-        width: 100,
-        sortable: true,
-    },
-    {
-        name: "UPDATES",
-        uid: "updates",
-    },
-    {
-        name: "APPLIED",
-        uid: "appliedAt",
-        width: 100,
-        sortable: true,
-    },
-    {
-        name: "UPDATED",
-        uid: "updatedAt",
-        width: 100,
-        sortable: true,
-    },
-    {
-        name: "ACTIONS",
-        uid: "actions",
-        width: 80,
-    },
-] as const; // const assertion to infer the type as readonly
+import { prisma } from "../libs/db";
 
-const searchFilterOptions: SearchFilterOption[] = [
-    "title",
-    "company",
-    "location",
-    // "appliedAt",
-    // "updatedAt",
-];
+const getApplicationById = async (id: string) => {
+    try {
+        const application = await prisma.application.findUnique({
+            where: {
+                id,
+            },
+        });
+
+        if (!application) {
+            console.log(`Application with id ${id} not found.`);
+            return {
+                error: `Application not found.`,
+            };
+        }
+
+        return application;
+    } catch (error) {
+        return {
+            error: "There was an error loading the application.",
+        };
+    }
+};
 
 const statusOptions = [
     "not_applied",
@@ -80,6 +31,7 @@ const statusOptions = [
     "interviewing",
     "offered",
     "rejected",
+    "not_selected",
     "ghosted",
 ];
 
@@ -111,6 +63,7 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
     interviewing: "secondary",
     offered: "success",
     rejected: "danger",
+    not_selected: "default",
     ghosted: "default",
 };
 
@@ -122,14 +75,6 @@ const repliedColorMap: Record<string, ChipProps["color"]> = {
 const interviewColorMap: Record<string, ChipProps["color"]> = {
     "Interview Aquired": "success",
     "No Interview": "warning",
-};
-
-const searchFilterOptionsMap: Record<string, string> = {
-    title: "Title",
-    company: "Company",
-    location: "Location",
-    appliedAt: "Applied At",
-    updatedAt: "Updated At",
 };
 
 const jobStatusMap: Record<string, string> = {
@@ -169,8 +114,7 @@ const jobLevelMap: Record<string, string> = {
 };
 
 export {
-    columns,
-    searchFilterOptions,
+    getApplicationById,
     statusOptions,
     settingOptions,
     typeOptions,
@@ -180,10 +124,8 @@ export {
     statusColorMap,
     repliedColorMap,
     interviewColorMap,
-    searchFilterOptionsMap,
     jobStatusMap,
     jobSettingMap,
     jobTypeMap,
     jobLevelMap,
 };
-export type { Column };

@@ -26,6 +26,7 @@ const JobStatusSchema = z.enum([
     "interviewing",
     "offered",
     "rejected",
+    "not_selected",
     "ghosted",
 ]);
 

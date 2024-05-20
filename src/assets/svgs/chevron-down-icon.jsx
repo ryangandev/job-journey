@@ -1,6 +1,10 @@
 import React from "react";
 
-export const ChevronDownIcon = ({ strokeWidth = 1.5, ...otherProps }) => (
+export const ChevronDownIcon = ({
+    strokeWidth = 1.5,
+    width = "1em",
+    ...otherProps
+}) => (
     <svg
         aria-hidden="true"
         fill="none"
@@ -8,7 +12,7 @@ export const ChevronDownIcon = ({ strokeWidth = 1.5, ...otherProps }) => (
         height="1em"
         role="presentation"
         viewBox="0 0 24 24"
-        width="1em"
+        width={width}
         {...otherProps}
     >
         <path

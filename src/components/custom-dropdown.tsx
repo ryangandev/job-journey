@@ -13,6 +13,7 @@ import { ChevronDownIcon } from "../assets/svgs";
 
 export default function CustomDropdown({
     triggerType,
+    customTrigger,
     chipVariant = "flat",
     buttonVariant = "light",
     label,
@@ -22,7 +23,8 @@ export default function CustomDropdown({
     colorMapper = () => "default",
     displayMapper = (value: string) => value,
 }: {
-    triggerType: "chip" | "button";
+    triggerType: "chip" | "button" | "custom";
+    customTrigger?: React.ReactNode;
     chipVariant?: ChipProps["variant"];
     buttonVariant?: ButtonProps["variant"];
     label: string;
@@ -61,7 +63,9 @@ export default function CustomDropdown({
     return (
         <Dropdown>
             <DropdownTrigger>
-                {triggerType === "chip"
+                {triggerType === "custom" && customTrigger
+                    ? customTrigger
+                    : triggerType === "chip"
                     ? renderChipTrigger()
                     : renderButtonTrigger()}
             </DropdownTrigger>

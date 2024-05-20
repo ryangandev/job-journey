@@ -1,37 +1,4 @@
-type JobSetting = "on_site" | "remote" | "hybrid";
-
-type JobType = "full_time" | "part_time" | "contract" | "freelance";
-
-type JobLevel =
-    | "intern"
-    | "entry"
-    | "junior"
-    | "associate"
-    | "mid"
-    | "mid_senior"
-    | "senior"
-    | "lead"
-    | "manager"
-    | "director"
-    | "executive";
-
-type JobStatus =
-    | "not_applied"
-    | "applied"
-    | "interviewing"
-    | "offered"
-    | "rejected"
-    | "ghosted";
-
-interface QA {
-    question: string;
-    answer: string;
-}
-
-interface Update {
-    date: Date;
-    content: string;
-}
+import { JobSetting, JobType, JobLevel, JobStatus } from "@prisma/client";
 
 interface Application {
     id: string;
@@ -49,20 +16,4 @@ interface Application {
     updatedAt: Date;
 }
 
-interface ApplicationDetail extends Application {
-    salary: string;
-    link: string;
-    updates: readonly Update[];
-    userId: string;
-}
-
-export type {
-    Application,
-    ApplicationDetail,
-    JobSetting,
-    JobType,
-    JobLevel,
-    JobStatus,
-    QA,
-    Update,
-};
+export type { Application };

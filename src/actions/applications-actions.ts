@@ -54,58 +54,6 @@ async function addNewApplicationAction(
     redirect("/dashboard");
 }
 
-async function getApplicationsListAction() {
-    try {
-        const applications = await prisma.application.findMany({
-            select: {
-                id: true,
-                company: true,
-                title: true,
-                location: true,
-                setting: true,
-                type: true,
-                level: true,
-                status: true,
-                isFavorite: true,
-                replied: true,
-                interviewAquired: true,
-                appliedAt: true,
-                updatedAt: true,
-            },
-        });
-        return applications;
-    } catch (error) {
-        console.log("Error:", error);
-        return {
-            error: "There was an error fetching the applications.",
-        };
-    }
-}
-
-async function getSpecificApplicationDetailByIdAction(id: string) {
-    try {
-        const applicationDetail = await prisma.application.findUnique({
-            where: {
-                id: id,
-            },
-        });
-
-        if (!applicationDetail) {
-            console.log(`Application with id ${id} not found.`);
-            return {
-                error: `Application not found.`,
-            };
-        }
-
-        return applicationDetail;
-    } catch (error) {
-        console.log(error);
-        return {
-            error: "There was an error loading the application.",
-        };
-    }
-}
-
 async function deleteApplicationByIdAction(id: string) {
     try {
         await prisma.application.delete({ where: { id } });
@@ -169,29 +117,8 @@ async function patchApplicationDetailAction(id: string, update: unknown) {
     return { message: `[${updateKeys[0]}] is updated!` };
 }
 
-async function getApplicationsAppliedTodayCount() {
-    try {
-        const applications = await prisma.application.findMany({
-            where: {
-                appliedAt: {
-                    gte: new Date(new Date().setHours(0, 0, 0, 0)),
-                },
-            },
-        });
-        return applications.length;
-    } catch (error) {
-        console.log("Error:", error);
-        return {
-            error: "There was an error fetching the applications.",
-        };
-    }
-}
-
 export {
-    getApplicationsListAction,
-    getSpecificApplicationDetailByIdAction,
     addNewApplicationAction,
     deleteApplicationByIdAction,
     patchApplicationDetailAction,
-    getApplicationsAppliedTodayCount,
 };
