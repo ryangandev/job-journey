@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { UserRole } from "@prisma/client";
+import { UserPlan } from "@prisma/client";
 
 import { prisma } from "./libs/db";
 import { getUserById } from "./data/user";
@@ -17,8 +17,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                 session.user.id = token.sub;
             }
 
-            if (token.role && session.user) {
-                session.user.role = token.role as UserRole;
+            if (token.userPlan && session.user) {
+                session.user.userPlan = token.userPlan as UserPlan;
             }
 
             return session;
@@ -29,7 +29,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             const existingUser = await getUserById(token.sub);
             if (!existingUser) return token;
 
-            token.role = existingUser.role;
+            token.userPlan = existingUser.userPlan;
             return token;
         },
     },
