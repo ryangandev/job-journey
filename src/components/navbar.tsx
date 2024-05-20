@@ -18,6 +18,7 @@ import DailyGoalTracker from "./daily-goal-tracker";
 import { beauRivage } from "../assets/fonts";
 import navbarLinks from "../data/navbarLinks";
 import useNavbar from "../hooks/useNavbar";
+import { logoutAction } from "../actions/auth-actions";
 
 export default function NavBar() {
     const { navbarVisible, activeSectionPath } = useNavbar();
@@ -89,7 +90,13 @@ export default function NavBar() {
                             </p>
                         </DropdownItem>
                         <DropdownItem key="settings">Settings</DropdownItem>
-                        <DropdownItem key="logout" color="danger">
+                        <DropdownItem
+                            key="logout"
+                            color="danger"
+                            onClick={async () => {
+                                await logoutAction();
+                            }}
+                        >
                             Log Out
                         </DropdownItem>
                     </DropdownMenu>

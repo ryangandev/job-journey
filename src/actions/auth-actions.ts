@@ -8,7 +8,7 @@ import { prisma } from "../libs/db";
 import { LoginSchema, RegisterSchema } from "../schemas/auth-schema";
 import { getUserByEmail } from "../data/user";
 import { DEFAULT_LOGIN_REDIRECT } from "../routes";
-import { signIn } from "../auth";
+import { signIn, signOut } from "../auth";
 
 async function registerAction(registerData: z.infer<typeof RegisterSchema>) {
     const parsedRegisterData = RegisterSchema.safeParse(registerData);
@@ -70,4 +70,10 @@ async function loginAction(loginData: z.infer<typeof LoginSchema>) {
     }
 }
 
-export { registerAction, loginAction };
+async function logoutAction() {
+    await signOut({
+        redirectTo: "/auth/login",
+    });
+}
+
+export { registerAction, loginAction, logoutAction };
