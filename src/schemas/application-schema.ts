@@ -41,7 +41,7 @@ const ApplicationUpdateTypeSchema = z.enum([
     "interview",
     "offer",
     "rejection",
-    "no_response_auto",
+    "auto_generated",
 ]);
 
 const NewApplicationFormSchema = z.object({
@@ -57,4 +57,33 @@ const NewApplicationFormSchema = z.object({
     isFavorite: z.boolean(),
 });
 
-export { NewApplicationFormSchema };
+const ApplicationSchema = z.object({
+    title: trimmedStringSchema(1, 100),
+    company: trimmedStringSchema(1, 100),
+    location: trimmedStringSchema(1, 100),
+    setting: JobSettingSchema,
+    type: JobTypeSchema,
+    level: JobLevelSchema,
+    status: JobStatusSchema,
+    isFavorite: z.boolean(),
+    replied: z.boolean(),
+    interviewAquired: z.boolean(),
+    salary: trimmedStringSchema(0, 100),
+    jobPostingLink: trimmedStringSchema(0, 4000),
+    statusTrackingLinks: z.array(z.string()),
+});
+
+const PartialApplicationSchema = ApplicationSchema.partial();
+
+const ApplicationUpdateSchema = z.object({
+    applicationId: z.string(),
+    type: ApplicationUpdateTypeSchema,
+    content: trimmedStringSchema(1, 4000),
+});
+
+export {
+    NewApplicationFormSchema,
+    ApplicationSchema,
+    PartialApplicationSchema,
+    ApplicationUpdateSchema,
+};

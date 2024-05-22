@@ -62,7 +62,7 @@ enum ApplicationUpdateType {
   interview
   offer
   rejection
-  no_response_auto
+  auto_generated
 }
 
 enum ProfilePlatform {
@@ -114,23 +114,23 @@ model Account {
 }
 
 model Application {
-  id               String     @id @default(cuid())
-  userId           String     @map("user_id")
-  title            String     @default("N/A")
-  company          String     @default("N/A")
-  location         String     @default("N/A")
-  setting          JobSetting @default(on_site)
-  type             JobType    @default(full_time)
-  level            JobLevel   @default(entry)
-  status           JobStatus  @default(not_applied)
-  isFavorite       Boolean    @default(false) @map("is_favorite")
-  replied          Boolean    @default(false)
-  interviewAquired Boolean    @default(false) @map("interview_aquired")
-  appliedAt        DateTime   @default(now()) @map("applied_at")
-  updatedAt        DateTime   @updatedAt @map("updated_at")
-  salary           String     @default("N/A")
-  jobPostingLink   String[]   @map("job_posting_link")
-  trackStatusLink  String[]   @map("track_status_link")
+  id                  String     @id @default(cuid())
+  userId              String     @map("user_id")
+  title               String     @default("N/A")
+  company             String     @default("N/A")
+  location            String     @default("N/A")
+  setting             JobSetting @default(on_site)
+  type                JobType    @default(full_time)
+  level               JobLevel   @default(entry)
+  status              JobStatus  @default(not_applied)
+  isFavorite          Boolean    @default(false) @map("is_favorite")
+  replied             Boolean    @default(false)
+  interviewAquired    Boolean    @default(false) @map("interview_aquired")
+  appliedAt           DateTime   @default(now()) @map("applied_at")
+  updatedAt           DateTime   @updatedAt @map("updated_at")
+  salary              String?
+  jobPostingLink      String?    @map("job_posting_link")
+  statusTrackingLinks String[]   @map("status_tracking_links")
 
   updates ApplicationUpdate[]
   user    User                @relation(fields: [userId], references: [id])
