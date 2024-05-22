@@ -180,7 +180,9 @@ export default function ApplicationInfo({
                             await handleUpdateField("salary", newValue);
                         }}
                         popoverTriggerComponent={renderHighlightString(
-                            applicationDetail.salary,
+                            applicationDetail.salary
+                                ? applicationDetail.salary
+                                : "[add salary info here]",
                         )}
                     />
                 </div>
@@ -283,7 +285,7 @@ export default function ApplicationInfo({
                     <PopoverForm
                         popoverPlacement="right"
                         formTitle="Edit Job Posting link"
-                        originalValue={applicationDetail.jobPostingLink || ""}
+                        originalValue={applicationDetail.jobPostingLink}
                         onConfirm={async (newValue) => {
                             await handleUpdateField("jobPostingLink", newValue);
                         }}
@@ -296,10 +298,12 @@ export default function ApplicationInfo({
                     <NextUiLink
                         isExternal
                         underline="hover"
-                        href={applicationDetail.jobPostingLink || ""}
+                        href={applicationDetail.jobPostingLink}
+                        isDisabled={!applicationDetail.jobPostingLink}
                     >
                         <span className="max-w-[44rem] break-words">
-                            {applicationDetail.jobPostingLink}
+                            {applicationDetail.jobPostingLink ||
+                                "[click the icon to add a link]"}
                         </span>
                     </NextUiLink>
                 </div>

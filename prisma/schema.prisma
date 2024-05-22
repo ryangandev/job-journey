@@ -128,8 +128,8 @@ model Application {
   interviewAquired    Boolean    @default(false) @map("interview_aquired")
   appliedAt           DateTime   @default(now()) @map("applied_at")
   updatedAt           DateTime   @updatedAt @map("updated_at")
-  salary              String?
-  jobPostingLink      String?    @map("job_posting_link")
+  salary              String
+  jobPostingLink      String     @map("job_posting_link")
   statusTrackingLinks String[]   @map("status_tracking_links")
 
   updates ApplicationUpdate[]
