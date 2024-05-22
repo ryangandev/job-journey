@@ -84,7 +84,11 @@ export default function NavBar() {
                         />
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Profile Actions" variant="flat">
-                        <DropdownItem key="profile" className="h-7">
+                        <DropdownItem
+                            key="profile"
+                            className="h-7"
+                            textValue="ryangan.dev@gmail.com"
+                        >
                             <p className="font-semibold">
                                 ryangan.dev@gmail.com
                             </p>

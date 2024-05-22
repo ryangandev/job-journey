@@ -14,35 +14,35 @@ import {
     Link,
 } from "@nextui-org/react";
 
-import { RegisterSchema } from "../schemas/auth-schema";
-import { registerAction } from "../actions/auth-actions";
-import { LockIcon, MailIcon, UserIcon } from "../assets/svgs";
-import Divider from "./divider";
-import FormMessage from "./auth/form-message";
+import { LoginSchema } from "../../schemas/auth-schema";
+import { loginAction } from "../../actions/auth-actions";
+import { LockIcon, MailIcon } from "../../assets/svgs";
+import Divider from "../divider";
+import FormMessage from "./form-message";
 import OAuthLogins from "./oAuth-logins";
 
-export default function RegisterForm() {
+export default function LoginForm() {
     const [errorMsg, setErrorMsg] = useState<string | undefined>("");
     const [successMsg, setSuccessMsg] = useState<string | undefined>("");
     const {
         handleSubmit,
         register,
         formState: { errors, isSubmitting, isDirty, isValid },
-    } = useForm<z.infer<typeof RegisterSchema>>({
-        resolver: zodResolver(RegisterSchema),
+    } = useForm<z.infer<typeof LoginSchema>>({
+        resolver: zodResolver(LoginSchema),
         defaultValues: {
-            name: "",
             email: "",
             password: "",
         },
     });
 
-    const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
+    const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
         console.log("onSubmit", values);
         setErrorMsg("");
         setSuccessMsg("");
 
-        await registerAction(values).then((res) => {
+        await loginAction(values).then((res) => {
+            if (!res) return;
             setErrorMsg(res.error);
             setSuccessMsg(res.success);
         });
@@ -52,12 +52,12 @@ export default function RegisterForm() {
         <Card className="max-w-md w-full p-6">
             <CardHeader className="flex flex-col items-start space-y-2">
                 <div className="w-full flex justify-between items-center">
-                    <h2 className="text-xl font-semibold">Register</h2>
+                    <h2 className="text-xl font-semibold">Sign in</h2>
                     <FormMessage type="error" message={errorMsg} />
                     <FormMessage type="success" message={successMsg} />
                 </div>
                 <p className="text-base text-light-400 dark:text-dark-400 line-clamp-1">
-                    to create an account
+                    to your account
                 </p>
             </CardHeader>
             <CardBody className="space-y-4">
@@ -66,25 +66,6 @@ export default function RegisterForm() {
                     onSubmit={handleSubmit(onSubmit)}
                     className="space-y-2"
                 >
-                    <Input
-                        {...register("name", { required: true })}
-                        name="name"
-                        type="text"
-                        classNames={{
-                            label: "max-h-5", // Restrict label to 1 line
-                        }}
-                        endContent={
-                            <UserIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                        }
-                        label={`Name ${
-                            errors?.name ? `- ${errors?.name?.message}` : ""
-                        }`}
-                        placeholder="Enter your name"
-                        variant="bordered"
-                        isInvalid={!!errors?.name}
-                        autoComplete="off"
-                        autoFocus
-                    />
                     <Input
                         {...register("email", { required: true })}
                         name="email"
@@ -101,7 +82,8 @@ export default function RegisterForm() {
                         placeholder="Enter your email"
                         variant="bordered"
                         isInvalid={!!errors?.email}
-                        autoComplete="off"
+                        autoComplete="on"
+                        autoFocus
                     />
                     <Input
                         {...register("password", { required: true })}
@@ -130,16 +112,16 @@ export default function RegisterForm() {
                         isLoading={isSubmitting}
                         isDisabled={isSubmitting}
                     >
-                        Create an account
+                        Login
                     </Button>
                 </form>
                 <Divider label="or" />
                 <OAuthLogins />
             </CardBody>
             <CardFooter className="flex space-x-2 text-sm">
-                <span className="line-clamp-1">Already have an account?</span>
-                <Link href="/auth/login" size="sm" color="primary">
-                    Login
+                <span className="line-clamp-1">Need an account?</span>
+                <Link href="/register" size="sm" color="primary">
+                    Register
                 </Link>
             </CardFooter>
         </Card>
