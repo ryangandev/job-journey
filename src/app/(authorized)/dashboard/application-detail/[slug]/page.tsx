@@ -1,15 +1,107 @@
-import ApplicationDetailView from "../../../../../components/applications/application-detail-view";
-import { getApplicationById } from "../../../../../data/application";
+import { Metadata } from "next";
+import { Divider, Spinner } from "@nextui-org/react";
 
-export default async function Page({ params }: { params: { slug: string } }) {
+import { getApplicationById } from "../../../../../data/application";
+import { getApplicationUpdatesByApplicationId } from "../../../../../data/application";
+import LoadingError from "../../../../../components/loading-error";
+import dynamic from "next/dynamic";
+import { ApplicationInfoSkeleton } from "../../../../../components/skeletons";
+import HelperSign from "../../../../../components/helper-sign";
+
+const ApplicationDetail = dynamic(
+    () => import("../../../../../components/dashboard/application-detail"),
+    {
+        ssr: false,
+        loading: () => <ApplicationInfoSkeleton />,
+    },
+);
+
+const ApplicationUpdates = dynamic(
+    () => import("../../../../../components/dashboard/application-updates"),
+    {
+        ssr: false,
+        loading: () => <Spinner label="Loading application updates..." />,
+    },
+);
+
+export async function generateMetadata({
+    params,
+}: {
+    params: { slug: string };
+}): Promise<Metadata> {
     const { slug } = params;
     const applicationDetailData = await getApplicationById(slug);
 
+    if (applicationDetailData && !("error" in applicationDetailData)) {
+        return {
+            title:
+                applicationDetailData.company +
+                " - " +
+                applicationDetailData.title,
+            description: "Detailed view of a job application.",
+        };
+    }
+
+    return {
+        title: "Application Detail",
+        description: "Detailed view of a job application.",
+    };
+}
+
+export default async function Page({ params }: { params: { slug: string } }) {
+    const { slug } = params;
+    const applicationDetail = await getApplicationById(slug);
+
+    if ("error" in applicationDetail) {
+        return <LoadingError error={applicationDetail.error} />;
+    }
+
+    const applicationUpdatesData = await getApplicationUpdatesByApplicationId(
+        applicationDetail.id,
+    );
+
+    if ("error" in applicationUpdatesData) {
+        return (
+            <main className="flex justify-center px-4 py-8">
+                <section className="max-w-[48rem] w-full flex flex-col space-y-6">
+                    <ApplicationDetail applicationDetail={applicationDetail} />
+                    <Divider orientation="horizontal" />
+                    <Spinner label="Loading application updates..." />
+                </section>
+                <ApplicationDetailPageHelper />
+            </main>
+        );
+    }
+
     return (
-        <main className="w-screen flex justify-center pt-4 pb-8 px-4">
-            <ApplicationDetailView
-                applicationDetailData={applicationDetailData}
-            />
+        <main className="flex justify-center px-4 py-8">
+            <section className="max-w-[48rem] w-full flex flex-col space-y-6">
+                <ApplicationDetail applicationDetail={applicationDetail} />
+                <Divider orientation="horizontal" />
+                <ApplicationUpdates
+                    applicationUpdates={applicationUpdatesData}
+                    applicationId={applicationDetail.id}
+                />
+            </section>
+            <ApplicationDetailPageHelper />
         </main>
     );
 }
+
+const ApplicationDetailPageHelper = () => {
+    return (
+        <HelperSign
+            helperContent={
+                <div className="p-1">
+                    <div className="flex items-center space-x-2">
+                        <span className="font-semibold">💡 Tip</span>
+                    </div>
+                    <div className="mt-2 text-sm max-w-60">
+                        Click on the text or link icons to edit application
+                        details.
+                    </div>
+                </div>
+            }
+        />
+    );
+};

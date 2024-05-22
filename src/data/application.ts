@@ -1,4 +1,15 @@
+import React from "react";
+import {
+    FcApproval,
+    FcSurvey,
+    FcCellPhone,
+    FcGraduationCap,
+    FcCancel,
+    FcAndroidOs,
+} from "react-icons/fc";
+import { IconBaseProps } from "react-icons";
 import { ChipProps } from "@nextui-org/chip";
+import { ApplicationUpdateType } from "@prisma/client";
 
 import { prisma } from "../libs/db";
 
@@ -21,6 +32,22 @@ const getApplicationById = async (id: string) => {
     } catch (error) {
         return {
             error: "There was an error loading the application.",
+        };
+    }
+};
+
+const getApplicationUpdatesByApplicationId = async (id: string) => {
+    try {
+        const applicationUpdates = await prisma.applicationUpdate.findMany({
+            where: {
+                applicationId: id,
+            },
+        });
+
+        return applicationUpdates;
+    } catch (error) {
+        return {
+            error: "There was an error loading the application updates.",
         };
     }
 };
@@ -57,6 +84,14 @@ const repliedOptions = ["Replied", "No Reply"];
 
 const interviewAquiredOptions = ["Interview Aquired", "No Interview"];
 
+const updateTypeOptions = [
+    "submission",
+    "note",
+    "interview",
+    "offer",
+    "rejection",
+];
+
 const statusColorMap: Record<string, ChipProps["color"]> = {
     not_applied: "warning",
     applied: "primary",
@@ -77,12 +112,25 @@ const interviewColorMap: Record<string, ChipProps["color"]> = {
     "No Interview": "warning",
 };
 
+const updateTypeIconMap: Record<
+    ApplicationUpdateType,
+    React.FunctionComponentElement<IconBaseProps>
+> = {
+    submission: React.createElement(FcApproval),
+    note: React.createElement(FcSurvey),
+    interview: React.createElement(FcCellPhone),
+    offer: React.createElement(FcGraduationCap),
+    rejection: React.createElement(FcCancel),
+    auto_generated: React.createElement(FcAndroidOs),
+};
+
 const jobStatusMap: Record<string, string> = {
     not_applied: "Not Applied",
     applied: "Applied",
     interviewing: "Interviewing",
     offered: "Offered",
     rejected: "Rejected",
+    not_selected: "Not Selected",
     ghosted: "Ghosted",
 };
 
@@ -113,19 +161,32 @@ const jobLevelMap: Record<string, string> = {
     executive: "Executive",
 };
 
+const jobUpdateTypeMap: Record<ApplicationUpdateType, string> = {
+    submission: "Submission",
+    note: "Note",
+    interview: "Interview",
+    offer: "Offer",
+    rejection: "Rejection",
+    auto_generated: "Auto-generated",
+};
+
 export {
     getApplicationById,
+    getApplicationUpdatesByApplicationId,
     statusOptions,
     settingOptions,
     typeOptions,
     levelOptions,
     repliedOptions,
     interviewAquiredOptions,
+    updateTypeOptions,
     statusColorMap,
     repliedColorMap,
     interviewColorMap,
+    updateTypeIconMap,
     jobStatusMap,
     jobSettingMap,
     jobTypeMap,
     jobLevelMap,
+    jobUpdateTypeMap,
 };

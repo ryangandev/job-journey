@@ -24,6 +24,10 @@ module.exports = {
                     400: "#5c5c5e",
                 },
             },
+            width: {
+                "1/8": "12.5%",
+                "1/10": "10%",
+            },
         },
     },
     darkMode: "class",

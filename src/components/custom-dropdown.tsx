@@ -11,33 +11,41 @@ import {
 import React from "react";
 import { ChevronDownIcon } from "../assets/svgs";
 
-export default function CustomDropdown({
-    triggerType,
-    customTrigger,
-    chipVariant = "flat",
-    buttonVariant = "light",
-    label,
-    value,
-    valueOptions,
-    handleUpdate,
-    colorMapper = () => "default",
-    displayMapper = (value: string) => value,
-}: {
+interface CustomDropdownProps {
     triggerType: "chip" | "button" | "custom";
     customTrigger?: React.ReactNode;
     chipVariant?: ChipProps["variant"];
     buttonVariant?: ButtonProps["variant"];
+    size?: ChipProps["size"];
     label: string;
     value: string;
     valueOptions: string[];
     handleUpdate: (selectedKey: string | number) => void;
     colorMapper?: (value: string) => ChipProps["color"];
     displayMapper?: (value: string) => string;
-}) {
+    startContent?: React.ReactNode;
+    isDisabled?: boolean;
+}
+
+export default function CustomDropdown({
+    triggerType,
+    customTrigger,
+    chipVariant = "flat",
+    buttonVariant = "light",
+    size = "md",
+    label,
+    value,
+    valueOptions,
+    handleUpdate,
+    colorMapper = () => "default",
+    displayMapper = (value: string) => value,
+    startContent = null,
+    isDisabled = false,
+}: CustomDropdownProps) {
     const renderChipTrigger = () => {
         return (
             <Chip
-                size="md"
+                size={size}
                 variant={chipVariant}
                 color={colorMapper(value)}
                 className="text-sm p-2"
@@ -51,8 +59,10 @@ export default function CustomDropdown({
     const renderButtonTrigger = () => {
         return (
             <Button
+                size={size}
                 variant={buttonVariant}
                 color={colorMapper(value)}
+                startContent={startContent}
                 endContent={<ChevronDownIcon className="text-small" />}
             >
                 {displayMapper(value)}
@@ -61,7 +71,7 @@ export default function CustomDropdown({
     };
 
     return (
-        <Dropdown>
+        <Dropdown isDisabled={isDisabled}>
             <DropdownTrigger>
                 {triggerType === "custom" && customTrigger
                     ? customTrigger
