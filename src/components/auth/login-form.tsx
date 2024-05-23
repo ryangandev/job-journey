@@ -13,6 +13,7 @@ import {
     Button,
     Link,
 } from "@nextui-org/react";
+import { useSearchParams } from "next/navigation";
 
 import { LoginSchema } from "../../schemas/auth-schema";
 import { loginAction } from "../../actions/auth-actions";
@@ -22,6 +23,12 @@ import FormMessage from "./form-message";
 import OAuthLogins from "./oAuth-logins";
 
 export default function LoginForm() {
+    const searchParams = useSearchParams();
+    const urlError =
+        searchParams.get("error") === "OAuthAccountNotLinked"
+            ? "Email used with another provider"
+            : "";
+
     const [errorMsg, setErrorMsg] = useState<string | undefined>("");
     const [successMsg, setSuccessMsg] = useState<string | undefined>("");
     const {
@@ -53,7 +60,7 @@ export default function LoginForm() {
             <CardHeader className="flex flex-col items-start space-y-2">
                 <div className="w-full flex justify-between items-center">
                     <h2 className="text-xl font-semibold">Sign in</h2>
-                    <FormMessage type="error" message={errorMsg} />
+                    <FormMessage type="error" message={errorMsg || urlError} />
                     <FormMessage type="success" message={successMsg} />
                 </div>
                 <p className="text-base text-light-400 dark:text-dark-400 line-clamp-1">

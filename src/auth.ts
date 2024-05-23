@@ -11,6 +11,23 @@ import authConfig from "./auth.config";
 // Then assign the new field to the session object in the session callback
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
+    pages: {
+        signIn: "/login",
+        error: "/error",
+    },
+    // Events are asynchronous functions that do not return a response, they are good for audit logs/reporting or handling any other side-effects
+    events: {
+        // When user signs in or signs up with a provider (not credential), their email will be automatically verified
+        async linkAccount({ user }) {
+            await prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    emailVerified: new Date(),
+                },
+            });
+        },
+    },
+    // Callbacks are asynchronous functions you can use to control what happens when an action is performed
     callbacks: {
         async session({ token, session }) {
             if (token.sub && session.user) {
