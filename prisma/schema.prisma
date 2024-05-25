@@ -113,6 +113,16 @@ model Account {
   @@map("accounts")
 }
 
+model VerificationToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+  @@map("verification_tokens")
+}
+
 model Application {
   id                  String     @id @default(cuid())
   userId              String     @map("user_id")

@@ -4,11 +4,13 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 
+import { signIn, signOut } from "../auth";
 import { prisma } from "../libs/db";
+import { generateVerificationToken } from "../libs/tokens";
+import { sendVerificationEmail } from "../libs/sendEmail";
 import { LoginSchema, RegisterSchema } from "../schemas/auth-schema";
 import { getUserByEmail } from "../data/user";
 import { DEFAULT_LOGIN_REDIRECT } from "../routes";
-import { signIn, signOut } from "../auth";
 
 async function registerAction(registerData: z.infer<typeof RegisterSchema>) {
     const parsedRegisterData = RegisterSchema.safeParse(registerData);
@@ -34,8 +36,13 @@ async function registerAction(registerData: z.infer<typeof RegisterSchema>) {
         },
     });
 
-    // TODO: Send verification token email
-    return { success: "Email Sent!" };
+    const verificationToken = await generateVerificationToken(email);
+    await sendVerificationEmail(
+        verificationToken.email,
+        verificationToken.token,
+    );
+
+    return { success: "Verification Email Sent!" };
 }
 
 async function loginAction(loginData: z.infer<typeof LoginSchema>) {
@@ -46,6 +53,25 @@ async function loginAction(loginData: z.infer<typeof LoginSchema>) {
     }
 
     const { email, password } = loginData;
+
+    const existingUser = await getUserByEmail(email);
+
+    if (!existingUser || !existingUser.email || !existingUser.password) {
+        return { error: "Email does not exist!" };
+    }
+
+    if (!existingUser.emailVerified) {
+        const verificationToken = await generateVerificationToken(
+            existingUser.email,
+        );
+
+        await sendVerificationEmail(
+            verificationToken.email,
+            verificationToken.token,
+        );
+
+        return { success: "Verification Email Sent!" };
+    }
 
     try {
         await signIn("credentials", {
