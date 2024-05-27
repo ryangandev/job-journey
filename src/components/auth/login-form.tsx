@@ -127,7 +127,7 @@ export default function LoginForm() {
             </CardBody>
             <CardFooter className="flex space-x-2 text-sm">
                 <span className="line-clamp-1">Need an account?</span>
-                <Link href="/register" size="sm" color="primary">
+                <Link href="/auth/register" size="sm" color="primary">
                     Register
                 </Link>
             </CardFooter>

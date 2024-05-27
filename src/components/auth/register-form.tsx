@@ -138,7 +138,7 @@ export default function RegisterForm() {
             </CardBody>
             <CardFooter className="flex space-x-2 text-sm">
                 <span className="line-clamp-1">Already have an account?</span>
-                <Link href="/login" size="sm" color="primary">
+                <Link href="/auth/login" size="sm" color="primary">
                     Login
                 </Link>
             </CardFooter>

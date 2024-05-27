@@ -12,8 +12,8 @@ import authConfig from "./auth.config";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
     pages: {
-        signIn: "/login",
-        error: "/error",
+        signIn: "/auth/login",
+        error: "/auth/error",
     },
     // Events are asynchronous functions that do not return a response, they are good for audit logs/reporting or handling any other side-effects
     events: {
