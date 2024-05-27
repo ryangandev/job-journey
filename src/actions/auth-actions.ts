@@ -10,6 +10,7 @@ import { generateVerificationToken } from "../libs/tokens";
 import { sendVerificationEmail } from "../libs/sendEmail";
 import { LoginSchema, RegisterSchema } from "../schemas/auth-schema";
 import { getUserByEmail } from "../data/user";
+import { getVerificationTokenByToken } from "../data/verification-token";
 import { DEFAULT_LOGIN_REDIRECT } from "../routes";
 
 async function registerAction(registerData: z.infer<typeof RegisterSchema>) {
@@ -56,8 +57,10 @@ async function loginAction(loginData: z.infer<typeof LoginSchema>) {
 
     const existingUser = await getUserByEmail(email);
 
-    if (!existingUser || !existingUser.email || !existingUser.password) {
+    if (!existingUser || !existingUser.email) {
         return { error: "Email does not exist!" };
+    } else if (!existingUser.password) {
+        return { error: "Email used with a provider sign in" };
     }
 
     if (!existingUser.emailVerified) {
@@ -102,4 +105,42 @@ async function logoutAction() {
     });
 }
 
-export { registerAction, loginAction, logoutAction };
+async function newVerificationAction(token: string) {
+    const existingToken = await getVerificationTokenByToken(token);
+
+    if (!existingToken) {
+        return { error: "Token does not exist!" };
+    }
+
+    const hasExpired = new Date(existingToken.expiresAt) < new Date();
+
+    if (hasExpired) {
+        return { error: "Token has expired!" };
+    }
+
+    const existingUser = await getUserByEmail(existingToken.email);
+
+    if (!existingUser) {
+        return { error: "Email does not exist!" };
+    }
+
+    await prisma.user.update({
+        where: {
+            id: existingUser.id,
+        },
+        data: {
+            emailVerified: new Date(),
+            email: existingToken.email, // Update the email when user wants to change their email
+        },
+    });
+
+    await prisma.verificationToken.delete({
+        where: {
+            id: existingToken.id,
+        },
+    });
+
+    return { success: "Email verified!" };
+}
+
+export { registerAction, loginAction, logoutAction, newVerificationAction };

@@ -3,14 +3,17 @@
  * These routes do not require authentication.
  * @type {string[]}
  */
-export const publicRoutes = ["/"];
+export const publicRoutes = [
+    "/",
+    "/auth/new-verification", // User will be able to change their email from the settings page while logged in, so public route is the best place instead of auth route
+];
 
 /**
  * An array of routes that are used for authentication.
  * These routes will redirect logged in users to the DEFAULT_LOGIN_REDIRECT path.
  * @type {string[]}
  */
-export const authRoutes = ["/login", "/register", "/error"];
+export const authRoutes = ["/auth/login", "/auth/register", "/auth/error"];
 
 /**
  * The prefix for API authentication routes.
