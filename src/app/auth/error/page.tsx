@@ -1,5 +1,11 @@
-import Link from "next/link";
 import React from "react";
+import { Metadata } from "next";
+import Link from "next/link";
+
+export const metadata: Metadata = {
+    title: "Auth Error",
+    description: "Auth error page",
+};
 
 export default function AuthErrorPage() {
     return (
