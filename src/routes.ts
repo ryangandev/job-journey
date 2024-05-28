@@ -13,7 +13,12 @@ export const publicRoutes = [
  * These routes will redirect logged in users to the DEFAULT_LOGIN_REDIRECT path.
  * @type {string[]}
  */
-export const authRoutes = ["/auth/login", "/auth/register", "/auth/error"];
+export const authRoutes = [
+    "/auth/login",
+    "/auth/register",
+    "/auth/error",
+    "/auth/reset-password",
+];
 
 /**
  * The prefix for API authentication routes.

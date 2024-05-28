@@ -20,4 +20,22 @@ const sendVerificationEmail = async (email: string, token: string) => {
         });
 };
 
-export { sendVerificationEmail };
+const sendResetPasswordEmail = async (email: string, token: string) => {
+    const resetLink = `http://localhost:3000/auth/reset-password?token=${token}`;
+
+    await resend.emails
+        .send({
+            from: "Job Journey Reset Password<onboarding@resend.dev>",
+            to: email,
+            subject: "Reset your password",
+            html: `<p>Thanks for using Job Journey. Please use this <a href="${resetLink}">link</a> to reset your password.</p><p>If the above link does not work, please copy and paste the following link in your browser:</p><p>${resetLink}</p><br/><p>The reset link will expire in 1 hour. If you did not request this email, please ignore it.</p>`,
+        })
+        .then((response) => {
+            console.log(response);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+};
+
+export { sendVerificationEmail, sendResetPasswordEmail };

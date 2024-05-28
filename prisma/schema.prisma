@@ -123,6 +123,16 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
+model ResetPasswordToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+
+  @@unique([email, token])
+  @@map("reset_password_tokens")
+}
+
 model Application {
   id                  String     @id @default(cuid())
   userId              String     @map("user_id")

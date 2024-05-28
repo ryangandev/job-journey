@@ -6,9 +6,19 @@ import { AuthError } from "next-auth";
 
 import { signIn, signOut } from "../auth";
 import { prisma } from "../libs/db";
-import { generateVerificationToken } from "../libs/tokens";
-import { sendVerificationEmail } from "../libs/sendEmail";
-import { LoginSchema, RegisterSchema } from "../schemas/auth-schema";
+import {
+    generateVerificationToken,
+    generateResetPasswordToken,
+} from "../libs/tokens";
+import {
+    sendVerificationEmail,
+    sendResetPasswordEmail,
+} from "../libs/sendEmail";
+import {
+    LoginSchema,
+    RegisterSchema,
+    ResetPasswordSchema,
+} from "../schemas/auth-schema";
 import { getUserByEmail } from "../data/user";
 import { getVerificationTokenByToken } from "../data/verification-token";
 import { DEFAULT_LOGIN_REDIRECT } from "../routes";
@@ -143,4 +153,36 @@ async function newVerificationAction(token: string) {
     return { success: "Email verified!" };
 }
 
-export { registerAction, loginAction, logoutAction, newVerificationAction };
+const resetPasswordAction = async (
+    values: z.infer<typeof ResetPasswordSchema>,
+) => {
+    const result = ResetPasswordSchema.safeParse(values);
+
+    if (!result.success) {
+        return { error: "Invalid email" };
+    }
+
+    const { email } = result.data;
+
+    const existingUser = await getUserByEmail(email);
+
+    if (!existingUser) {
+        return { error: "Email not found!" };
+    }
+
+    const resetPasswordToken = await generateResetPasswordToken(email);
+    await sendResetPasswordEmail(
+        resetPasswordToken.email,
+        resetPasswordToken.token,
+    );
+
+    return { success: "Reset email sent!" };
+};
+
+export {
+    registerAction,
+    loginAction,
+    logoutAction,
+    newVerificationAction,
+    resetPasswordAction,
+};
