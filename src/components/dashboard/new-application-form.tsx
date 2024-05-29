@@ -49,7 +49,7 @@ export default function NewApplicationForm() {
     } = useForm<z.infer<typeof NewApplicationFormSchema>>({
         resolver: zodResolver(NewApplicationFormSchema),
         defaultValues: {
-            userId: "clwccvtib0000thbrwri7f0lc", // TODO: Get user ID from auth context
+            userId: "clwlkqv9s000711olet4jffbl", // TODO: Get user ID from auth context
             title: "",
             company: "",
             location: "",
