@@ -1,3 +1,5 @@
+import { ApplicationUpdateType } from "@prisma/client";
+
 import { prisma } from "../libs/db";
 import { Column, SearchFilterOption } from "../models/dashboard";
 
@@ -105,9 +107,39 @@ const searchFilterOptionsMap: Record<string, string> = {
     updatedAt: "Updated At",
 };
 
+const submissionUpdateTemplates = [
+    "Application submitted through LinkedIn Easy Apply",
+    "Application submitted through Indeed",
+    "Application submitted through WellFound",
+    "Application submitted through company website",
+    "Application submitted through company website (workday)",
+    "Application submitted through ",
+];
+
+const noteUpdateTemplates = ["Application viewed by the hiring team"];
+
+const rejectionUpdateTemplates = [
+    "This job is no longer accepting applications",
+    "Failed the OA (Online Assessment)",
+];
+
+const updateTemplates = (type: ApplicationUpdateType) => {
+    switch (type) {
+        case "submission":
+            return submissionUpdateTemplates;
+        case "note":
+            return noteUpdateTemplates;
+        case "rejection":
+            return rejectionUpdateTemplates;
+        default:
+            return [];
+    }
+};
+
 export {
     getApplicationsDashboardByUserId,
     columns,
     searchFilterOptions,
     searchFilterOptionsMap,
+    updateTemplates,
 };

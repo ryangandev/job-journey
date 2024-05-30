@@ -153,6 +153,7 @@ export default function NewApplicationForm() {
                     color={showShakeAnimation ? "danger" : "default"}
                     placeholder={placeholder}
                     autoFocus={true}
+                    autoComplete="off"
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
                             handleOnNext();

@@ -182,7 +182,7 @@ export default function ApplicationInfo({
                         popoverTriggerComponent={renderHighlightString(
                             applicationDetail.salary
                                 ? applicationDetail.salary
-                                : "[add salary info here]",
+                                : "N/A [add salary info here]",
                         )}
                     />
                 </div>
