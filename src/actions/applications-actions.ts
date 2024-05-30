@@ -11,6 +11,7 @@ import {
     PartialApplicationSchema,
     ApplicationUpdateSchema,
 } from "../schemas/application-schema";
+import { ApplicationUpdateType } from "@prisma/client";
 
 async function addNewApplicationAction(
     newApplicationForm: z.infer<typeof NewApplicationFormSchema>,
@@ -164,6 +165,31 @@ async function addApplicationUpdateAction(
         return {
             error: "Failed to add new update.",
         };
+    }
+
+    // 3. Update the application status based on the update type
+    const updateMap: Record<ApplicationUpdateType, Record<string, any>> = {
+        submission: { status: "applied" },
+        note: {},
+        interview: {
+            status: "interviewing",
+            replied: true,
+            interviewAquired: true,
+        },
+        offer: { status: "offered", replied: true },
+        rejection: { status: "rejected" },
+        auto_generated: {},
+    };
+
+    try {
+        const updateData = updateMap[parsedFormData.type];
+        await prisma.application.update({
+            where: { id: parsedFormData.applicationId },
+            data: updateData,
+        });
+    } catch (dbError) {
+        console.error("Database operation failed:", dbError);
+        return { error: "Failed to update application status." };
     }
 
     revalidatePath(
