@@ -20,4 +20,12 @@ const ResetPasswordSchema = z.object({
     }),
 });
 
-export { RegisterSchema, LoginSchema, ResetPasswordSchema };
+// TODO: Add confirm password field later
+const NewPasswordSchema = z.object({
+    password: z
+        .string()
+        .min(8, { message: "Must be at least 8 characters" })
+        .max(30, { message: "Must be within 30 characters" }),
+});
+
+export { RegisterSchema, LoginSchema, ResetPasswordSchema, NewPasswordSchema };
