@@ -172,6 +172,10 @@ const resetPasswordAction = async (
         return { error: "Email not found!" };
     }
 
+    if (!existingUser.password) {
+        return { error: "Email used with a provider sign in" };
+    }
+
     const resetPasswordToken = await generateResetPasswordToken(email);
     await sendResetPasswordEmail(
         resetPasswordToken.email,
