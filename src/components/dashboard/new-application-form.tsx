@@ -38,7 +38,13 @@ import {
     shakeAnimationVariants,
 } from "../../constants/framer-motion-variants-transitions";
 
-export default function NewApplicationForm() {
+interface NewApplicationFormProps {
+    userId: string;
+}
+
+export default function NewApplicationForm({
+    userId,
+}: NewApplicationFormProps) {
     const {
         handleSubmit,
         register,
@@ -49,7 +55,7 @@ export default function NewApplicationForm() {
     } = useForm<z.infer<typeof NewApplicationFormSchema>>({
         resolver: zodResolver(NewApplicationFormSchema),
         defaultValues: {
-            userId: "clwlkqv9s000711olet4jffbl", // TODO: Get user ID from auth context
+            userId: userId,
             title: "",
             company: "",
             location: "",

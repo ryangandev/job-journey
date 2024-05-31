@@ -1,12 +1,13 @@
 import dynamic from "next/dynamic";
 import { Metadata } from "next";
+import { Spinner } from "@nextui-org/spinner";
 
 import { auth } from "../../../auth";
 import { getApplicationsDashboardByUserId } from "../../../data/dashboard";
 import NotAuthorized from "../../../components/not-authorized";
 
 export const metadata: Metadata = {
-    title: "Dashboard",
+    title: "Dashboard - Job Journey",
     description:
         "An intuitive dashboard that keeps track of your job applications in one place.",
 };
@@ -23,7 +24,15 @@ export const metadata: Metadata = {
 
 const ApplicationsDashboard = dynamic(
     () => import("../../../components/dashboard/dashboard"),
-    { ssr: false },
+    {
+        ssr: false,
+        loading: () => (
+            <Spinner
+                className="bg-white"
+                label="Loading your applications..."
+            />
+        ),
+    },
 );
 
 export default async function Dashboard() {
@@ -38,8 +47,8 @@ export default async function Dashboard() {
     );
 
     return (
-        <main className="p-4">
-            <div className="max-w-7xl w-full mx-auto">
+        <main className="flex justify-center p-4">
+            <div className="max-w-7xl w-full flex justify-center">
                 <ApplicationsDashboard applicationsData={applications} />
             </div>
         </main>
