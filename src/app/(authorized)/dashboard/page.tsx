@@ -26,12 +26,7 @@ const ApplicationsDashboard = dynamic(
     () => import("../../../components/dashboard/dashboard"),
     {
         ssr: false,
-        loading: () => (
-            <Spinner
-                className="bg-white"
-                label="Loading your applications..."
-            />
-        ),
+        loading: () => <Spinner label="Loading your applications..." />,
     },
 );
 
