@@ -45,7 +45,7 @@ export default function NavBar() {
                     href="/"
                     className={`hidden lg:block ${beauRivage.className} text-3xl select-none`}
                 >
-                    Job Journey
+                    JobJourney
                 </Link>
                 <NavbarContent
                     className="space-x-2 font-medium"

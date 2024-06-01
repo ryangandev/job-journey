@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import NewPasswordForm from "../../../components/auth/new-password-form";
 
 export const metadata: Metadata = {
-    title: "New Password - Job Journey",
+    title: "New Password - JobJourney",
     description: "New password page",
 };
 

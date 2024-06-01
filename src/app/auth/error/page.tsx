@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-    title: "Auth Error",
+    title: "Auth Error - JobJourney",
     description: "Auth error page",
 };
 

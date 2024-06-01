@@ -1,4 +1,4 @@
-<h1 align="center">Job Journey</h1>
+<h1 align="center">JobJourney</h1>
 
 <p align="center">
   <img src="https://github.com/ryangandev/job-journey/blob/main/src/app/favicon.ico" alt="Logo" width="200px">
@@ -6,7 +6,7 @@
 
 ## 🚀 About
 
-**Job Journey** is a comprehensive management application designed to streamline and organize the job search process for individuals actively seeking employment opportunities. Whether you're a seasoned professional or a fresh graduate, Job Journey provides the tools you need to efficiently manage your job applications from start to finish.
+**JobJourney** is a comprehensive management application designed to streamline and organize the job search process for individuals actively seeking employment opportunities. Whether you're a seasoned professional or a fresh graduate, Job Journey provides the tools you need to efficiently manage your job applications from start to finish.
 
 ## 📌 Key Features
 

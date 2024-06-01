@@ -37,13 +37,14 @@ export async function generateMetadata({
             title:
                 applicationDetailData.company +
                 " - " +
-                applicationDetailData.title,
+                applicationDetailData.title +
+                " - JobJourney",
             description: "Detailed view of a job application.",
         };
     }
 
     return {
-        title: "Application Detail",
+        title: "Application Not Found - JobJourney",
         description: "Detailed view of a job application.",
     };
 }

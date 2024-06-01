@@ -7,7 +7,7 @@ import { getApplicationsDashboardByUserId } from "../../../data/dashboard";
 import NotAuthorized from "../../../components/not-authorized";
 
 export const metadata: Metadata = {
-    title: "Dashboard - Job Journey",
+    title: "Dashboard - JobJourney",
     description:
         "An intuitive dashboard that keeps track of your job applications in one place.",
 };

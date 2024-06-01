@@ -6,7 +6,7 @@ import NavBar from "../components/navbar";
 import { inter } from "../assets/fonts";
 
 export const metadata = {
-    title: "Job Journey",
+    title: "JobJourney",
     description:
         "An app to help you organize and streamline your job application process.",
 };

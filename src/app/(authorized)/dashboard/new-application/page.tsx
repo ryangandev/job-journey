@@ -6,7 +6,7 @@ import NewApplicationForm from "../../../../components/dashboard/new-application
 import NotAuthorized from "../../../../components/not-authorized";
 
 export const metadata: Metadata = {
-    title: "New Application - Job Journey",
+    title: "New Application - JobJourney",
     description: "Add new application to the job application dashboard.",
 };
 
