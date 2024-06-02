@@ -13,15 +13,14 @@ import {
     DropdownItem,
     Checkbox,
     Progress,
-    useDisclosure,
 } from "@nextui-org/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoMdRefresh, IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
 import { FaCheck } from "react-icons/fa6";
 import toast from "react-hot-toast";
 
+import useConfirmModal from "../../hooks/use-confirm-modal";
 import { ChevronDownIcon } from "../../assets/svgs";
-import ConfirmModal from "../confirm-modal";
 import { NewApplicationFormSchema } from "../../schemas/application-schema";
 import { addNewApplicationAction } from "../../actions/applications-actions";
 import { newApplicationFormQuestions } from "../../data/new-application-form";
@@ -70,11 +69,8 @@ export default function NewApplicationForm({
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [animateDirection, setAnimateDirection] = useState(1); // 1: next, -1: previous
     const [showShakeAnimation, setShowShakeAnimation] = useState(false);
-    const [confirmModalTitle, setConfirmModalTitle] = useState("");
-    const [confirmModalQuestion, setConfirmModalQuestion] = useState("");
-    const [confirmAction, setConfirmAction] = useState<() => void>(() => {});
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const inputRef = useRef<HTMLInputElement>(null);
+    const { onOpen, setTitle, setQuestion, setAction } = useConfirmModal();
 
     const handleStartNewRequest = () => {
         if (!isDirty) return;
@@ -86,18 +82,12 @@ export default function NewApplicationForm({
             toast.success("Form has been reset.");
         };
 
-        setConfirmModalTitle("Start New Application?");
-        setConfirmModalQuestion(
+        setTitle("Start New Application?");
+        setQuestion(
             "There are unsaved changes. Are you sure to start a new application?",
         );
-        setConfirmAction(() => handleStartNew);
+        setAction(() => handleStartNew);
         onOpen();
-    };
-
-    const handleOnModalClose = () => {
-        setConfirmModalTitle("");
-        setConfirmModalQuestion("");
-        setConfirmAction(() => {});
     };
 
     const handleOnPrevious = () => {
@@ -321,145 +311,131 @@ export default function NewApplicationForm({
     };
 
     return (
-        <>
-            <AnimatePresence>
-                <div className="max-w-[36rem] w-full flex flex-col space-y-12">
-                    <motion.form
-                        className="w-full flex flex-col space-y-4"
-                        onSubmit={handleSubmit(onSubmit)}
-                        key={currentQuestionIndex}
-                        custom={animateDirection}
-                        variants={inputTransitionVariants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={inputTransition}
-                    >
-                        {/* Question */}
-                        <span className="text-lg font-semibold text-light-100 dark:text-dark-100">
-                            {currentQuestionIndex + 1}.{" "}
-                            {
-                                newApplicationFormQuestions[
-                                    currentQuestionIndex
-                                ].question
-                            }
-                            {newApplicationFormQuestions[currentQuestionIndex]
-                                .required && (
-                                <span className="text-red-500"> *</span>
-                            )}
-                        </span>
+        <AnimatePresence>
+            <div className="max-w-[36rem] w-full flex flex-col space-y-12">
+                <motion.form
+                    className="w-full flex flex-col space-y-4"
+                    onSubmit={handleSubmit(onSubmit)}
+                    key={currentQuestionIndex}
+                    custom={animateDirection}
+                    variants={inputTransitionVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={inputTransition}
+                >
+                    {/* Question */}
+                    <span className="text-lg font-semibold text-light-100 dark:text-dark-100">
+                        {currentQuestionIndex + 1}.{" "}
+                        {
+                            newApplicationFormQuestions[currentQuestionIndex]
+                                .question
+                        }
+                        {newApplicationFormQuestions[currentQuestionIndex]
+                            .required && (
+                            <span className="text-red-500"> *</span>
+                        )}
+                    </span>
 
-                        {/* Input Field */}
-                        <div className="h-16 flex items-center">
-                            {renderQuestion(
-                                newApplicationFormQuestions[
-                                    currentQuestionIndex
-                                ],
-                            )}
-                        </div>
+                    {/* Input Field */}
+                    <div className="h-16 flex items-center">
+                        {renderQuestion(
+                            newApplicationFormQuestions[currentQuestionIndex],
+                        )}
+                    </div>
 
-                        {/* Button Group */}
-                        <div className="flex flex-row justify-between items-center">
+                    {/* Button Group */}
+                    <div className="flex flex-row justify-between items-center">
+                        <Button
+                            size="md"
+                            radius="sm"
+                            variant="flat"
+                            endContent={<IoMdRefresh />}
+                            color="danger"
+                            onPress={handleStartNewRequest}
+                            isDisabled={!isDirty || isSubmitting}
+                        >
+                            Start New
+                        </Button>
+                        <div className="flex items-center space-x-4">
                             <Button
                                 size="md"
                                 radius="sm"
                                 variant="flat"
-                                endContent={<IoMdRefresh />}
-                                color="danger"
-                                onPress={handleStartNewRequest}
-                                isDisabled={!isDirty || isSubmitting}
+                                startContent={<IoMdArrowBack />}
+                                color="secondary"
+                                onPress={handleOnPrevious}
+                                isDisabled={
+                                    currentQuestionIndex === 0 || isSubmitting
+                                }
                             >
-                                Start New
+                                Previous
                             </Button>
-                            <div className="flex items-center space-x-4">
+                            {currentQuestionIndex ===
+                            newApplicationFormQuestions.length - 1 ? (
                                 <Button
                                     size="md"
                                     radius="sm"
                                     variant="flat"
-                                    startContent={<IoMdArrowBack />}
-                                    color="secondary"
-                                    onPress={handleOnPrevious}
+                                    endContent={<FaCheck />}
+                                    color="success"
+                                    type="submit"
+                                    isLoading={isSubmitting}
+                                    isDisabled={isSubmitting}
+                                >
+                                    Submit
+                                </Button>
+                            ) : (
+                                <Button
+                                    size="md"
+                                    radius="sm"
+                                    variant="flat"
+                                    endContent={<IoMdArrowForward />}
+                                    color="primary"
+                                    onPress={handleOnNext}
                                     isDisabled={
-                                        currentQuestionIndex === 0 ||
-                                        isSubmitting
+                                        currentQuestionIndex ===
+                                            newApplicationFormQuestions.length -
+                                                1 || isSubmitting
                                     }
                                 >
-                                    Previous
+                                    Next
                                 </Button>
-                                {currentQuestionIndex ===
-                                newApplicationFormQuestions.length - 1 ? (
-                                    <Button
-                                        size="md"
-                                        radius="sm"
-                                        variant="flat"
-                                        endContent={<FaCheck />}
-                                        color="success"
-                                        type="submit"
-                                        isLoading={isSubmitting}
-                                        isDisabled={isSubmitting}
-                                    >
-                                        Submit
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        size="md"
-                                        radius="sm"
-                                        variant="flat"
-                                        endContent={<IoMdArrowForward />}
-                                        color="primary"
-                                        onPress={handleOnNext}
-                                        isDisabled={
-                                            currentQuestionIndex ===
-                                                newApplicationFormQuestions.length -
-                                                    1 || isSubmitting
-                                        }
-                                    >
-                                        Next
-                                    </Button>
-                                )}
-                            </div>
+                            )}
                         </div>
-                    </motion.form>
+                    </div>
+                </motion.form>
 
-                    {/* Progress Section */}
-                    <motion.div
-                        className="w-full"
-                        variants={inputTransitionVariants}
-                        custom={0} // direction
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={inputTransition}
-                    >
-                        <Progress
-                            size="sm"
-                            radius="md"
-                            classNames={{
-                                track: "drop-shadow-md border border-default",
-                                indicator:
-                                    "bg-gradient-to-r from-pink-500 to-yellow-500",
-                                label: "tracking-wider font-medium text-default-600",
-                                value: "text-foreground/60",
-                            }}
-                            label="Completion"
-                            value={
-                                ((currentQuestionIndex + 1) /
-                                    newApplicationFormQuestions.length) *
-                                100
-                            }
-                            showValueLabel={true}
-                        />
-                    </motion.div>
-                </div>
-            </AnimatePresence>
-            <ConfirmModal
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
-                title={confirmModalTitle}
-                confirmQuestion={confirmModalQuestion}
-                onConfirm={confirmAction}
-                onClose={handleOnModalClose}
-            />
-        </>
+                {/* Progress Section */}
+                <motion.div
+                    className="w-full"
+                    variants={inputTransitionVariants}
+                    custom={0} // direction
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={inputTransition}
+                >
+                    <Progress
+                        size="sm"
+                        radius="md"
+                        classNames={{
+                            track: "drop-shadow-md border border-default",
+                            indicator:
+                                "bg-gradient-to-r from-pink-500 to-yellow-500",
+                            label: "tracking-wider font-medium text-default-600",
+                            value: "text-foreground/60",
+                        }}
+                        label="Completion"
+                        value={
+                            ((currentQuestionIndex + 1) /
+                                newApplicationFormQuestions.length) *
+                            100
+                        }
+                        showValueLabel={true}
+                    />
+                </motion.div>
+            </div>
+        </AnimatePresence>
     );
 }

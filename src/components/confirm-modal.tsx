@@ -9,24 +9,35 @@ import {
     ModalFooter,
     Button,
 } from "@nextui-org/react";
+import useConfirmModal from "../hooks/use-confirm-modal";
 
-interface ConfirmModalProps {
-    isOpen: boolean;
-    onOpenChange: () => void;
-    title: string;
-    confirmQuestion: string;
-    onConfirm: () => void;
-    onClose?: () => void;
-}
+export default function ConfirmModal() {
+    const {
+        isOpen,
+        onOpenChange,
+        title,
+        question,
+        action,
+        onClose,
+        loading,
+        setLoading,
+    } = useConfirmModal();
 
-export default function ConfirmModal({
-    isOpen,
-    onOpenChange,
-    title,
-    confirmQuestion,
-    onConfirm,
-    onClose,
-}: ConfirmModalProps) {
+    const handleConfirm = async (onClose: () => void) => {
+        setLoading(true);
+        try {
+            const result = action();
+            if (result instanceof Promise) {
+                await result;
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+            onClose();
+        }
+    };
+
     return (
         <Modal
             placement="center"
@@ -42,22 +53,24 @@ export default function ConfirmModal({
                             {title}
                         </ModalHeader>
                         <ModalBody>
-                            <p>{confirmQuestion}</p>
+                            <p>{question}</p>
                         </ModalBody>
                         <ModalFooter>
                             <Button
                                 color="danger"
                                 variant="light"
                                 onPress={onClose}
+                                isDisabled={loading}
                             >
                                 Cancel
                             </Button>
                             <Button
                                 color="primary"
                                 onPress={() => {
-                                    onConfirm();
-                                    onClose();
+                                    handleConfirm(onClose);
                                 }}
+                                isDisabled={loading}
+                                isLoading={loading}
                             >
                                 Confirm
                             </Button>
