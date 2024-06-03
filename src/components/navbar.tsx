@@ -17,11 +17,12 @@ import { IoPersonOutline, IoSettingsOutline, IoPower } from "react-icons/io5";
 
 import DailyGoalTracker from "./daily-goal-tracker";
 import { beauRivage } from "../assets/fonts";
-import navbarLinks from "../data/navbarLinks";
+import navbarLinks from "../data/navbar-links";
 import useCurrentUser from "../hooks/use-current-user";
-import useNavbar from "../hooks/useNavbar";
+import useNavbar from "../hooks/use-navbar";
 import useConfirmModal from "../hooks/use-confirm-modal";
 import { logoutAction } from "../actions/auth-actions";
+import { getNavbarSectionPath } from "../libs/string-utils";
 
 export default function NavBar() {
     const user = useCurrentUser();
@@ -70,7 +71,10 @@ export default function NavBar() {
                     {navbarLinks.map((link) => (
                         <NavbarItem
                             key={link.url}
-                            isActive={activeSectionPath === link.url}
+                            isActive={
+                                getNavbarSectionPath(activeSectionPath) ===
+                                link.url
+                            }
                         >
                             <Link href={link.url} className="text-sm">
                                 {link.name}
