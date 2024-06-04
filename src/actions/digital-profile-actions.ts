@@ -4,12 +4,12 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
 import { prisma } from "../libs/db";
-import { ProfileLinkSchema } from "../schemas/profile-schema";
+import { SocialProfileSchema } from "../schemas/digital-profile-schema";
 
 async function addProfileLinkAction(
-    profileLinkData: z.infer<typeof ProfileLinkSchema>,
+    profileLinkData: z.infer<typeof SocialProfileSchema>,
 ) {
-    const result = ProfileLinkSchema.safeParse(profileLinkData);
+    const result = SocialProfileSchema.safeParse(profileLinkData);
 
     if (!result.success) {
         let errorMessages = "";
@@ -25,7 +25,7 @@ async function addProfileLinkAction(
 
     const parsedProfileLinkData = result.data;
     try {
-        await prisma.profileLink.create({
+        await prisma.socialProfile.create({
             data: {
                 userId: parsedProfileLinkData.userId,
                 platform: parsedProfileLinkData.platform,
@@ -41,7 +41,7 @@ async function addProfileLinkAction(
     }
 
     revalidatePath("/digital-profile");
-    return { success: "Profile link added!" };
+    return { success: "Social profile added!" };
 }
 
 export { addProfileLinkAction };

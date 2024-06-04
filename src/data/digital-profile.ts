@@ -2,7 +2,7 @@ import { prisma } from "../libs/db";
 
 const getProfileLinksByUserId = async (userId: string) => {
     try {
-        const profileLinks = await prisma.profileLink.findMany({
+        const profileLinks = await prisma.socialProfile.findMany({
             where: {
                 userId: userId,
             },

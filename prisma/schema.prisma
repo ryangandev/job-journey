@@ -85,10 +85,10 @@ model User {
   password      String?
   userPlan      UserPlan  @default(FREE)
 
-  accounts     Account[]
-  applications Application[]
-  profileLinks ProfileLink[]
-  resumes      Resume[]
+  accounts       Account[]
+  applications   Application[]
+  socialProfiles SocialProfile[]
+  resumes        Resume[]
 
   @@map("users")
 }
@@ -170,7 +170,7 @@ model ApplicationUpdate {
   @@map("application_updates")
 }
 
-model ProfileLink {
+model SocialProfile {
   id       String          @id @default(cuid())
   userId   String          @map("user_id")
   platform ProfilePlatform
@@ -180,7 +180,7 @@ model ProfileLink {
   user User @relation(fields: [userId], references: [id])
 
   @@unique([userId, position])
-  @@map("profile_links")
+  @@map("social_profiles")
 }
 
 model Resume {

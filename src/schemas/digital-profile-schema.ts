@@ -11,11 +11,11 @@ const ProfilePlatformSchema = z.enum([
     "portfolio",
 ]);
 
-const ProfileLinkSchema = z.object({
+const SocialProfileSchema = z.object({
     userId: z.string(),
     platform: ProfilePlatformSchema,
     url: z.string(),
     position: z.number(),
 });
 
-export { ProfileLinkSchema };
+export { SocialProfileSchema };
