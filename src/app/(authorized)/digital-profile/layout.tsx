@@ -15,7 +15,7 @@ export default function DigitalProfileLayout({
     children: React.ReactNode;
 }) {
     return (
-        <main className="flex flex-col items-center p-4">
+        <main className="flex flex-col items-center p-4 min-h-screen">
             <div className="max-w-5xl w-full space-y-8 py-4">
                 <PageHeader>Digital Profile</PageHeader>
                 <LinkTabs>
