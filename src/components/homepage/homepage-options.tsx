@@ -7,7 +7,11 @@ import Link from "next/link";
 
 export default function HomepageOptions() {
     return (
-        <div className="grid grid-rows-1 sm:grid-cols-2 sm:grid-rows-2 w-full gap-3">
+        <div
+            className="grid grid-rows-1 sm:grid-cols-2 sm:grid-rows-2 w-full gap-3"
+            data-aos="fade-up"
+            data-aos-delay="300"
+        >
             {homepageOptions.map((option, index) => (
                 <Link
                     key={index}

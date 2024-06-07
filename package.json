@@ -13,6 +13,7 @@
     "@hookform/resolvers": "^3.4.2",
     "@nextui-org/react": "^2.3.5",
     "@prisma/client": "^5.14.0",
+    "aos": "^2.3.4",
     "bcryptjs": "^2.4.3",
     "framer-motion": "^11.2.6",
     "lodash": "^4.17.21",
@@ -29,6 +30,7 @@
     "zod": "^3.23.7"
   },
   "devDependencies": {
+    "@types/aos": "^3.0.7",
     "@types/bcryptjs": "^2.4.6",
     "@types/lodash": "^4.17.4",
     "@types/node": "20.11.28",
