@@ -79,8 +79,7 @@ enum ProfilePlatform {
 enum InterviewQuestionType {
   behavioral
   technical
-  system_design
-  company_specific
+  company
 }
 
 model User {
@@ -92,10 +91,12 @@ model User {
   password      String?
   userPlan      UserPlan  @default(FREE)
 
-  accounts       Account[]
-  applications   Application[]
-  socialProfiles SocialProfile[]
-  resumes        Resume[]
+  accounts           Account[]
+  applications       Application[]
+  socialProfiles     SocialProfile[]
+  resumes            Resume[]
+  interviewQuestions InterviewQuestion[]
+  tags               Tag[]
 
   @@map("users")
 }
@@ -201,4 +202,39 @@ model Resume {
   user User @relation(fields: [userId], references: [id])
 
   @@map("resumes")
+}
+
+model InterviewQuestion {
+  id        String                @id @default(cuid())
+  userId    String                @map("user_id")
+  type      InterviewQuestionType
+  question  String
+  answer    String
+  createdAt DateTime              @default(now()) @map("created_at")
+  updatedAt DateTime              @updatedAt @map("updated_at")
+
+  user User          @relation(fields: [userId], references: [id])
+  tags QuestionTag[]
+
+  @@map("interview_questions")
+}
+
+model Tag {
+  id     String @id @default(cuid())
+  userId String @map("user_id")
+  name   String @unique
+
+  user      User          @relation(fields: [userId], references: [id])
+  questions QuestionTag[]
+}
+
+model QuestionTag {
+  questionId String @map("question_id")
+  tagId      String @map("tag_id")
+
+  question InterviewQuestion @relation(fields: [questionId], references: [id])
+  tag      Tag               @relation(fields: [tagId], references: [id])
+
+  @@id([questionId, tagId])
+  @@map("question_tags")
 }
