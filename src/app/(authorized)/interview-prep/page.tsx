@@ -1,5 +1,17 @@
-import React from "react";
+import PageHeader from "../../../components/page-header";
+import InterviewQuestionFormModal from "../../../components/interview-prep/interview-question-form-modal";
+import InterviewQuestionsView from "../../../components/interview-prep/interview-questions-view";
 
-export default function InterviewPrep() {
-    return <div>InterviewPrep</div>;
+export default async function BehavioralPage() {
+    return (
+        <main className="flex flex-col items-center p-4">
+            <div className="max-w-5xl w-full space-y-8 py-4 min-h-screen">
+                <div className="flex justify-between space-x-4 items-center">
+                    <PageHeader>Interview Prep</PageHeader>
+                    <InterviewQuestionFormModal />
+                </div>
+                <InterviewQuestionsView />
+            </div>
+        </main>
+    );
 }
