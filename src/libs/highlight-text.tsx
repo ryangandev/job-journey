@@ -10,8 +10,10 @@ const highlightText = (text: string, highlight: string) => {
     return (
         <>
             {parts.map((part, index) =>
-                regex.test(part) ? (
-                    <span key={index} className="bg-orange-300">
+                regex.test(part) &&
+                part.toLowerCase() === highlight.toLowerCase() ? (
+                    // TODO: later fix the bg not working with tailwind problem, use text-color temporarily
+                    <span key={index} className="text-red-500 font-semibold">
                         {part}
                     </span>
                 ) : (
