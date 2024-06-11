@@ -11,7 +11,8 @@ const highlightText = (text: string, highlight: string) => {
         <>
             {parts.map((part, index) =>
                 regex.test(part) ? (
-                    <span key={index} className="bg-orange-300">
+                    // TODO: later fix the bg not working with tailwind problem, use text-color temporarily
+                    <span key={index} className="text-red-500 font-semibold">
                         {part}
                     </span>
                 ) : (
