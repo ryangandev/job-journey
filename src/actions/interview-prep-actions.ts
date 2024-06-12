@@ -112,6 +112,7 @@ const updateInterviewQuestionAction = async (
                 type,
                 question,
                 answer,
+                updatedAt: new Date(),
             },
         });
     } catch (error) {

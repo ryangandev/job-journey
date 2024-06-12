@@ -14,6 +14,8 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
+    Radio,
+    RadioGroup,
     Textarea,
 } from "@nextui-org/react";
 import { GoPencil } from "react-icons/go";
@@ -26,7 +28,6 @@ import {
 } from "../../data/interview-questions";
 import { highlightText } from "../../libs/highlight-text";
 import { InterviewQuestionUpdateSchema } from "../../schemas/interview-prep-schema";
-import CustomDropdown from "../custom-dropdown";
 
 interface InterviewQuestionModalProps {
     questionId: string;
@@ -112,7 +113,7 @@ export default function InterviewQuestionModal({
             <ModalContent>
                 {(onClose) => (
                     <form onSubmit={handleSubmit(handleOnSubmit)}>
-                        <ModalHeader className="flex flex-col space-y-2 pt-6 pb-1">
+                        <ModalHeader className="flex flex-col space-y-3 pt-6 pb-1">
                             {isEditing ? (
                                 <Input
                                     {...register("question")}
@@ -138,24 +139,28 @@ export default function InterviewQuestionModal({
                                         control={control}
                                         name="type"
                                         render={({ field }) => (
-                                            <CustomDropdown
-                                                triggerType="button"
-                                                buttonVariant="bordered"
-                                                label="Question Type"
+                                            <RadioGroup
+                                                orientation="horizontal"
                                                 value={field.value}
-                                                valueOptions={
-                                                    interviewQuestionTypeOptions
-                                                }
-                                                handleUpdate={(selectedKey) => {
-                                                    field.onChange(selectedKey);
+                                                onValueChange={(value) => {
+                                                    field.onChange(value);
                                                 }}
-                                                displayMapper={(value) =>
-                                                    interviewQuestionTypeMap[
-                                                        value as InterviewQuestionType
-                                                    ]
-                                                }
-                                                isDisabled={isSubmitting}
-                                            />
+                                            >
+                                                {interviewQuestionTypeOptions.map(
+                                                    (questionType) => (
+                                                        <Radio
+                                                            key={questionType}
+                                                            value={questionType}
+                                                        >
+                                                            {
+                                                                interviewQuestionTypeMap[
+                                                                    questionType as InterviewQuestionType
+                                                                ]
+                                                            }
+                                                        </Radio>
+                                                    ),
+                                                )}
+                                            </RadioGroup>
                                         )}
                                     />
                                 )}

@@ -51,7 +51,7 @@ const searchInterviewQuestions = async (
     const interviewQuestions = await prisma.interviewQuestion.findMany({
         where: whereClause,
         orderBy: {
-            createdAt: "desc",
+            updatedAt: "desc",
         },
     });
 
