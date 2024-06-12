@@ -79,6 +79,7 @@ export default function InterviewQuestionsView() {
                 placeholder="Search questions by keyword"
                 value={searchQuery}
                 onValueChange={setSearchQuery}
+                autoComplete="off"
             />
             <RadioGroup
                 orientation="horizontal"
