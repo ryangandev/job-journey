@@ -55,7 +55,7 @@ export default function InterviewQuestionsView() {
                 setCompanyInterviewQuestions(questions.interviewQuestions);
             }
             setIsSearching(false);
-        }, 500),
+        }, 250), // TODO: change this back to 500 after testing
         [questionTypeFilter],
     );
 
