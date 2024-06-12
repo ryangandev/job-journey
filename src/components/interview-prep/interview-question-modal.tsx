@@ -109,6 +109,7 @@ export default function InterviewQuestionModal({
             isOpen={isOpen}
             onOpenChange={onOpenChange}
             onClose={handleOnCancel}
+            scrollBehavior="outside"
         >
             <ModalContent>
                 {(onClose) => (
