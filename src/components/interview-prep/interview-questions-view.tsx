@@ -14,7 +14,7 @@ import {
 } from "../../data/interview-questions";
 
 // Simple in-memory cache
-const searchCache: Record<string, InterviewQuestion[]> = {};
+let searchCache: Record<string, InterviewQuestion[]> = {};
 
 export default function InterviewQuestionsView() {
     const [searchQuery, setSearchQuery] = useState<string>("");
@@ -58,6 +58,10 @@ export default function InterviewQuestionsView() {
         }, 500),
         [questionTypeFilter],
     );
+
+    const clearCacheForCurrentSearch = () => {
+        delete searchCache[`${searchQuery}-${questionTypeFilter}`];
+    };
 
     useEffect(() => {
         debouncedFetchQuestions(searchQuery, questionTypeFilter);
@@ -107,10 +111,18 @@ export default function InterviewQuestionsView() {
                     {companyInterviewQuestions.map((question) => (
                         <li key={question.id}>
                             <InterviewQuestionContainer
+                                questionId={question.id}
                                 type={question.type}
                                 question={question.question}
                                 answer={question.answer}
                                 highlight={searchQuery}
+                                handlelConfirm={() => {
+                                    clearCacheForCurrentSearch();
+                                    debouncedFetchQuestions(
+                                        searchQuery,
+                                        questionTypeFilter,
+                                    );
+                                }} // TODO: right now, we are re-fetching the questions, later we move questions to server components and utilize revalidatePath
                             />
                         </li>
                     ))}

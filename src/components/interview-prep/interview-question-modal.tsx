@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { InterviewQuestionType } from "@prisma/client";
 import {
     Button,
@@ -13,36 +16,56 @@ import {
     ModalHeader,
     Textarea,
 } from "@nextui-org/react";
+import { GoPencil } from "react-icons/go";
 
-import { highlightText } from "../../libs/highlight-text";
+import { updateInterviewQuestionAction } from "../../actions/interview-prep-actions";
 import {
     interviewQuestionTypeColorMap,
     interviewQuestionTypeMap,
+    interviewQuestionTypeOptions,
 } from "../../data/interview-questions";
+import { highlightText } from "../../libs/highlight-text";
+import { InterviewQuestionUpdateSchema } from "../../schemas/interview-prep-schema";
+import CustomDropdown from "../custom-dropdown";
 
 interface InterviewQuestionModalProps {
+    questionId: string;
     type: InterviewQuestionType;
     question: string;
     answer: string;
     highlight: string;
     isOpen: boolean;
     onOpenChange: () => void;
-    loading: boolean;
-    handleConfirm: (onClose: () => void) => void;
+    handleConfirm: () => void;
 }
 
 export default function InterviewQuestionModal({
+    questionId,
     type,
     question,
     answer,
     highlight,
     isOpen,
     onOpenChange,
-    loading,
+    handleConfirm,
 }: InterviewQuestionModalProps) {
     const [isEditing, setIsEditing] = useState(false);
-    const [newQuestion, setNewQuestion] = useState<string>(question);
-    const [newAnswer, setNewAnswer] = useState<string>(answer);
+
+    const {
+        handleSubmit,
+        register,
+        control,
+        reset,
+        formState: { isSubmitting, isDirty, isValid },
+    } = useForm<z.infer<typeof InterviewQuestionUpdateSchema>>({
+        resolver: zodResolver(InterviewQuestionUpdateSchema),
+        defaultValues: {
+            questionId: questionId,
+            type: type,
+            question: question,
+            answer: answer,
+        },
+    });
 
     const formatAndHighlightText = (text: string, highlight: string) => {
         return text.split("\n").map((line, index) => (
@@ -53,10 +76,28 @@ export default function InterviewQuestionModal({
         ));
     };
 
-    const handleCancel = () => {
-        setNewQuestion(question);
-        setNewAnswer(answer);
+    const handleOnCancel = () => {
         setIsEditing(false);
+        reset();
+    };
+
+    const handleOnSubmit = async (
+        interviewQuestionUpdateData: z.infer<
+            typeof InterviewQuestionUpdateSchema
+        >,
+    ) => {
+        const responsne = await updateInterviewQuestionAction(
+            interviewQuestionUpdateData,
+        );
+        if (responsne.error) {
+            console.log(responsne.error);
+            return;
+        }
+        if (responsne.message) {
+            handleConfirm();
+            reset();
+            setIsEditing(false);
+        }
     };
 
     return (
@@ -66,18 +107,17 @@ export default function InterviewQuestionModal({
             backdrop="blur"
             isOpen={isOpen}
             onOpenChange={onOpenChange}
-            onClose={handleCancel}
+            onClose={handleOnCancel}
         >
             <ModalContent>
                 {(onClose) => (
-                    <>
+                    <form onSubmit={handleSubmit(handleOnSubmit)}>
                         <ModalHeader className="flex flex-col space-y-2 pt-6 pb-1">
                             {isEditing ? (
                                 <Input
+                                    {...register("question")}
                                     label="Question"
                                     variant="bordered"
-                                    value={newQuestion}
-                                    onValueChange={setNewQuestion}
                                 />
                             ) : (
                                 <p className="text-xl font-semibold">
@@ -85,20 +125,48 @@ export default function InterviewQuestionModal({
                                 </p>
                             )}
                             <div className="flex flex-row space-x-2">
-                                <Chip
-                                    color={interviewQuestionTypeColorMap[type]}
-                                >
-                                    {interviewQuestionTypeMap[type]}
-                                </Chip>
+                                {!isEditing ? (
+                                    <Chip
+                                        color={
+                                            interviewQuestionTypeColorMap[type]
+                                        }
+                                    >
+                                        {interviewQuestionTypeMap[type]}
+                                    </Chip>
+                                ) : (
+                                    <Controller
+                                        control={control}
+                                        name="type"
+                                        render={({ field }) => (
+                                            <CustomDropdown
+                                                triggerType="button"
+                                                buttonVariant="bordered"
+                                                label="Question Type"
+                                                value={field.value}
+                                                valueOptions={
+                                                    interviewQuestionTypeOptions
+                                                }
+                                                handleUpdate={(selectedKey) => {
+                                                    field.onChange(selectedKey);
+                                                }}
+                                                displayMapper={(value) =>
+                                                    interviewQuestionTypeMap[
+                                                        value as InterviewQuestionType
+                                                    ]
+                                                }
+                                                isDisabled={isSubmitting}
+                                            />
+                                        )}
+                                    />
+                                )}
                             </div>
                         </ModalHeader>
                         <ModalBody className="py-1">
                             {isEditing ? (
                                 <Textarea
+                                    {...register("answer")}
                                     label="Answer"
                                     variant="bordered"
-                                    value={newAnswer}
-                                    onValueChange={setNewAnswer}
                                 />
                             ) : (
                                 <p>
@@ -111,33 +179,43 @@ export default function InterviewQuestionModal({
                                 </p>
                             )}
                         </ModalBody>
-                        <ModalFooter className="pt-1">
-                            <Button
-                                color="warning"
-                                variant={"bordered"}
-                                onPress={() => setIsEditing(true)}
-                                isDisabled={loading || isEditing}
-                            >
-                                Edit
-                            </Button>
-                            <Button
-                                color="danger"
-                                variant="light"
-                                onPress={onClose}
-                                isDisabled={loading}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                color="primary"
-                                onPress={() => {}}
-                                isDisabled={loading}
-                                isLoading={loading}
-                            >
-                                Confirm
-                            </Button>
+                        <ModalFooter className="pt-2">
+                            {!isEditing ? (
+                                <Button
+                                    color="warning"
+                                    variant="light"
+                                    onPress={() => setIsEditing(true)}
+                                    isDisabled={isSubmitting || isEditing}
+                                    isIconOnly
+                                    size="sm"
+                                >
+                                    <GoPencil size={20} />
+                                </Button>
+                            ) : (
+                                <span className="flex flex-row space-x-2">
+                                    <Button
+                                        color="danger"
+                                        variant="light"
+                                        onPress={() => setIsEditing(false)}
+                                        isDisabled={isSubmitting}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        color="success"
+                                        variant="flat"
+                                        type="submit"
+                                        isDisabled={
+                                            isSubmitting || !isValid || !isDirty
+                                        }
+                                        isLoading={isSubmitting}
+                                    >
+                                        Update
+                                    </Button>
+                                </span>
+                            )}
                         </ModalFooter>
-                    </>
+                    </form>
                 )}
             </ModalContent>
         </Modal>
