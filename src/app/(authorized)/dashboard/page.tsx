@@ -30,7 +30,7 @@ const ApplicationsDashboard = dynamic(
     },
 );
 
-export default async function Dashboard() {
+export default async function Page() {
     const session = await auth();
 
     if (!session || !session.user || !session.user.id) {

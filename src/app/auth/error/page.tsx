@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     description: "Auth error page",
 };
 
-export default function AuthErrorPage() {
+export default function Page() {
     return (
         <main className="flex flex-col h-screen justify-center items-center space-y-4">
             <h1 className="text-lg font-semibold">🔐 Auth Error</h1>

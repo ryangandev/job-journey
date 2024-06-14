@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardBody, CardHeader } from "@nextui-org/react";
 
-export default function ResumePage() {
+export default function Page() {
     return (
         <Card className="rounded p-4 space-y-4" shadow="sm">
             <CardBody className="flex flex-row space-x-4">

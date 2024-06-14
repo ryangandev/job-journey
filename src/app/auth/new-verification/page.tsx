@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     description: "New verification page",
 };
 
-export default function NewVerificationPage() {
+export default function Page() {
     return (
         <div className="h-screen flex justify-center items-center">
             <NewVerificationForm />

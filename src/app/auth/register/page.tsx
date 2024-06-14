@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     description: "Register page",
 };
 
-export default function RegisterPage() {
+export default function Page() {
     return (
         <div className="h-screen flex justify-center items-center">
             <RegisterForm />

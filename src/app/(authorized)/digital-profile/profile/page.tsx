@@ -6,7 +6,7 @@ import { GoPlusCircle, GoPencil } from "react-icons/go";
 import SocialProfiles from "../../../../components/digital-profile/social-profiles";
 import { getSocialProfilesByUserId } from "../../../../data/digital-profile";
 
-export default async function ProfilePage() {
+export default async function Page() {
     const socialProfiles = await getSocialProfilesByUserId("1");
 
     return (

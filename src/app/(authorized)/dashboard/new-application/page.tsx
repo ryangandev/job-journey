@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     description: "Add new application to the job application dashboard.",
 };
 
-export default async function AddNewPage() {
+export default async function Page() {
     const session = await auth();
 
     if (!session || !session.user || !session.user.id) {

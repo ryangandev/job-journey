@@ -1,5 +1,5 @@
 import React from "react";
 
-export default function GoalTracker() {
+export default function Page() {
     return <div>GoalTracker</div>;
 }
