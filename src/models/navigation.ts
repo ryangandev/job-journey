@@ -5,9 +5,9 @@ type NavbarSectionName =
     | "Interview Prep"
     | "Goal Tracker";
 
-interface NavbarLink {
+type NavbarLink = {
     name: NavbarSectionName;
     url: string;
-}
+};
 
 export type { NavbarSectionName, NavbarLink };

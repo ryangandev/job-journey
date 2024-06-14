@@ -4,11 +4,11 @@ import { IoHelp } from "react-icons/io5";
 
 import { OverlayPlacement } from "../models/nextui-component";
 
-interface HelperSignProps {
+type HelperSignProps = {
     helperContent: string | React.ReactNode;
     placement?: OverlayPlacement;
     tooltipDisabled?: boolean;
-}
+};
 
 export default function HelperSign({
     helperContent,

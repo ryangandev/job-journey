@@ -8,9 +8,9 @@ import toast from "react-hot-toast";
 
 import { socialProfileMap } from "../../data/digital-profile";
 
-interface SocialProfilesProps {
+type SocialProfilesProps = {
     profiles: SocialProfile[];
-}
+};
 
 export default function SocialProfiles({ profiles }: SocialProfilesProps) {
     const [isEditing, setIsEditing] = useState(false);

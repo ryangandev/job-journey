@@ -4,16 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-interface LinkTabsProps {
+type LinkTabsProps = {
     children: React.ReactElement<LinkTabProps>[];
-}
+};
 
-interface LinkTabProps {
+type LinkTabProps = {
     title: string;
     path: string;
     isActive?: boolean;
     onClick?: () => void;
-}
+};
 
 function LinkTabs({ children }: LinkTabsProps) {
     const pathname = usePathname();

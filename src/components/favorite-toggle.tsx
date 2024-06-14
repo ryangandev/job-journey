@@ -1,11 +1,11 @@
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 
-interface FavoriteToggleProps {
+type FavoriteToggleProps = {
     isFavorite: boolean;
     onToggle: () => void;
     onIconComponent?: React.ReactNode;
     offIconComponent?: React.ReactNode;
-}
+};
 
 export default function FavoriteToggle({
     isFavorite,

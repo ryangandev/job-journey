@@ -12,14 +12,14 @@ import { IoIosSend } from "react-icons/io";
 
 import { OverlayPlacement } from "../../models/nextui-component";
 
-interface PopoverFormProps {
+type PopoverFormProps = {
     popoverPlacement?: OverlayPlacement;
     backDrop?: "opaque" | "blur" | "transparent";
     formTitle?: string;
     originalValue?: string;
     onConfirm: (newValue: string) => Promise<void>;
     popoverTriggerComponent: React.ReactNode;
-}
+};
 export default function PopoverForm({
     popoverPlacement = "right-start",
     backDrop = "opaque",

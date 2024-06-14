@@ -1,10 +1,10 @@
 import React from "react";
 import { Card, Spinner } from "@nextui-org/react";
 
-interface LoadingProps {
+type LoadingProps = {
     label: string;
     showWrapper?: boolean;
-}
+};
 
 export default function loading({ label, showWrapper = true }: LoadingProps) {
     return (

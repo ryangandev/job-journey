@@ -3,11 +3,11 @@
 import { createContext, useState, Dispatch, SetStateAction } from "react";
 import { useDisclosure } from "@nextui-org/react";
 
-interface ConfirmModalProviderProps {
+type ConfirmModalProviderProps = {
     children: React.ReactNode;
-}
+};
 
-interface ConfirmModalContextProps {
+type ConfirmModalContextProps = {
     isOpen: boolean;
     onOpen: () => void;
     onOpenChange: () => void;
@@ -21,7 +21,7 @@ interface ConfirmModalContextProps {
     setOnClose: Dispatch<SetStateAction<() => void>>;
     loading: boolean;
     setLoading: Dispatch<SetStateAction<boolean>>;
-}
+};
 
 const ConfirmModalContext = createContext<ConfirmModalContextProps | null>(
     null,

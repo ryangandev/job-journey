@@ -37,9 +37,9 @@ import {
     shakeAnimationVariants,
 } from "../../constants/framer-motion-variants-transitions";
 
-interface NewApplicationFormProps {
+type NewApplicationFormProps = {
     userId: string;
-}
+};
 
 export default function NewApplicationForm({
     userId,

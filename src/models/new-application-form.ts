@@ -11,14 +11,14 @@ type FormQuestionKey =
 
 type FormQuestionType = "input" | "select" | "checkbox";
 
-interface NewApplicationFormQuestion {
+type NewApplicationFormQuestion = {
     key: FormQuestionKey;
     question: string;
     type: FormQuestionType;
     required: boolean;
     placeholder?: string;
     options?: string[];
-}
+};
 
 type InputQuestionKey =
     | "title"

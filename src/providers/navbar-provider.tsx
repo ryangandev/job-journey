@@ -3,15 +3,15 @@
 import { createContext, useState, Dispatch, SetStateAction } from "react";
 import { usePathname } from "next/navigation";
 
-interface NavbarProviderProps {
+type NavbarProviderProps = {
     children: React.ReactNode;
-}
+};
 
-interface NavbarContextProps {
+type NavbarContextProps = {
     navbarVisible: boolean;
     setNavbarVisible: Dispatch<SetStateAction<boolean>>;
     activeSectionPath: string;
-}
+};
 
 const NavbarContext = createContext<NavbarContextProps | null>(null);
 

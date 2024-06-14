@@ -11,7 +11,7 @@ import {
 import React from "react";
 import { ChevronDownIcon } from "../assets/svgs";
 
-interface CustomDropdownProps {
+type CustomDropdownProps = {
     triggerType: "chip" | "button" | "custom";
     customTrigger?: React.ReactNode;
     chipVariant?: ChipProps["variant"];
@@ -25,7 +25,7 @@ interface CustomDropdownProps {
     displayMapper?: (value: string) => string;
     startContent?: React.ReactNode;
     isDisabled?: boolean;
-}
+};
 
 export default function CustomDropdown({
     triggerType,
