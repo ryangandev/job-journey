@@ -12,6 +12,8 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
+    Radio,
+    RadioGroup,
     Textarea,
     useDisclosure,
 } from "@nextui-org/react";
@@ -24,9 +26,8 @@ import {
     interviewQuestionTypeOptions,
 } from "../../data/interview-questions";
 import { InterviewQuestionSchema } from "../../schemas/interview-prep-schema";
-import CustomDropdown from "../custom-dropdown";
 
-export default function InterviewQuestionFormModal() {
+export default function FormModal() {
     const {
         handleSubmit,
         register,
@@ -69,10 +70,11 @@ export default function InterviewQuestionFormModal() {
     return (
         <>
             <Button
-                className="bg-foreground text-background"
+                className="bg-foreground text-background font-medium"
                 onPress={onOpen}
                 endContent={<PlusIcon width={undefined} height={undefined} />}
                 size="md"
+                radius="sm"
             >
                 Add
             </Button>
@@ -99,6 +101,40 @@ export default function InterviewQuestionFormModal() {
                                         variant="bordered"
                                         autoComplete="off"
                                     />
+                                    <div>
+                                        <Controller
+                                            control={control}
+                                            name="type"
+                                            render={({ field }) => (
+                                                <RadioGroup
+                                                    orientation="horizontal"
+                                                    value={field.value}
+                                                    onValueChange={(value) => {
+                                                        field.onChange(value);
+                                                    }}
+                                                >
+                                                    {interviewQuestionTypeOptions.map(
+                                                        (questionType) => (
+                                                            <Radio
+                                                                key={
+                                                                    questionType
+                                                                }
+                                                                value={
+                                                                    questionType
+                                                                }
+                                                            >
+                                                                {
+                                                                    interviewQuestionTypeMap[
+                                                                        questionType as InterviewQuestionType
+                                                                    ]
+                                                                }
+                                                            </Radio>
+                                                        ),
+                                                    )}
+                                                </RadioGroup>
+                                            )}
+                                        />
+                                    </div>
                                     <Textarea
                                         {...register("answer")}
                                         label="Answer"
@@ -106,36 +142,6 @@ export default function InterviewQuestionFormModal() {
                                         variant="bordered"
                                         minRows={40}
                                     />
-                                    <div>
-                                        <Controller
-                                            control={control}
-                                            name="type"
-                                            render={({ field }) => (
-                                                <CustomDropdown
-                                                    triggerType="button"
-                                                    buttonVariant="bordered"
-                                                    label="Question Type"
-                                                    value={field.value}
-                                                    valueOptions={
-                                                        interviewQuestionTypeOptions
-                                                    }
-                                                    handleUpdate={(
-                                                        selectedKey,
-                                                    ) => {
-                                                        field.onChange(
-                                                            selectedKey,
-                                                        );
-                                                    }}
-                                                    displayMapper={(value) =>
-                                                        interviewQuestionTypeMap[
-                                                            value as InterviewQuestionType
-                                                        ]
-                                                    }
-                                                    isDisabled={isSubmitting}
-                                                />
-                                            )}
-                                        />
-                                    </div>
                                 </ModalBody>
                                 <ModalFooter>
                                     <Button

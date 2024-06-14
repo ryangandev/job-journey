@@ -2,9 +2,10 @@
 
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { GoPencil, GoTrash } from "react-icons/go";
+import toast from "react-hot-toast";
 import { z } from "zod";
-import { InterviewQuestionType } from "@prisma/client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
     Button,
     Chip,
@@ -18,18 +19,22 @@ import {
     RadioGroup,
     Textarea,
 } from "@nextui-org/react";
-import { GoPencil } from "react-icons/go";
+import { InterviewQuestionType } from "@prisma/client";
 
-import { updateInterviewQuestionAction } from "../../actions/interview-prep-actions";
+import {
+    updateInterviewQuestionAction,
+    deleteInterviewQuestionAction,
+} from "../../actions/interview-prep-actions";
 import {
     interviewQuestionTypeColorMap,
     interviewQuestionTypeMap,
     interviewQuestionTypeOptions,
 } from "../../data/interview-questions";
+import useConfirmModal from "../../hooks/use-confirm-modal";
 import { highlightText } from "../../libs/highlight-text";
 import { InterviewQuestionUpdateSchema } from "../../schemas/interview-prep-schema";
 
-interface InterviewQuestionModalProps {
+type QuestionModalProps = {
     questionId: string;
     type: InterviewQuestionType;
     question: string;
@@ -37,10 +42,9 @@ interface InterviewQuestionModalProps {
     highlight: string;
     isOpen: boolean;
     onOpenChange: () => void;
-    handleConfirm: () => void;
-}
+};
 
-export default function InterviewQuestionModal({
+export default function QuestionModal({
     questionId,
     type,
     question,
@@ -48,10 +52,8 @@ export default function InterviewQuestionModal({
     highlight,
     isOpen,
     onOpenChange,
-    handleConfirm,
-}: InterviewQuestionModalProps) {
+}: QuestionModalProps) {
     const [isEditing, setIsEditing] = useState(false);
-
     const {
         handleSubmit,
         register,
@@ -67,6 +69,7 @@ export default function InterviewQuestionModal({
             answer: answer,
         },
     });
+    const { onOpen, setTitle, setQuestion, setAction } = useConfirmModal();
 
     const formatAndHighlightText = (text: string, highlight: string) => {
         return text.split("\n").map((line, index) => (
@@ -91,14 +94,34 @@ export default function InterviewQuestionModal({
             interviewQuestionUpdateData,
         );
         if (responsne.error) {
-            console.log(responsne.error);
+            toast.error(responsne.error);
             return;
         }
         if (responsne.message) {
-            handleConfirm();
+            toast.success(responsne.message);
             reset();
             setIsEditing(false);
         }
+    };
+
+    const handleDelete = async (questionId: string) => {
+        const responsne = await deleteInterviewQuestionAction(questionId);
+        if (responsne.error) {
+            toast.error(responsne.error);
+            return;
+        }
+        if (responsne.message) {
+            toast.success(responsne.message);
+            reset();
+            setIsEditing(false);
+        }
+    };
+
+    const handleDeleteRequest = (id: string) => {
+        setTitle("Delete Question");
+        setQuestion("Are you sure you want to delete this question?");
+        setAction(() => async () => await handleDelete(id));
+        onOpen();
     };
 
     return (
@@ -187,16 +210,30 @@ export default function InterviewQuestionModal({
                         </ModalBody>
                         <ModalFooter className="pt-2">
                             {!isEditing ? (
-                                <Button
-                                    color="warning"
-                                    variant="light"
-                                    onPress={() => setIsEditing(true)}
-                                    isDisabled={isSubmitting || isEditing}
-                                    isIconOnly
-                                    size="sm"
-                                >
-                                    <GoPencil size={20} />
-                                </Button>
+                                <span className="flex flex-row space-x-2">
+                                    <Button
+                                        color="warning"
+                                        variant="light"
+                                        onPress={() => setIsEditing(true)}
+                                        isDisabled={isSubmitting || isEditing}
+                                        isIconOnly
+                                        size="sm"
+                                    >
+                                        <GoPencil size={20} />
+                                    </Button>
+                                    <Button
+                                        color="danger"
+                                        variant="light"
+                                        onPress={() =>
+                                            handleDeleteRequest(questionId)
+                                        }
+                                        isDisabled={isSubmitting || isEditing}
+                                        isIconOnly
+                                        size="sm"
+                                    >
+                                        <GoTrash size={20} />
+                                    </Button>
+                                </span>
                             ) : (
                                 <span className="flex flex-row space-x-2">
                                     <Button

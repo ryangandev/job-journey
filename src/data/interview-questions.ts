@@ -1,5 +1,5 @@
-import { InterviewQuestion, InterviewQuestionType } from "@prisma/client";
 import { ChipProps } from "@nextui-org/react";
+import { InterviewQuestion, InterviewQuestionType } from "@prisma/client";
 
 import { prisma } from "../libs/db";
 
@@ -7,55 +7,57 @@ const getInterviewQuestionsByType = async (
     userId: string,
     type: InterviewQuestionType,
 ): Promise<InterviewQuestion[]> => {
-    const interviewQuestions = await prisma.interviewQuestion.findMany({
-        where: {
-            userId: userId,
-            type: type,
-        },
-        orderBy: {
-            createdAt: "desc",
-        },
-    });
-    return interviewQuestions;
+    try {
+        const interviewQuestions = await prisma.interviewQuestion.findMany({
+            where: {
+                userId: userId,
+                type: type,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+        return interviewQuestions;
+    } catch (error) {
+        throw new Error("Failed to fetch the interview questions.");
+    }
 };
 
-const searchInterviewQuestions = async (
+const getFilteredInterviewQuestions = async (
     userId: string,
     query: string,
-    type: InterviewQuestionType | "all",
+    type: string,
 ): Promise<InterviewQuestion[]> => {
-    // Create the base where clause
-    const whereClause: any = {
-        userId: userId,
-        OR: [
-            {
-                question: {
-                    contains: query,
-                    mode: "insensitive",
+    try {
+        // Create the base where clause
+        const whereClause: any = {
+            userId: userId,
+            OR: [
+                {
+                    question: {
+                        contains: query,
+                        mode: "insensitive",
+                    },
                 },
-            },
-            {
-                answer: {
-                    contains: query,
-                    mode: "insensitive",
-                },
-            },
-        ],
-    };
+            ],
+        };
 
-    // Add type condition if type is not "all" and not empty
-    if (type && type !== "all") {
-        whereClause.type = type;
+        // Add type condition if type is not "all" and not empty
+        if (type && type !== "all") {
+            whereClause.type = type;
+        }
+
+        const interviewQuestions = await prisma.interviewQuestion.findMany({
+            where: whereClause,
+            orderBy: {
+                updatedAt: "desc",
+            },
+        });
+
+        return interviewQuestions;
+    } catch (error) {
+        throw new Error("Failed to fetch the interview questions.");
     }
-
-    const interviewQuestions = await prisma.interviewQuestion.findMany({
-        where: whereClause,
-        orderBy: {
-            updatedAt: "desc",
-        },
-    });
-
-    return interviewQuestions;
 };
 
 const interviewQuestionTypeOptions = ["behavioral", "technical", "company"];
@@ -74,7 +76,7 @@ const interviewQuestionTypeColorMap: Record<string, ChipProps["color"]> = {
 
 export {
     getInterviewQuestionsByType,
-    searchInterviewQuestions,
+    getFilteredInterviewQuestions,
     interviewQuestionTypeOptions,
     interviewQuestionTypeMap,
     interviewQuestionTypeColorMap,

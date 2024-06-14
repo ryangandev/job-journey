@@ -15,26 +15,24 @@ import {
     interviewQuestionTypeColorMap,
     interviewQuestionTypeMap,
 } from "../../data/interview-questions";
-import InterviewQuestionModal from "./interview-question-modal";
+import QuestionModal from "./question-modal";
 import { highlightText } from "../../libs/highlight-text";
 
-interface InterviewQuestionProps {
+type QuestionProps = {
     questionId: string;
     type: InterviewQuestionType;
     question: string;
     answer: string;
     highlight: string;
-    handlelConfirm: () => void;
-}
+};
 
-export default function InterviewQuestionContainer({
+export default function Question({
     questionId,
     type,
     question,
     answer,
     highlight,
-    handlelConfirm,
-}: InterviewQuestionProps) {
+}: QuestionProps) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     return (
@@ -68,7 +66,7 @@ export default function InterviewQuestionContainer({
                     </Chip>
                 </CardFooter>
             </Card>
-            <InterviewQuestionModal
+            <QuestionModal
                 questionId={questionId}
                 type={type}
                 question={question}
@@ -76,7 +74,6 @@ export default function InterviewQuestionContainer({
                 highlight={highlight}
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
-                handleConfirm={handlelConfirm}
             />
         </>
     );

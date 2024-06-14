@@ -10,11 +10,6 @@ const InterviewQuestionSchema = z.object({
     answer: z.string(),
 });
 
-const InterviewQuestionSearchQuerySchema = z.object({
-    query: z.string(),
-    type: InterviewQuestionTypeSchema.or(z.literal("all")),
-});
-
 const InterviewQuestionUpdateSchema = z.object({
     questionId: z.string(),
     type: InterviewQuestionTypeSchema,
@@ -22,8 +17,4 @@ const InterviewQuestionUpdateSchema = z.object({
     answer: z.string(),
 });
 
-export {
-    InterviewQuestionSchema,
-    InterviewQuestionSearchQuerySchema,
-    InterviewQuestionUpdateSchema,
-};
+export { InterviewQuestionSchema, InterviewQuestionUpdateSchema };

@@ -8,9 +8,13 @@ import { SearchIcon } from "../assets/svgs";
 
 type SearchBarProps = {
     placeholder?: string;
+    setIsSearching?: (isSearching: boolean) => void;
 };
 
-export default function SearchBar({ placeholder }: SearchBarProps) {
+export default function SearchBar({
+    placeholder,
+    setIsSearching,
+}: SearchBarProps) {
     const searchParams = useSearchParams();
     const { replace } = useRouter();
     const pathname = usePathname();
@@ -25,6 +29,8 @@ export default function SearchBar({ placeholder }: SearchBarProps) {
         } else {
             params.delete("query");
         }
+
+        setIsSearching && setIsSearching(true);
         replace(`${pathname}?${params.toString()}`);
     }, 500);
 

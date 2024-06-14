@@ -1,16 +1,14 @@
 "use server";
 
-import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
+import { auth } from "../auth";
 import { prisma } from "../libs/db";
 import {
     InterviewQuestionSchema,
-    InterviewQuestionSearchQuerySchema,
     InterviewQuestionUpdateSchema,
 } from "../schemas/interview-prep-schema";
-import { auth } from "../auth";
-import { searchInterviewQuestions } from "../data/interview-questions";
 
 const createInterviewQuestionAction = async (
     interviewQuestionData: z.infer<typeof InterviewQuestionSchema>,
@@ -54,43 +52,6 @@ const createInterviewQuestionAction = async (
     };
 };
 
-const getSearchedInterviewQuestionsAction = async (
-    queryData: z.infer<typeof InterviewQuestionSearchQuerySchema>,
-) => {
-    const session = await auth();
-    const userId = session?.user.id;
-
-    if (!userId) {
-        return {
-            error: "User not found",
-        };
-    }
-
-    const result = InterviewQuestionSearchQuerySchema.safeParse(queryData);
-    if (!result.success) {
-        return {
-            error: result.error.issues.map((issue) => issue.message).join(", "),
-        };
-    }
-
-    const { query, type } = result.data;
-
-    try {
-        const interviewQuestions = await searchInterviewQuestions(
-            userId,
-            query,
-            type,
-        );
-        return {
-            interviewQuestions,
-        };
-    } catch (error) {
-        return {
-            error: "There was an error getting the interview questions.",
-        };
-    }
-};
-
 const updateInterviewQuestionAction = async (
     update: z.infer<typeof InterviewQuestionUpdateSchema>,
 ) => {
@@ -112,7 +73,6 @@ const updateInterviewQuestionAction = async (
                 type,
                 question,
                 answer,
-                updatedAt: new Date(),
             },
         });
     } catch (error) {
@@ -148,7 +108,6 @@ const deleteInterviewQuestionAction = async (questionId: string) => {
 
 export {
     createInterviewQuestionAction,
-    getSearchedInterviewQuestionsAction,
     updateInterviewQuestionAction,
     deleteInterviewQuestionAction,
 };
