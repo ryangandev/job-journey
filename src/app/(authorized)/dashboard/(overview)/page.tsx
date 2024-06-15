@@ -2,9 +2,9 @@ import dynamic from "next/dynamic";
 import { Metadata } from "next";
 import { Spinner } from "@nextui-org/spinner";
 
-import { auth } from "../../../auth";
-import { getApplicationsDashboardByUserId } from "../../../data/dashboard";
-import NotAuthorized from "../../../components/not-authorized";
+import { auth } from "../../../../auth";
+import { getApplicationsDashboardByUserId } from "../../../../data/dashboard";
+import NotAuthorized from "../../../../components/not-authorized";
 
 export const metadata: Metadata = {
     title: "Dashboard - JobJourney",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 // https://github.com/nextui-org/nextui/issues/779
 
 const ApplicationsDashboard = dynamic(
-    () => import("../../../components/dashboard/dashboard"),
+    () => import("../../../../components/dashboard/dashboard"),
     {
         ssr: false,
         loading: () => <Spinner label="Loading your applications..." />,

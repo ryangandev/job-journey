@@ -418,7 +418,7 @@ export default function ApplicationsDashboard({
                             </DropdownMenu>
                         </Dropdown>
                         <Button
-                            className="bg-foreground text-background"
+                            className="bg-foreground text-background font-medium"
                             onPress={() =>
                                 router.push("/dashboard/new-application")
                             }

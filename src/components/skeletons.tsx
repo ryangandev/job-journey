@@ -38,3 +38,24 @@ export function ApplicationInfoSkeleton() {
         </div>
     );
 }
+
+export function NewApplicationFormSkeleton() {
+    return (
+        <div className="max-w-[36rem] w-full flex flex-col space-y-12">
+            <div className="w-full flex flex-col space-y-4">
+                <Skeleton className="w-4/5 h-7 rounded-lg" />
+                <Skeleton className="w-full h-12 rounded-lg" />
+                <div className="flex flex-row justify-between items-center">
+                    <Skeleton className="w-24 h-10 rounded-lg" />
+                    <div className="flex flex-row space-x-4 items-center">
+                        <Skeleton className="w-24 h-10 rounded-lg" />
+                        <Skeleton className="w-24 h-10 rounded-lg" />
+                    </div>
+                </div>
+            </div>
+            <div className="w-full flex flex-col space-y-4">
+                <Skeleton className="w-full h-8 rounded-lg" />
+            </div>
+        </div>
+    );
+}

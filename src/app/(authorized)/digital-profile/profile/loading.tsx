@@ -1,6 +1,7 @@
 import React from "react";
-import Loading from "../../../../components/loading";
 
-export default function loading() {
-    return <Loading label="Loading profile..." />;
+import Loader from "../../../../components/loader";
+
+export default function Loading() {
+    return <Loader label="Loading profile..." />;
 }

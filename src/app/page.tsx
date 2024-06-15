@@ -11,7 +11,7 @@ export default function Home() {
         AOS.init({
             once: true,
             disable: "phone",
-            duration: 800,
+            duration: 500,
             easing: "ease-out-sine",
         });
     }, []);

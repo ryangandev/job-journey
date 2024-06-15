@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import Loading from "../../../components/loading";
+import Loader from "../../../components/loader";
 
 const DigitalProfile = () => {
     const router = useRouter();
@@ -11,7 +11,7 @@ const DigitalProfile = () => {
         router.push("/digital-profile/profile"); // Redirect to the profile page
     }, [router]);
 
-    return <Loading label="Loading profile..." />;
+    return <Loader label="Loading profile..." />;
 };
 
 export default DigitalProfile;

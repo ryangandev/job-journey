@@ -45,6 +45,7 @@ export default function ConfirmModal() {
             isOpen={isOpen}
             onOpenChange={onOpenChange}
             onClose={onClose}
+            isDismissable={!loading}
         >
             <ModalContent>
                 {(onClose) => (

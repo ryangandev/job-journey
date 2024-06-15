@@ -4,25 +4,9 @@ import { Divider, Spinner } from "@nextui-org/react";
 import { getApplicationById } from "../../../../../data/application";
 import { getApplicationUpdatesByApplicationId } from "../../../../../data/application";
 import LoadingError from "../../../../../components/loading-error";
-import dynamic from "next/dynamic";
-import { ApplicationInfoSkeleton } from "../../../../../components/skeletons";
 import HelperSign from "../../../../../components/helper-sign";
-
-const ApplicationDetail = dynamic(
-    () => import("../../../../../components/dashboard/application-detail"),
-    {
-        ssr: false,
-        loading: () => <ApplicationInfoSkeleton />,
-    },
-);
-
-const ApplicationUpdates = dynamic(
-    () => import("../../../../../components/dashboard/application-updates"),
-    {
-        ssr: false,
-        loading: () => <Spinner label="Loading application updates..." />,
-    },
-);
+import ApplicationDetail from "../../../../../components/dashboard/application-detail";
+import ApplicationUpdates from "../../../../../components/dashboard/application-updates";
 
 export async function generateMetadata({
     params,

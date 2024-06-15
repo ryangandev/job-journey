@@ -6,7 +6,7 @@ type LoadingProps = {
     showWrapper?: boolean;
 };
 
-export default function loading({ label, showWrapper = true }: LoadingProps) {
+export default function Loader({ label, showWrapper = true }: LoadingProps) {
     return (
         <>
             {showWrapper ? (
