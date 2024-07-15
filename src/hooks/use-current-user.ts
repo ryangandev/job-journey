@@ -1,10 +1,10 @@
-import { useSession } from "next-auth/react";
+import { useSession } from 'next-auth/react';
 
 const useCurrentUser = () => {
-    const session = useSession();
-    const user = session.data?.user;
+  const session = useSession();
+  const user = session.data?.user;
 
-    return user;
+  return user;
 };
 
 export default useCurrentUser;

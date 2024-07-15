@@ -1,12 +1,9 @@
-import React from "react";
+import React from 'react';
 
-import Loader from "../../../components/loader";
+import Loader from '../../../components/loader';
 
 export default function Loading() {
-    return (
-        <Loader
-            label="Loading interview prep questions..."
-            showWrapper={false}
-        />
-    );
+  return (
+    <Loader label="Loading interview prep questions..." showWrapper={false} />
+  );
 }

@@ -4,8 +4,8 @@
  * @type {string[]}
  */
 export const publicRoutes = [
-    "/",
-    "/auth/new-verification", // User will be able to change their email from the settings page while logged in, so public route is the best place instead of auth route
+  '/',
+  '/auth/new-verification', // User will be able to change their email from the settings page while logged in, so public route is the best place instead of auth route
 ];
 
 /**
@@ -14,11 +14,11 @@ export const publicRoutes = [
  * @type {string[]}
  */
 export const authRoutes = [
-    "/auth/login",
-    "/auth/register",
-    "/auth/error",
-    "/auth/reset-password",
-    "/auth/new-password",
+  '/auth/login',
+  '/auth/register',
+  '/auth/error',
+  '/auth/reset-password',
+  '/auth/new-password',
 ];
 
 /**
@@ -26,10 +26,10 @@ export const authRoutes = [
  * Routes that start with this prefix are used for API authentication purposes.
  * @type {string}
  */
-export const apiAuthPrefix = "/api/auth"; // This is a special case so we never block the api/auth routes, it's always allowed
+export const apiAuthPrefix = '/api/auth'; // This is a special case so we never block the api/auth routes, it's always allowed
 
 /**
  * The default redirect path after logging in.
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT = "/dashboard"; // The default redirect path after logging out
+export const DEFAULT_LOGIN_REDIRECT = '/dashboard'; // The default redirect path after logging out

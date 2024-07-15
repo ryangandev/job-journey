@@ -1,17 +1,17 @@
-import React from "react";
-import { Metadata } from "next";
+import React from 'react';
+import { Metadata } from 'next';
 
-import NewVerificationForm from "../../../components/auth/new-verification-form";
+import NewVerificationForm from '../../../components/auth/new-verification-form';
 
 export const metadata: Metadata = {
-    title: "New Verification - JobJourney",
-    description: "New verification page",
+  title: 'New Verification - JobJourney',
+  description: 'New verification page',
 };
 
 export default function Page() {
-    return (
-        <div className="h-screen flex justify-center items-center">
-            <NewVerificationForm />
-        </div>
-    );
+  return (
+    <div className="flex h-screen items-center justify-center">
+      <NewVerificationForm />
+    </div>
+  );
 }

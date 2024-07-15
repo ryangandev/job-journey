@@ -1,17 +1,17 @@
-import React from "react";
-import { Metadata } from "next";
+import React from 'react';
+import { Metadata } from 'next';
 
-import LoginForm from "../../../components/auth/login-form";
+import LoginForm from '../../../components/auth/login-form';
 
 export const metadata: Metadata = {
-    title: "Login - JobJourney",
-    description: "Login page",
+  title: 'Login - JobJourney',
+  description: 'Login page',
 };
 
 export default function Page() {
-    return (
-        <div className="h-screen flex justify-center items-center">
-            <LoginForm />
-        </div>
-    );
+  return (
+    <div className="flex h-screen items-center justify-center">
+      <LoginForm />
+    </div>
+  );
 }

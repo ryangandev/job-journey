@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { ThemeProvider as NextThemeProvider } from "next-themes";
-import { NextUIProvider } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import { ThemeProvider as NextThemeProvider } from 'next-themes';
+import { NextUIProvider } from '@nextui-org/react';
+import { useRouter } from 'next/navigation';
 
-import { NavbarProvider } from "./navbar-provider";
+import { NavbarProvider } from './navbar-provider';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
-    const router = useRouter();
+  const router = useRouter();
 
-    return (
-        <NextUIProvider navigate={router.push}>
-            <NextThemeProvider
-                attribute="class"
-                defaultTheme="dark"
-                // disableTransitionOnChange
-            >
-                <NavbarProvider>{children}</NavbarProvider>
-            </NextThemeProvider>
-        </NextUIProvider>
-    );
+  return (
+    <NextUIProvider navigate={router.push}>
+      <NextThemeProvider
+        attribute="class"
+        defaultTheme="dark"
+        // disableTransitionOnChange
+      >
+        <NavbarProvider>{children}</NavbarProvider>
+      </NextThemeProvider>
+    </NextUIProvider>
+  );
 }

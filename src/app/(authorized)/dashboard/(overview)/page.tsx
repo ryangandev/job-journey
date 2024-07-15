@@ -1,15 +1,15 @@
-import dynamic from "next/dynamic";
-import { Metadata } from "next";
-import { Spinner } from "@nextui-org/spinner";
+import dynamic from 'next/dynamic';
+import { Metadata } from 'next';
+import { Spinner } from '@nextui-org/spinner';
 
-import { auth } from "../../../../auth";
-import { getApplicationsDashboardByUserId } from "../../../../data/dashboard";
-import NotAuthorized from "../../../../components/not-authorized";
+import { auth } from '../../../../auth';
+import { getApplicationsDashboardByUserId } from '../../../../data/dashboard';
+import NotAuthorized from '../../../../components/not-authorized';
 
 export const metadata: Metadata = {
-    title: "Dashboard - JobJourney",
-    description:
-        "An intuitive dashboard that keeps track of your job applications in one place.",
+  title: 'Dashboard - JobJourney',
+  description:
+    'An intuitive dashboard that keeps track of your job applications in one place.',
 };
 
 // Problem:
@@ -23,29 +23,27 @@ export const metadata: Metadata = {
 // https://github.com/nextui-org/nextui/issues/779
 
 const ApplicationsDashboard = dynamic(
-    () => import("../../../../components/dashboard/dashboard"),
-    {
-        ssr: false,
-        loading: () => <Spinner label="Loading your applications..." />,
-    },
+  () => import('../../../../components/dashboard/dashboard'),
+  {
+    ssr: false,
+    loading: () => <Spinner label="Loading your applications..." />,
+  },
 );
 
 export default async function Page() {
-    const session = await auth();
+  const session = await auth();
 
-    if (!session || !session.user || !session.user.id) {
-        return <NotAuthorized />;
-    }
+  if (!session || !session.user || !session.user.id) {
+    return <NotAuthorized />;
+  }
 
-    const applications = await getApplicationsDashboardByUserId(
-        session.user.id,
-    );
+  const applications = await getApplicationsDashboardByUserId(session.user.id);
 
-    return (
-        <main className="flex justify-center p-4">
-            <div className="max-w-7xl w-full flex justify-center">
-                <ApplicationsDashboard applicationsData={applications} />
-            </div>
-        </main>
-    );
+  return (
+    <main className="flex justify-center p-4">
+      <div className="flex w-full max-w-7xl justify-center">
+        <ApplicationsDashboard applicationsData={applications} />
+      </div>
+    </main>
+  );
 }

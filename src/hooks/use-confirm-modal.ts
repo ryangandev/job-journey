@@ -1,16 +1,16 @@
-import { useContext } from "react";
-import { ConfirmModalContext } from "../providers/confirm-modal-provider";
+import { useContext } from 'react';
+import { ConfirmModalContext } from '../providers/confirm-modal-provider';
 
 const useConfirmModal = () => {
-    const context = useContext(ConfirmModalContext);
+  const context = useContext(ConfirmModalContext);
 
-    if (!context) {
-        throw new Error(
-            "useConfirmModal must be used within a ConfirmModalProvider",
-        );
-    }
+  if (!context) {
+    throw new Error(
+      'useConfirmModal must be used within a ConfirmModalProvider',
+    );
+  }
 
-    return context;
+  return context;
 };
 
 export default useConfirmModal;

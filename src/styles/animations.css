@@ -1,10 +1,10 @@
 @keyframes fadeOutLeft {
-    to {
-        opacity: 0;
-        transform: translateX(-100%);
-    }
+  to {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
 }
 
 .fade-out-left {
-    animation: fadeOutLeft 0.5s forwards;
+  animation: fadeOutLeft 0.5s forwards;
 }
