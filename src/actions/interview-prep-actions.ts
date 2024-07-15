@@ -7,6 +7,7 @@ import { auth } from "../auth";
 import { prisma } from "../libs/db";
 import {
     InterviewQuestionSchema,
+    InterviewQuestionTagSchema,
     InterviewQuestionUpdateSchema,
 } from "../schemas/interview-prep-schema";
 
@@ -106,8 +107,49 @@ const deleteInterviewQuestionAction = async (questionId: string) => {
     };
 };
 
+const createTagAction = async (
+    tagData: z.infer<typeof InterviewQuestionTagSchema>,
+) => {
+    const session = await auth();
+    const userId = session?.user.id;
+
+    if (!userId) {
+        return {
+            error: "User not found",
+        };
+    }
+
+    const result = InterviewQuestionTagSchema.safeParse(tagData);
+    if (!result.success) {
+        return {
+            error: result.error.issues.map((issue) => issue.message).join(", "),
+        };
+    }
+
+    const { name } = result.data;
+
+    try {
+        await prisma.tag.create({
+            data: {
+                userId,
+                name,
+            },
+        });
+    } catch (error) {
+        return {
+            error: "There was an error creating the tag.",
+        };
+    }
+
+    revalidatePath("/interview-prep");
+    return {
+        message: "Tag created successfully.",
+    };
+};
+
 export {
     createInterviewQuestionAction,
     updateInterviewQuestionAction,
     deleteInterviewQuestionAction,
+    createTagAction,
 };

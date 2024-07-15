@@ -17,4 +17,12 @@ const InterviewQuestionUpdateSchema = z.object({
     answer: z.string(),
 });
 
-export { InterviewQuestionSchema, InterviewQuestionUpdateSchema };
+const InterviewQuestionTagSchema = z.object({
+    name: z.string(),
+});
+
+export {
+    InterviewQuestionSchema,
+    InterviewQuestionUpdateSchema,
+    InterviewQuestionTagSchema,
+};
