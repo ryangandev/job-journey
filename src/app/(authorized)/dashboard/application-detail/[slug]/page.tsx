@@ -1,12 +1,14 @@
 import { Metadata } from 'next';
 import { Divider, Spinner } from '@nextui-org/react';
 
-import { getApplicationById } from '../../../../../data/application';
-import { getApplicationUpdatesByApplicationId } from '../../../../../data/application';
-import LoadingError from '../../../../../components/loading-error';
-import HelperSign from '../../../../../components/helper-sign';
-import ApplicationDetail from '../../../../../components/dashboard/application-detail';
-import ApplicationUpdates from '../../../../../components/dashboard/application-updates';
+import LoadingError from '@/components/loading-error';
+import HelperSign from '@/components/helper-sign';
+import ApplicationDetail from '@/components/dashboard/application-detail';
+import ApplicationUpdates from '@/components/dashboard/application-updates';
+import {
+  getApplicationById,
+  getApplicationUpdatesByApplicationId,
+} from '@/libs/repositories/applications';
 
 export async function generateMetadata({
   params,

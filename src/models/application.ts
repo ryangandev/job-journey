@@ -1,19 +1,18 @@
-import { JobSetting, JobType, JobLevel, JobStatus } from '@prisma/client';
+import { Application } from '@prisma/client';
 
-type Application = {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  setting: JobSetting;
-  type: JobType;
-  level: JobLevel;
-  status: JobStatus;
-  isFavorite: boolean;
-  replied: boolean;
-  interviewAquired: boolean;
-  appliedAt: Date;
-  updatedAt: Date;
-};
-
-export type { Application };
+export type ApplicationPreview = Pick<
+  Application,
+  | 'id'
+  | 'title'
+  | 'company'
+  | 'location'
+  | 'setting'
+  | 'type'
+  | 'level'
+  | 'status'
+  | 'isFavorite'
+  | 'replied'
+  | 'interviewAquired'
+  | 'appliedAt'
+  | 'updatedAt'
+>;

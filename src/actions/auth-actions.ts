@@ -1,31 +1,33 @@
 'use server';
 
-import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import { AuthError } from 'next-auth';
+import { z } from 'zod';
 
-import { signIn, signOut } from '../auth';
-import { prisma } from '../libs/db';
+import { signIn, signOut } from '@/auth';
+import { prisma } from '@/libs/db';
 import {
   generateVerificationToken,
   generateResetPasswordToken,
-} from '../libs/tokens';
+} from '@/libs/tokens';
 import {
   sendVerificationEmail,
   sendResetPasswordEmail,
-} from '../libs/sendEmail';
+} from '@/libs/sendEmail';
 import {
   LoginSchema,
   RegisterSchema,
   ResetPasswordSchema,
   NewPasswordSchema,
-} from '../schemas/auth-schema';
-import { getUserByEmail } from '../data/user';
-import { getVerificationTokenByToken } from '../data/verification-token';
-import { getResetPasswordTokenByToken } from '../data/reset-password-token';
-import { DEFAULT_LOGIN_REDIRECT } from '../routes';
+} from '@/schemas/auth-schema';
+import { getUserByEmail } from '@/libs/repositories/users';
+import { getVerificationTokenByToken } from '@/data/verification-token';
+import { getResetPasswordTokenByToken } from '@/data/reset-password-token';
+import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 
-async function registerAction(registerData: z.infer<typeof RegisterSchema>) {
+export async function registerAction(
+  registerData: z.infer<typeof RegisterSchema>,
+) {
   const parsedRegisterData = RegisterSchema.safeParse(registerData);
 
   if (!parsedRegisterData.success) {
@@ -55,7 +57,7 @@ async function registerAction(registerData: z.infer<typeof RegisterSchema>) {
   return { success: 'Verification Email Sent!' };
 }
 
-async function loginAction(loginData: z.infer<typeof LoginSchema>) {
+export async function loginAction(loginData: z.infer<typeof LoginSchema>) {
   const parsedLoginData = LoginSchema.safeParse(loginData);
 
   if (!parsedLoginData.success) {
@@ -108,13 +110,13 @@ async function loginAction(loginData: z.infer<typeof LoginSchema>) {
   }
 }
 
-async function logoutAction() {
+export async function logoutAction() {
   await signOut({
     redirectTo: '/auth/login',
   });
 }
 
-async function newVerificationAction(token: string) {
+export async function newVerificationAction(token: string) {
   const existingToken = await getVerificationTokenByToken(token);
 
   if (!existingToken) {
@@ -152,7 +154,7 @@ async function newVerificationAction(token: string) {
   return { success: 'Email verified!' };
 }
 
-const resetPasswordAction = async (
+export const resetPasswordAction = async (
   values: z.infer<typeof ResetPasswordSchema>,
 ) => {
   const result = ResetPasswordSchema.safeParse(values);
@@ -182,7 +184,7 @@ const resetPasswordAction = async (
   return { success: 'Reset email sent!' };
 };
 
-const newPasswordAction = async (
+export const newPasswordAction = async (
   values: z.infer<typeof NewPasswordSchema>,
   token?: string | null,
 ) => {
@@ -234,13 +236,4 @@ const newPasswordAction = async (
   });
 
   return { success: 'Password reset!' };
-};
-
-export {
-  registerAction,
-  loginAction,
-  logoutAction,
-  newVerificationAction,
-  resetPasswordAction,
-  newPasswordAction,
 };

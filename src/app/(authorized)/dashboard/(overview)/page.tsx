@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { Spinner } from '@nextui-org/spinner';
 
 import { auth } from '../../../../auth';
-import { getApplicationsDashboardByUserId } from '../../../../data/dashboard';
+import { getApplicationsDashboardByUserId } from '../../../../libs/repositories/applications';
 import NotAuthorized from '../../../../components/not-authorized';
 
 export const metadata: Metadata = {

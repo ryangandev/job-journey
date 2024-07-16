@@ -2,9 +2,9 @@ import NextAuth from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { UserPlan } from '@prisma/client';
 
-import { prisma } from './libs/db';
-import { getUserById } from './data/user';
-import authConfig from './auth.config';
+import authConfig from '@/auth.config';
+import { prisma } from '@/libs/db';
+import { getUserById } from '@/libs/repositories/users';
 
 // To Assign new fields to the session object, we need to use the callbacks object
 // Assign the new field to the token object in the jwt callback first

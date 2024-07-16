@@ -49,7 +49,7 @@ import {
   searchFilterOptionsMap,
 } from '../../data/dashboard';
 import useConfirmModal from '../../hooks/use-confirm-modal';
-import { Application } from '../../models/application';
+import { ApplicationPreview } from '../../models/application';
 import { SearchFilterOption } from '../../models/dashboard';
 import { deleteApplicationByIdAction } from '../../actions/applications-actions';
 import { dateToTwoDigitsString } from '../../libs/time-utils';
@@ -57,9 +57,9 @@ import { dateToTwoDigitsString } from '../../libs/time-utils';
 export default function ApplicationsDashboard({
   applicationsData,
 }: {
-  applicationsData: Application[] | { error: string };
+  applicationsData: ApplicationPreview[] | { error: string };
 }) {
-  const [applications, setApplications] = useState<Application[]>([]);
+  const [applications, setApplications] = useState<ApplicationPreview[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchFilterOption, setSearchFilterOption] =
     useState<SearchFilterOption>('company');
@@ -111,13 +111,15 @@ export default function ApplicationsDashboard({
   }, [applications, searchFilterValue, statusFilter, searchFilterOption]);
 
   const sortedFilteredItems = useMemo(() => {
-    return [...filteredItems].sort((a: Application, b: Application) => {
-      const first = a[sortDescriptor.column as keyof Application];
-      const second = b[sortDescriptor.column as keyof Application];
-      const cmp = first > second ? 1 : first < second ? -1 : 0;
+    return [...filteredItems].sort(
+      (a: ApplicationPreview, b: ApplicationPreview) => {
+        const first = a[sortDescriptor.column as keyof ApplicationPreview];
+        const second = b[sortDescriptor.column as keyof ApplicationPreview];
+        const cmp = first > second ? 1 : first < second ? -1 : 0;
 
-      return sortDescriptor.direction === 'ascending' ? cmp : -cmp;
-    });
+        return sortDescriptor.direction === 'ascending' ? cmp : -cmp;
+      },
+    );
   }, [sortDescriptor, filteredItems]);
 
   const items = useMemo(() => {
@@ -170,133 +172,136 @@ export default function ApplicationsDashboard({
     );
   }, []);
 
-  const renderCell = useCallback((application: Application, columnKey: Key) => {
-    const cellValue = application[columnKey as keyof Application];
+  const renderCell = useCallback(
+    (application: ApplicationPreview, columnKey: Key) => {
+      const cellValue = application[columnKey as keyof ApplicationPreview];
 
-    switch (columnKey) {
-      case 'isFavorite':
-        return (
-          <div>
-            {application.isFavorite ? (
-              <MdFavorite className="text-red-500" size={18} />
-            ) : (
-              <MdFavoriteBorder
-                className="text-light-200 dark:text-dark-200"
-                size={18}
-              />
-            )}
-          </div>
-        );
-      case 'title':
-        return (
-          <div className="flex flex-col">
-            <Link
-              className="text-bold line-clamp-1 text-small capitalize"
-              href={`/dashboard/application-detail/${application.id}`}
-            >
-              {cellValue as string}
-            </Link>
-            <div className="hidden select-none flex-row items-center space-x-2 lg:flex">
-              <span className="text-bold text-tiny text-default-500">
-                {jobSettingMap[application.setting]}
-              </span>
-              <Divider className="h-2" orientation="vertical" />
-              <span className="text-bold text-tiny text-default-500">
-                {jobTypeMap[application.type]}
-              </span>
-              <Divider className="h-2" orientation="vertical" />
-              <span className="text-bold text-tiny text-default-500">
-                {jobLevelMap[application.level]}
-              </span>
+      switch (columnKey) {
+        case 'isFavorite':
+          return (
+            <div>
+              {application.isFavorite ? (
+                <MdFavorite className="text-red-500" size={18} />
+              ) : (
+                <MdFavoriteBorder
+                  className="text-light-200 dark:text-dark-200"
+                  size={18}
+                />
+              )}
             </div>
-          </div>
-        );
-      case 'company':
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold line-clamp-1 text-small capitalize">
-              {cellValue as string}
-            </p>
-            <p className="text-bold line-clamp-1 hidden text-tiny capitalize text-default-500 lg:block">
-              {application.location}
-            </p>
-          </div>
-        );
-      case 'status':
-        return (
-          <div>
-            <Chip
-              className="select-none gap-1 border-none text-default-600"
-              color={statusColorMap[application.status]}
-              size="md"
-              variant="dot"
-            >
-              {jobStatusMap[cellValue as string]}
-            </Chip>
-          </div>
-        );
-      case 'replied':
-        return (
-          <div className="flex pl-4">
-            {renderBooleanCell(cellValue as boolean)}
-          </div>
-        );
-      case 'interviewAquired':
-        return (
-          <div className="flex pl-6">
-            {renderBooleanCell(cellValue as boolean)}
-          </div>
-        );
-      case 'appliedAt':
-        return (
-          <div>
-            <p className="text-bold text-small">
-              {dateToTwoDigitsString(application.appliedAt)}
-            </p>
-          </div>
-        );
-      case 'updatedAt':
-        return (
-          <div>
-            <p className="text-bold text-small">
-              {dateToTwoDigitsString(application.updatedAt)}
-            </p>
-          </div>
-        );
-      case 'actions':
-        return (
-          <div className="relative flex items-center justify-end gap-2">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly radius="full" size="sm" variant="light">
-                  <VerticalDotsIcon
-                    className="text-default-400"
-                    width={undefined}
-                    height={undefined}
-                  />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu closeOnSelect aria-label="Actions Menu">
-                <DropdownItem
-                  onPress={() => handleViewApplicationDetail(application.id)}
-                >
-                  View
-                </DropdownItem>
-                <DropdownItem
-                  onPress={() => {
-                    handleDeleteApplicationRequest(application.id);
-                  }}
-                >
-                  Delete
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        );
-      default:
-        return <></>;
-    }
-  }, []);
+          );
+        case 'title':
+          return (
+            <div className="flex flex-col">
+              <Link
+                className="text-bold line-clamp-1 text-small capitalize"
+                href={`/dashboard/application-detail/${application.id}`}
+              >
+                {cellValue as string}
+              </Link>
+              <div className="hidden select-none flex-row items-center space-x-2 lg:flex">
+                <span className="text-bold text-tiny text-default-500">
+                  {jobSettingMap[application.setting]}
+                </span>
+                <Divider className="h-2" orientation="vertical" />
+                <span className="text-bold text-tiny text-default-500">
+                  {jobTypeMap[application.type]}
+                </span>
+                <Divider className="h-2" orientation="vertical" />
+                <span className="text-bold text-tiny text-default-500">
+                  {jobLevelMap[application.level]}
+                </span>
+              </div>
+            </div>
+          );
+        case 'company':
+          return (
+            <div className="flex flex-col">
+              <p className="text-bold line-clamp-1 text-small capitalize">
+                {cellValue as string}
+              </p>
+              <p className="text-bold line-clamp-1 hidden text-tiny capitalize text-default-500 lg:block">
+                {application.location}
+              </p>
+            </div>
+          );
+        case 'status':
+          return (
+            <div>
+              <Chip
+                className="select-none gap-1 border-none text-default-600"
+                color={statusColorMap[application.status]}
+                size="md"
+                variant="dot"
+              >
+                {jobStatusMap[cellValue as string]}
+              </Chip>
+            </div>
+          );
+        case 'replied':
+          return (
+            <div className="flex pl-4">
+              {renderBooleanCell(cellValue as boolean)}
+            </div>
+          );
+        case 'interviewAquired':
+          return (
+            <div className="flex pl-6">
+              {renderBooleanCell(cellValue as boolean)}
+            </div>
+          );
+        case 'appliedAt':
+          return (
+            <div>
+              <p className="text-bold text-small">
+                {dateToTwoDigitsString(application.appliedAt)}
+              </p>
+            </div>
+          );
+        case 'updatedAt':
+          return (
+            <div>
+              <p className="text-bold text-small">
+                {dateToTwoDigitsString(application.updatedAt)}
+              </p>
+            </div>
+          );
+        case 'actions':
+          return (
+            <div className="relative flex items-center justify-end gap-2">
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button isIconOnly radius="full" size="sm" variant="light">
+                    <VerticalDotsIcon
+                      className="text-default-400"
+                      width={undefined}
+                      height={undefined}
+                    />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu closeOnSelect aria-label="Actions Menu">
+                  <DropdownItem
+                    onPress={() => handleViewApplicationDetail(application.id)}
+                  >
+                    View
+                  </DropdownItem>
+                  <DropdownItem
+                    onPress={() => {
+                      handleDeleteApplicationRequest(application.id);
+                    }}
+                  >
+                    Delete
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+          );
+        default:
+          return <></>;
+      }
+    },
+    [],
+  );
 
   const handleOnRowsPerPageChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {

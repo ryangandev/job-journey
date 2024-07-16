@@ -1,4 +1,4 @@
-import { NavbarLink } from '../models/navigation';
+import { NavbarLink } from '@/models/navigation';
 
 const navbarLinks: NavbarLink[] = [
   {

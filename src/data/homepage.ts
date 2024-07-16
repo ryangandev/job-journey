@@ -1,4 +1,4 @@
-const homepageOptions = [
+export const homepageOptions = [
   {
     title: 'View Applications Dashboard',
     emoji: '🖥️',
@@ -28,5 +28,3 @@ const homepageOptions = [
     url: '/goal-tracker',
   },
 ];
-
-export { homepageOptions };

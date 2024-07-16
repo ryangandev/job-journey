@@ -1,41 +1,8 @@
 import { ApplicationUpdateType } from '@prisma/client';
 
-import { prisma } from '../libs/db';
-import { Column, SearchFilterOption } from '../models/dashboard';
+import { Column, SearchFilterOption } from '@/models/dashboard';
 
-const getApplicationsDashboardByUserId = async (userId: string) => {
-  try {
-    const applications = await prisma.application.findMany({
-      select: {
-        id: true,
-        company: true,
-        title: true,
-        location: true,
-        setting: true,
-        type: true,
-        level: true,
-        status: true,
-        isFavorite: true,
-        replied: true,
-        interviewAquired: true,
-        appliedAt: true,
-        updatedAt: true,
-      },
-      where: {
-        userId: userId,
-      },
-    });
-
-    return applications;
-  } catch (error) {
-    console.log('Error:', error);
-    return {
-      error: 'There was an error fetching the applications.',
-    };
-  }
-};
-
-const columns: Column[] = [
+export const columns: Column[] = [
   {
     name: 'Fav',
     uid: 'isFavorite',
@@ -91,7 +58,7 @@ const columns: Column[] = [
   },
 ] as const; // const assertion to infer the type as readonly
 
-const searchFilterOptions: SearchFilterOption[] = [
+export const searchFilterOptions: SearchFilterOption[] = [
   'title',
   'company',
   'location',
@@ -99,7 +66,7 @@ const searchFilterOptions: SearchFilterOption[] = [
   // "updatedAt",
 ];
 
-const searchFilterOptionsMap: Record<string, string> = {
+export const searchFilterOptionsMap: Record<string, string> = {
   title: 'Title',
   company: 'Company',
   location: 'Location',
@@ -107,13 +74,13 @@ const searchFilterOptionsMap: Record<string, string> = {
   updatedAt: 'Updated At',
 };
 
-const submissionUpdateTemplates = [
-  'Application submitted through LinkedIn Easy Apply',
-  'Application submitted through Indeed',
-  'Application submitted through WellFound',
-  'Application submitted through company website',
-  'Application submitted through company website (workday)',
-  'Application submitted through ',
+export const submissionSites = [
+  'LinkedIn',
+  'Indeed',
+  'Glassdoor',
+  'WellFound',
+  'Company website',
+  'Company website (Workday)',
 ];
 
 const noteUpdateTemplates = ['Application viewed by the hiring team'];
@@ -125,8 +92,6 @@ const rejectionUpdateTemplates = [
 
 const updateTemplates = (type: ApplicationUpdateType) => {
   switch (type) {
-    case 'submission':
-      return submissionUpdateTemplates;
     case 'note':
       return noteUpdateTemplates;
     case 'rejection':
@@ -134,12 +99,4 @@ const updateTemplates = (type: ApplicationUpdateType) => {
     default:
       return [];
   }
-};
-
-export {
-  getApplicationsDashboardByUserId,
-  columns,
-  searchFilterOptions,
-  searchFilterOptionsMap,
-  updateTemplates,
 };

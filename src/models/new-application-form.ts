@@ -1,4 +1,4 @@
-type FormQuestionKey =
+export type FormQuestionKey =
   | 'title'
   | 'company'
   | 'location'
@@ -9,9 +9,9 @@ type FormQuestionKey =
   | 'jobPostingLink'
   | 'isFavorite';
 
-type FormQuestionType = 'input' | 'select' | 'checkbox';
+export type FormQuestionType = 'input' | 'select' | 'checkbox';
 
-type NewApplicationFormQuestion = {
+export type NewApplicationFormQuestion = {
   key: FormQuestionKey;
   question: string;
   type: FormQuestionType;
@@ -20,20 +20,11 @@ type NewApplicationFormQuestion = {
   options?: string[];
 };
 
-type InputQuestionKey =
+export type InputQuestionKey =
   | 'title'
   | 'company'
   | 'location'
   | 'salary'
   | 'jobPostingLink';
-type SelectQuestionKey = 'setting' | 'type' | 'level';
-type CheckboxQuestionKey = 'isFavorite';
-
-export type {
-  FormQuestionKey,
-  FormQuestionType,
-  NewApplicationFormQuestion,
-  InputQuestionKey,
-  SelectQuestionKey,
-  CheckboxQuestionKey,
-};
+export type SelectQuestionKey = 'setting' | 'type' | 'level';
+export type CheckboxQuestionKey = 'isFavorite';

@@ -1,6 +1,6 @@
-import { prisma } from '../libs/db';
+import { prisma } from '@/libs/db';
 
-const getResetPasswordTokenByToken = async (token: string) => {
+export const getResetPasswordTokenByToken = async (token: string) => {
   try {
     const resetPasswordToken = await prisma.resetPasswordToken.findUnique({
       where: {
@@ -14,7 +14,7 @@ const getResetPasswordTokenByToken = async (token: string) => {
   }
 };
 
-const getResetPasswordTokenByEmail = async (email: string) => {
+export const getResetPasswordTokenByEmail = async (email: string) => {
   try {
     const resetPasswordToken = await prisma.resetPasswordToken.findFirst({
       where: {
@@ -27,5 +27,3 @@ const getResetPasswordTokenByEmail = async (email: string) => {
     return null;
   }
 };
-
-export { getResetPasswordTokenByToken, getResetPasswordTokenByEmail };

@@ -11,48 +11,7 @@ import { IconBaseProps } from 'react-icons';
 import { ChipProps } from '@nextui-org/chip';
 import { ApplicationUpdateType } from '@prisma/client';
 
-import { prisma } from '../libs/db';
-
-const getApplicationById = async (id: string) => {
-  try {
-    const application = await prisma.application.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    if (!application) {
-      console.log(`Application with id ${id} not found.`);
-      return {
-        error: `Application not found.`,
-      };
-    }
-
-    return application;
-  } catch (error) {
-    return {
-      error: 'There was an error loading the application.',
-    };
-  }
-};
-
-const getApplicationUpdatesByApplicationId = async (id: string) => {
-  try {
-    const applicationUpdates = await prisma.applicationUpdate.findMany({
-      where: {
-        applicationId: id,
-      },
-    });
-
-    return applicationUpdates;
-  } catch (error) {
-    return {
-      error: 'There was an error loading the application updates.',
-    };
-  }
-};
-
-const statusOptions = [
+export const statusOptions = [
   'not_applied',
   'applied',
   'interviewing',
@@ -62,11 +21,11 @@ const statusOptions = [
   'ghosted',
 ];
 
-const settingOptions = ['on_site', 'remote', 'hybrid'];
+export const settingOptions = ['on_site', 'remote', 'hybrid'];
 
-const typeOptions = ['full_time', 'part_time', 'contract', 'freelance'];
+export const typeOptions = ['full_time', 'part_time', 'contract', 'freelance'];
 
-const levelOptions = [
+export const levelOptions = [
   'intern',
   'entry',
   'junior',
@@ -80,11 +39,11 @@ const levelOptions = [
   'executive',
 ];
 
-const repliedOptions = ['Replied', 'No Reply'];
+export const repliedOptions = ['Replied', 'No Reply'];
 
-const interviewAquiredOptions = ['Interview Aquired', 'No Interview'];
+export const interviewAquiredOptions = ['Interview Aquired', 'No Interview'];
 
-const updateTypeOptions = [
+export const updateTypeOptions = [
   'submission',
   'note',
   'interview',
@@ -92,7 +51,7 @@ const updateTypeOptions = [
   'rejection',
 ];
 
-const statusColorMap: Record<string, ChipProps['color']> = {
+export const statusColorMap: Record<string, ChipProps['color']> = {
   not_applied: 'warning',
   applied: 'primary',
   interviewing: 'secondary',
@@ -102,17 +61,17 @@ const statusColorMap: Record<string, ChipProps['color']> = {
   ghosted: 'default',
 };
 
-const repliedColorMap: Record<string, ChipProps['color']> = {
+export const repliedColorMap: Record<string, ChipProps['color']> = {
   Replied: 'secondary',
   'No Reply': 'danger',
 };
 
-const interviewColorMap: Record<string, ChipProps['color']> = {
+export const interviewColorMap: Record<string, ChipProps['color']> = {
   'Interview Aquired': 'success',
   'No Interview': 'warning',
 };
 
-const updateTypeIconMap: Record<
+export const updateTypeIconMap: Record<
   ApplicationUpdateType,
   React.FunctionComponentElement<IconBaseProps>
 > = {
@@ -124,7 +83,7 @@ const updateTypeIconMap: Record<
   auto_generated: React.createElement(FcAndroidOs),
 };
 
-const jobStatusMap: Record<string, string> = {
+export const jobStatusMap: Record<string, string> = {
   not_applied: 'Not Applied',
   applied: 'Applied',
   interviewing: 'Interviewing',
@@ -134,20 +93,20 @@ const jobStatusMap: Record<string, string> = {
   ghosted: 'Ghosted',
 };
 
-const jobSettingMap: Record<string, string> = {
+export const jobSettingMap: Record<string, string> = {
   on_site: 'On-site',
   remote: 'Remote',
   hybrid: 'Hybrid',
 };
 
-const jobTypeMap: Record<string, string> = {
+export const jobTypeMap: Record<string, string> = {
   full_time: 'Full-time',
   part_time: 'Part-time',
   contract: 'Contract',
   freelance: 'Freelance',
 };
 
-const jobLevelMap: Record<string, string> = {
+export const jobLevelMap: Record<string, string> = {
   intern: 'Intern',
   entry: 'Entry Level',
   junior: 'Junior',
@@ -161,32 +120,11 @@ const jobLevelMap: Record<string, string> = {
   executive: 'Executive',
 };
 
-const jobUpdateTypeMap: Record<ApplicationUpdateType, string> = {
+export const jobUpdateTypeMap: Record<ApplicationUpdateType, string> = {
   submission: 'Submission',
   note: 'Note',
   interview: 'Interview',
   offer: 'Offer',
   rejection: 'Rejection',
   auto_generated: 'Auto-generated',
-};
-
-export {
-  getApplicationById,
-  getApplicationUpdatesByApplicationId,
-  statusOptions,
-  settingOptions,
-  typeOptions,
-  levelOptions,
-  repliedOptions,
-  interviewAquiredOptions,
-  updateTypeOptions,
-  statusColorMap,
-  repliedColorMap,
-  interviewColorMap,
-  updateTypeIconMap,
-  jobStatusMap,
-  jobSettingMap,
-  jobTypeMap,
-  jobLevelMap,
-  jobUpdateTypeMap,
 };

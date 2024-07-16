@@ -1,7 +1,7 @@
-import { NewApplicationFormQuestion } from '../models/new-application-form';
-import { levelOptions, settingOptions, typeOptions } from './application';
+import { levelOptions, settingOptions, typeOptions } from '@/data/application';
+import { NewApplicationFormQuestion } from '@/models/new-application-form';
 
-const newApplicationFormQuestions: NewApplicationFormQuestion[] = [
+export const newApplicationFormQuestions: NewApplicationFormQuestion[] = [
   {
     key: 'title',
     question: 'What is the job title you are applying for?',
@@ -66,5 +66,3 @@ const newApplicationFormQuestions: NewApplicationFormQuestion[] = [
     placeholder: 'Add to favorite',
   },
 ];
-
-export { newApplicationFormQuestions };

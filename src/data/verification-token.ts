@@ -1,6 +1,6 @@
-import { prisma } from '../libs/db';
+import { prisma } from '@/libs/db';
 
-const getVerificationTokenByToken = async (token: string) => {
+export const getVerificationTokenByToken = async (token: string) => {
   try {
     const verificationToken = await prisma.verificationToken.findUnique({
       where: {
@@ -14,7 +14,7 @@ const getVerificationTokenByToken = async (token: string) => {
   }
 };
 
-const getVerificationTokenByEmail = async (email: string) => {
+export const getVerificationTokenByEmail = async (email: string) => {
   try {
     const verificationToken = await prisma.verificationToken.findFirst({
       where: {
@@ -27,5 +27,3 @@ const getVerificationTokenByEmail = async (email: string) => {
     return null;
   }
 };
-
-export { getVerificationTokenByToken, getVerificationTokenByEmail };

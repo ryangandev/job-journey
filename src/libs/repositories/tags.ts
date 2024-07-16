@@ -1,6 +1,6 @@
-import { prisma } from '../libs/db';
+import { prisma } from '@/libs/db';
 
-const getTagsByUserId = async (userId: string) => {
+export const getTagsByUserId = async (userId: string) => {
   try {
     const tags = await prisma.tag.findMany({
       where: {
@@ -14,7 +14,7 @@ const getTagsByUserId = async (userId: string) => {
   }
 };
 
-const getTagsByQuestionId = async (questionId: string) => {
+export const getTagsByQuestionId = async (questionId: string) => {
   try {
     const questionWithTags = await prisma.interviewQuestion.findUnique({
       where: {
@@ -40,5 +40,3 @@ const getTagsByQuestionId = async (questionId: string) => {
     throw new Error('There was an error loading the tags.');
   }
 };
-
-export { getTagsByUserId, getTagsByQuestionId };
