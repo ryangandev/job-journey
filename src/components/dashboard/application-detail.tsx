@@ -16,12 +16,12 @@ import { z } from 'zod';
 import {
   ApplicationSchema,
   PartialApplicationSchema,
-} from '../../schemas/application-schema';
-import { patchApplicationDetailAction } from '../../actions/applications-actions';
-import { dateToTwoDigitsString } from '../../libs/time-utils';
-import { AnchorIcon } from '../../assets/svgs';
-import FavoriteToggle from '../favorite-toggle';
-import CustomDropdown from '../custom-dropdown';
+} from '@/schemas/application-schema';
+import { patchApplicationDetailAction } from '@/actions/applications-actions';
+import { dateToTwoDigitsString } from '@/libs/time-utils';
+import { AnchorIcon } from '@/assets/svgs';
+import CustomDropdown from '@/components/custom-dropdown';
+import FavoriteToggle from '@/components/favorite-toggle';
 import {
   jobStatusMap,
   jobSettingMap,
@@ -36,8 +36,9 @@ import {
   repliedColorMap,
   interviewColorMap,
   interviewAquiredOptions,
-} from '../../data/application';
-import PopoverForm from './popover-form';
+} from '@/data/application';
+import PopoverForm from '@/components/dashboard/popover-form';
+import { urlFormatter } from '@/libs/string-utils';
 
 type ApplicationWithUpdatableFields = z.infer<typeof ApplicationSchema>;
 
@@ -311,7 +312,7 @@ export default function ApplicationInfo({
             onConfirm={async (newValue) => {
               await handleUpdateField('statusTrackingLinks', [
                 ...applicationDetail.statusTrackingLinks,
-                newValue,
+                urlFormatter(newValue),
               ]);
             }}
             popoverTriggerComponent={

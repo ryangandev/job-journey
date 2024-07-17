@@ -3,15 +3,16 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { ApplicationUpdateType } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
-import { prisma } from '../libs/db';
+import { prisma } from '@/libs/db';
+import { urlFormatter } from '@/libs/string-utils';
 import {
   NewApplicationFormSchema,
   PartialApplicationSchema,
   ApplicationUpdateSchema,
-} from '../schemas/application-schema';
-import { ApplicationUpdateType } from '@prisma/client';
+} from '@/schemas/application-schema';
 
 async function addNewApplicationAction(
   newApplicationForm: z.infer<typeof NewApplicationFormSchema>,
@@ -38,13 +39,7 @@ async function addNewApplicationAction(
         userId: parsedFormData.userId,
         title: parsedFormData.title,
         company: parsedFormData.company,
-        location: parsedFormData.location,
-        setting: parsedFormData.setting,
-        type: parsedFormData.type,
-        level: parsedFormData.level,
-        salary: parsedFormData.salary,
-        jobPostingLink: parsedFormData.jobPostingLink,
-        isFavorite: parsedFormData.isFavorite,
+        jobPostingLink: urlFormatter(parsedFormData.jobPostingLink),
         updates: {
           create: [
             {

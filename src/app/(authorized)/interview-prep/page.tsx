@@ -1,9 +1,9 @@
-import { auth } from '../../../auth';
-import FormModal from '../../../components/interview-prep/create-form-modal';
-import QuestionsTable from '../../../components/interview-prep/table';
-import NotAuthorized from '../../../components/not-authorized';
-import PageHeader from '../../../components/page-header';
-import { getFilteredInterviewQuestions } from '../../../data/interview-questions';
+import { auth } from '@/auth';
+import FormModal from '@/components/interview-prep/create-form-modal';
+import QuestionsTable from '@/components/interview-prep/table';
+import NotAuthorized from '@/components/not-authorized';
+import PageHeader from '@/components/page-header';
+import { getFilteredInterviewQuestions } from '@/libs/repositories/interview-questions';
 
 export default async function Page({
   searchParams,

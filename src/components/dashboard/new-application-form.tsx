@@ -1,41 +1,29 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import {
-  Button,
-  Input,
-  DropdownTrigger,
-  Dropdown,
-  DropdownMenu,
-  DropdownItem,
-  Checkbox,
-  Progress,
-} from '@nextui-org/react';
+import { Button, Input, Progress } from '@nextui-org/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IoMdRefresh, IoMdArrowBack, IoMdArrowForward } from 'react-icons/io';
 import { FaCheck } from 'react-icons/fa6';
 import toast from 'react-hot-toast';
 
-import useConfirmModal from '../../hooks/use-confirm-modal';
-import { ChevronDownIcon } from '../../assets/svgs';
-import { NewApplicationFormSchema } from '../../schemas/application-schema';
-import { addNewApplicationAction } from '../../actions/applications-actions';
-import { newApplicationFormQuestions } from '../../data/new-application-form';
-import { jobLevelMap, jobSettingMap, jobTypeMap } from '../../data/application';
-import {
-  NewApplicationFormQuestion,
-  InputQuestionKey,
-  SelectQuestionKey,
-  CheckboxQuestionKey,
-} from '../../models/new-application-form';
+import { addNewApplicationAction } from '@/actions/applications-actions';
 import {
   inputTransition,
   inputTransitionVariants,
   shakeAnimationVariants,
-} from '../../constants/framer-motion-variants-transitions';
+} from '@/constants/framer-motion-variants-transitions';
+import { newApplicationFormQuestions } from '@/data/new-application-form';
+import useConfirmModal from '@/hooks/use-confirm-modal';
+import {
+  NewApplicationFormQuestion,
+  InputQuestionKey,
+} from '@/models/new-application-form';
+
+import { NewApplicationFormSchema } from '@/schemas/application-schema';
 
 type NewApplicationFormProps = {
   userId: string;
@@ -47,7 +35,6 @@ export default function NewApplicationForm({
   const {
     handleSubmit,
     register,
-    control,
     formState: { isSubmitting, isDirty },
     getFieldState,
     reset,
@@ -57,13 +44,7 @@ export default function NewApplicationForm({
       userId: userId,
       title: '',
       company: '',
-      location: '',
-      setting: 'on_site',
-      type: 'full_time',
-      level: 'junior',
-      salary: '',
       jobPostingLink: '',
-      isFavorite: false,
     },
   });
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -160,83 +141,83 @@ export default function NewApplicationForm({
     );
   };
 
-  const renderSelectQuestion = (key: SelectQuestionKey, options: string[]) => {
-    const typeMaps = {
-      setting: jobSettingMap,
-      type: jobTypeMap,
-      level: jobLevelMap,
-    };
+  // const renderSelectQuestion = (key: SelectQuestionKey, options: string[]) => {
+  //   const typeMaps = {
+  //     setting: jobSettingMap,
+  //     type: jobTypeMap,
+  //     level: jobLevelMap,
+  //   };
 
-    const currentMap = typeMaps[key];
+  //   const currentMap = typeMaps[key];
 
-    if (!currentMap || options.length === 0) {
-      return null;
-    }
+  //   if (!currentMap || options.length === 0) {
+  //     return null;
+  //   }
 
-    return (
-      <Controller
-        key={key}
-        name={key}
-        control={control}
-        render={({ field }) => (
-          <Dropdown>
-            <DropdownTrigger>
-              <Button
-                size="md"
-                endContent={<ChevronDownIcon />}
-                variant="flat"
-                color="warning"
-              >
-                {currentMap[field.value]}
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              variant="bordered"
-              disallowEmptySelection
-              aria-label={`Select ${key}`}
-              closeOnSelect={true}
-              selectedKeys={[field.value]}
-              selectionMode="single"
-              onSelectionChange={(selectedKeys) => {
-                const selectedKey = Array.from(selectedKeys)[0];
-                field.onChange(selectedKey);
-              }}
-            >
-              {options.map((option) => (
-                <DropdownItem key={option}>{currentMap[option]}</DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
-        )}
-      />
-    );
-  };
+  //   return (
+  //     <Controller
+  //       key={key}
+  //       name={key}
+  //       control={control}
+  //       render={({ field }) => (
+  //         <Dropdown>
+  //           <DropdownTrigger>
+  //             <Button
+  //               size="md"
+  //               endContent={<ChevronDownIcon />}
+  //               variant="flat"
+  //               color="warning"
+  //             >
+  //               {currentMap[field.value]}
+  //             </Button>
+  //           </DropdownTrigger>
+  //           <DropdownMenu
+  //             variant="bordered"
+  //             disallowEmptySelection
+  //             aria-label={`Select ${key}`}
+  //             closeOnSelect={true}
+  //             selectedKeys={[field.value]}
+  //             selectionMode="single"
+  //             onSelectionChange={(selectedKeys) => {
+  //               const selectedKey = Array.from(selectedKeys)[0];
+  //               field.onChange(selectedKey);
+  //             }}
+  //           >
+  //             {options.map((option) => (
+  //               <DropdownItem key={option}>{currentMap[option]}</DropdownItem>
+  //             ))}
+  //           </DropdownMenu>
+  //         </Dropdown>
+  //       )}
+  //     />
+  //   );
+  // };
 
-  const renderCheckboxQuestion = (
-    key: CheckboxQuestionKey,
-    placeholder: string,
-  ) => {
-    return (
-      <Controller
-        key={key}
-        name={key}
-        control={control}
-        render={({ field }) => (
-          <Checkbox
-            className="text-sm text-light-100 dark:text-dark-100"
-            isSelected={field.value}
-            size="lg"
-            color="danger"
-            onValueChange={(value) => {
-              field.onChange(value);
-            }}
-          >
-            {placeholder}
-          </Checkbox>
-        )}
-      />
-    );
-  };
+  // const renderCheckboxQuestion = (
+  //   key: CheckboxQuestionKey,
+  //   placeholder: string,
+  // ) => {
+  //   return (
+  //     <Controller
+  //       key={key}
+  //       name={key}
+  //       control={control}
+  //       render={({ field }) => (
+  //         <Checkbox
+  //           className="text-sm text-light-100 dark:text-dark-100"
+  //           isSelected={field.value}
+  //           size="lg"
+  //           color="danger"
+  //           onValueChange={(value) => {
+  //             field.onChange(value);
+  //           }}
+  //         >
+  //           {placeholder}
+  //         </Checkbox>
+  //       )}
+  //     />
+  //   );
+  // };
 
   const renderQuestion = (question: NewApplicationFormQuestion) => {
     switch (question.type) {
@@ -249,22 +230,22 @@ export default function NewApplicationForm({
         );
         return inputQuestionComponent;
       }
-      case 'select': {
-        const { key, options } = question;
-        const selectQuestionComponent = renderSelectQuestion(
-          key as SelectQuestionKey,
-          options ?? [],
-        );
-        return selectQuestionComponent;
-      }
-      case 'checkbox': {
-        const { key, placeholder } = question;
-        const checkboxQuestionComponent = renderCheckboxQuestion(
-          key as CheckboxQuestionKey,
-          placeholder ?? '',
-        );
-        return checkboxQuestionComponent;
-      }
+      // case 'select': {
+      //   const { key, options } = question;
+      //   const selectQuestionComponent = renderSelectQuestion(
+      //     key as SelectQuestionKey,
+      //     options ?? [],
+      //   );
+      //   return selectQuestionComponent;
+      // }
+      // case 'checkbox': {
+      //   const { key, placeholder } = question;
+      //   const checkboxQuestionComponent = renderCheckboxQuestion(
+      //     key as CheckboxQuestionKey,
+      //     placeholder ?? '',
+      //   );
+      //   return checkboxQuestionComponent;
+      // }
       default:
         return null;
     }

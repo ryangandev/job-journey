@@ -89,14 +89,3 @@ const rejectionUpdateTemplates = [
   'This job is no longer accepting applications',
   'Failed the OA (Online Assessment)',
 ];
-
-const updateTemplates = (type: ApplicationUpdateType) => {
-  switch (type) {
-    case 'note':
-      return noteUpdateTemplates;
-    case 'rejection':
-      return rejectionUpdateTemplates;
-    default:
-      return [];
-  }
-};

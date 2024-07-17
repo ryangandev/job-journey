@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { trimmedStringSchema } from '../libs/string-utils';
+import { trimmedStringSchema } from '@/libs/string-utils';
 
 const JobSettingSchema = z.enum(['on_site', 'remote', 'hybrid']);
 
@@ -48,13 +48,7 @@ const NewApplicationFormSchema = z.object({
   userId: z.string(),
   title: trimmedStringSchema(1, 100),
   company: trimmedStringSchema(1, 100),
-  location: trimmedStringSchema(1, 100),
-  setting: JobSettingSchema,
-  type: JobTypeSchema,
-  level: JobLevelSchema,
-  salary: trimmedStringSchema(0, 100),
   jobPostingLink: trimmedStringSchema(0, 4000),
-  isFavorite: z.boolean(),
 });
 
 const ApplicationSchema = z.object({

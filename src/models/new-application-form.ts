@@ -1,13 +1,8 @@
 export type FormQuestionKey =
   | 'title'
   | 'company'
-  | 'location'
-  | 'setting'
-  | 'type'
-  | 'level'
-  | 'salary'
-  | 'jobPostingLink'
-  | 'isFavorite';
+  // | 'location'
+  | 'jobPostingLink';
 
 export type FormQuestionType = 'input' | 'select' | 'checkbox';
 
@@ -23,8 +18,7 @@ export type NewApplicationFormQuestion = {
 export type InputQuestionKey =
   | 'title'
   | 'company'
-  | 'location'
-  | 'salary'
+  // | 'location'
   | 'jobPostingLink';
 export type SelectQuestionKey = 'setting' | 'type' | 'level';
 export type CheckboxQuestionKey = 'isFavorite';
