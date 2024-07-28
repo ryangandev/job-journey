@@ -1,4 +1,5 @@
 import { NewApplicationFormQuestion } from '@/models/new-application-form';
+import { submissionSites } from './dashboard';
 
 export const newApplicationFormQuestions: NewApplicationFormQuestion[] = [
   {
@@ -21,5 +22,12 @@ export const newApplicationFormQuestions: NewApplicationFormQuestion[] = [
     type: 'input',
     required: false,
     placeholder: 'Eg. https://www.apple.com/jobs/...',
+  },
+  {
+    key: 'submittedThrough',
+    question: 'Where did you submit this application?',
+    type: 'select',
+    required: false,
+    options: submissionSites,
   },
 ];

@@ -150,7 +150,7 @@ model Application {
   setting             JobSetting @default(on_site)
   type                JobType    @default(full_time)
   level               JobLevel   @default(entry)
-  status              JobStatus  @default(not_applied)
+  status              JobStatus  @default(applied)
   isFavorite          Boolean    @default(false) @map("is_favorite")
   replied             Boolean    @default(false)
   interviewAquired    Boolean    @default(false) @map("interview_aquired")

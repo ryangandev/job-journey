@@ -46,6 +46,10 @@ async function addNewApplicationAction(
               type: 'auto_generated',
               content: 'You just created a new application! Submit it soon! 🚀',
             },
+            {
+              type: 'submission',
+              content: `Application submitted through ${parsedFormData.submittedThrough}.`,
+            },
           ],
         },
       },

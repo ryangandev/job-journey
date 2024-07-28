@@ -1,10 +1,18 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button, Input, Progress } from '@nextui-org/react';
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Input,
+  Progress,
+} from '@nextui-org/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IoMdRefresh, IoMdArrowBack, IoMdArrowForward } from 'react-icons/io';
 import { FaCheck } from 'react-icons/fa6';
@@ -21,9 +29,11 @@ import useConfirmModal from '@/hooks/use-confirm-modal';
 import {
   NewApplicationFormQuestion,
   InputQuestionKey,
+  SelectQuestionKey,
 } from '@/models/new-application-form';
 
 import { NewApplicationFormSchema } from '@/schemas/application-schema';
+import { ChevronDownIcon } from '@/assets/svgs';
 
 type NewApplicationFormProps = {
   userId: string;
@@ -35,6 +45,7 @@ export default function NewApplicationForm({
   const {
     handleSubmit,
     register,
+    control,
     formState: { isSubmitting, isDirty },
     getFieldState,
     reset,
@@ -45,6 +56,7 @@ export default function NewApplicationForm({
       title: '',
       company: '',
       jobPostingLink: '',
+      submittedThrough: 'LinkedIn',
     },
   });
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -141,57 +153,45 @@ export default function NewApplicationForm({
     );
   };
 
-  // const renderSelectQuestion = (key: SelectQuestionKey, options: string[]) => {
-  //   const typeMaps = {
-  //     setting: jobSettingMap,
-  //     type: jobTypeMap,
-  //     level: jobLevelMap,
-  //   };
-
-  //   const currentMap = typeMaps[key];
-
-  //   if (!currentMap || options.length === 0) {
-  //     return null;
-  //   }
-
-  //   return (
-  //     <Controller
-  //       key={key}
-  //       name={key}
-  //       control={control}
-  //       render={({ field }) => (
-  //         <Dropdown>
-  //           <DropdownTrigger>
-  //             <Button
-  //               size="md"
-  //               endContent={<ChevronDownIcon />}
-  //               variant="flat"
-  //               color="warning"
-  //             >
-  //               {currentMap[field.value]}
-  //             </Button>
-  //           </DropdownTrigger>
-  //           <DropdownMenu
-  //             variant="bordered"
-  //             disallowEmptySelection
-  //             aria-label={`Select ${key}`}
-  //             closeOnSelect={true}
-  //             selectedKeys={[field.value]}
-  //             selectionMode="single"
-  //             onSelectionChange={(selectedKeys) => {
-  //               const selectedKey = Array.from(selectedKeys)[0];
-  //               field.onChange(selectedKey);
-  //             }}
-  //           >
-  //             {options.map((option) => (
-  //               <DropdownItem key={option}>{currentMap[option]}</DropdownItem>
-  //             ))}
-  //           </DropdownMenu>
-  //         </Dropdown>
-  //       )}
-  //     />
-  //   );
-  // };
+  const renderSelectQuestion = (key: SelectQuestionKey, options: string[]) => {
+    return (
+      <Controller
+        key={key}
+        name={key}
+        control={control}
+        render={({ field }) => (
+          <Dropdown>
+            <DropdownTrigger>
+              <Button
+                size="md"
+                endContent={<ChevronDownIcon />}
+                variant="flat"
+                color="warning"
+              >
+                {field.value}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              variant="bordered"
+              disallowEmptySelection
+              aria-label={`Select ${key}`}
+              closeOnSelect={true}
+              selectedKeys={field.value}
+              selectionMode="single"
+              onSelectionChange={(selectedKeys) => {
+                const selectedKey = Array.from(selectedKeys)[0];
+                field.onChange(selectedKey);
+              }}
+            >
+              {options.map((option) => (
+                <DropdownItem key={option}>{option}</DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
+        )}
+      />
+    );
+  };
 
   // const renderCheckboxQuestion = (
   //   key: CheckboxQuestionKey,
@@ -230,14 +230,14 @@ export default function NewApplicationForm({
         );
         return inputQuestionComponent;
       }
-      // case 'select': {
-      //   const { key, options } = question;
-      //   const selectQuestionComponent = renderSelectQuestion(
-      //     key as SelectQuestionKey,
-      //     options ?? [],
-      //   );
-      //   return selectQuestionComponent;
-      // }
+      case 'select': {
+        const { key, options } = question;
+        const selectQuestionComponent = renderSelectQuestion(
+          key as SelectQuestionKey,
+          options ?? [],
+        );
+        return selectQuestionComponent;
+      }
       // case 'checkbox': {
       //   const { key, placeholder } = question;
       //   const checkboxQuestionComponent = renderCheckboxQuestion(

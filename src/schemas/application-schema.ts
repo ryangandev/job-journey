@@ -49,6 +49,7 @@ const NewApplicationFormSchema = z.object({
   title: trimmedStringSchema(1, 100),
   company: trimmedStringSchema(1, 100),
   jobPostingLink: trimmedStringSchema(0, 4000),
+  submittedThrough: z.string().optional(),
 });
 
 const ApplicationSchema = z.object({

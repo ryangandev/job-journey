@@ -83,9 +83,9 @@ export const submissionSites = [
   'Company website (Workday)',
 ];
 
-const noteUpdateTemplates = ['Application viewed by the hiring team'];
+export const noteUpdateTemplates = ['Application viewed by the hiring team'];
 
-const rejectionUpdateTemplates = [
+export const rejectionUpdateTemplates = [
   'This job is no longer accepting applications',
   'Failed the OA (Online Assessment)',
 ];

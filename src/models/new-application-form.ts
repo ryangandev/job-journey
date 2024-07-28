@@ -2,7 +2,8 @@ export type FormQuestionKey =
   | 'title'
   | 'company'
   // | 'location'
-  | 'jobPostingLink';
+  | 'jobPostingLink'
+  | 'submittedThrough';
 
 export type FormQuestionType = 'input' | 'select' | 'checkbox';
 
@@ -20,5 +21,5 @@ export type InputQuestionKey =
   | 'company'
   // | 'location'
   | 'jobPostingLink';
-export type SelectQuestionKey = 'setting' | 'type' | 'level';
+export type SelectQuestionKey = 'submittedThrough';
 export type CheckboxQuestionKey = 'isFavorite';
