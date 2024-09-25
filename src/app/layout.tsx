@@ -1,11 +1,23 @@
 import type { Metadata } from 'next';
 
+import localFont from 'next/font/local';
 import { Toaster } from 'sonner';
 
-import { geistSans } from '@/assets/font';
 import { cn } from '@/lib/utils';
 import AppProviders from '@/providers/app-providers';
 import '@/styles/globals.css';
+
+const geistSans = localFont({
+  src: '../assets/fonts/GeistVF.woff',
+  variable: '--font-geist-sans',
+  weight: '100 900',
+});
+
+const geistMono = localFont({
+  src: '../assets/fonts/GeistMonoVF.woff',
+  variable: '--font-geist-mono',
+  weight: '100 900',
+});
 
 export const metadata: Metadata = {
   title: 'Job Journey',
@@ -19,13 +31,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body className={cn(geistSans.className, `relative antialiased`)}>
+      <body
+        className={cn(
+          geistSans.variable,
+          geistMono.variable,
+          'relative min-h-screen antialiased',
+        )}
+      >
         <AppProviders>
-
-        {children}
-
+          {children}
+          <Toaster richColors />
         </AppProviders>
-        <Toaster richColors />
       </body>
     </html>
   );
