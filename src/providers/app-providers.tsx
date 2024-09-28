@@ -16,8 +16,8 @@ export default function AppProviders({
     <NextUIProvider navigate={router.push}>
       <ThemeProvider
         attribute="class"
-        defaultTheme="dark"
-        // disableTransitionOnChange
+        defaultTheme="system"
+        disableTransitionOnChange
       >
         {children}
       </ThemeProvider>
