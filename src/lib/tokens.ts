@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { prisma } from '@/lib/db';
+import prisma from '@/lib/db';
 import { getVerificationTokenByEmail } from '@/data/verification-token';
 import { getResetPasswordTokenByEmail } from '@/data/reset-password-token';
 

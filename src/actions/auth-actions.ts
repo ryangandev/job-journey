@@ -8,7 +8,7 @@ import { getResetPasswordTokenByToken } from '@/data/reset-password-token';
 import { getUserByEmail } from '@/data/users';
 import { getVerificationTokenByToken } from '@/data/verification-token';
 import { signIn, signOut } from '@/lib/auth';
-import { prisma } from '@/lib/db';
+import prisma from '@/lib/db';
 
 import {
   sendVerificationEmail,
