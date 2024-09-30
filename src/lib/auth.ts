@@ -1,16 +1,13 @@
 import type { DefaultSession } from 'next-auth';
 
-import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';
 import { Adapter } from 'next-auth/adapters';
-import Credentials from 'next-auth/providers/credentials';
 import GitHub from 'next-auth/providers/github';
 import Google from 'next-auth/providers/google';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 
-import { getUserByEmail, getUserById } from '@/data/users';
+import { getUserById } from '@/data/users';
 import prisma from '@/lib/db';
-import { LoginSchema } from '@/schemas/auth-schema';
 
 // Adding props to the Session object
 declare module 'next-auth' {
@@ -84,24 +81,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
-    Credentials({
-      async authorize(credentials) {
-        const parsedCredentials = LoginSchema.safeParse(credentials);
-
-        if (parsedCredentials.success) {
-          const { email, password } = parsedCredentials.data;
-          const user = await getUserByEmail(email);
-
-          if (!user || !user.password) return null;
-
-          const isPasswordValid = await bcrypt.compare(password, user.password);
-
-          if (isPasswordValid) return user;
-        }
-
-        return null;
-      },
     }),
   ],
   session: {
