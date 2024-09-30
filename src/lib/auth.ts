@@ -7,7 +7,6 @@ import Credentials from 'next-auth/providers/credentials';
 import GitHub from 'next-auth/providers/github';
 import Google from 'next-auth/providers/google';
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import { UserPlan } from '@prisma/client';
 
 import { getUserByEmail, getUserById } from '@/data/users';
 import prisma from '@/lib/db';
@@ -17,7 +16,7 @@ import { LoginSchema } from '@/schemas/auth-schema';
 declare module 'next-auth' {
   interface Session {
     user: {
-      userPlan: UserPlan;
+      userPlan: 'FREE' | 'PREMIUM';
     } & DefaultSession['user'];
   }
 }
@@ -46,7 +45,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
 
       if (token.userPlan && session.user) {
-        session.user.userPlan = token.userPlan as UserPlan;
+        session.user.userPlan = token.userPlan as 'FREE' | 'PREMIUM';
       }
 
       return session;
