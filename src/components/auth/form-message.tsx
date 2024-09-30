@@ -1,4 +1,3 @@
-import React from 'react';
 import { PiWarning, PiCheckCircle } from 'react-icons/pi';
 
 export default function FormMessage({

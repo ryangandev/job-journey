@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { CiMail } from 'react-icons/ci';
 import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Input,
   Card,
@@ -14,10 +15,9 @@ import {
   Link,
 } from '@nextui-org/react';
 
-import { ResetPasswordSchema } from '../../schemas/auth-schema';
-import { resetPasswordAction } from '../../actions/auth-actions';
-import { MailIcon } from '../../assets/svgs';
-import FormMessage from './form-message';
+import { resetPasswordAction } from '@/actions/auth-actions';
+import FormMessage from '@/components/auth/form-message';
+import { ResetPasswordSchema } from '@/schemas/auth-schema';
 
 export default function ResetPasswordForm() {
   const [errorMsg, setErrorMsg] = useState<string | undefined>('');
@@ -25,7 +25,7 @@ export default function ResetPasswordForm() {
   const {
     handleSubmit,
     register,
-    formState: { errors, isSubmitting, isDirty, isValid },
+    formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof ResetPasswordSchema>>({
     resolver: zodResolver(ResetPasswordSchema),
     defaultValues: {
@@ -34,7 +34,6 @@ export default function ResetPasswordForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof ResetPasswordSchema>) => {
-    console.log('onSubmit', values);
     setErrorMsg('');
     setSuccessMsg('');
 
@@ -46,18 +45,16 @@ export default function ResetPasswordForm() {
 
   return (
     <Card className="w-full max-w-md p-6">
-      <CardHeader className="flex flex-col items-start space-y-2">
-        <div className="flex w-full items-center justify-between">
-          <h2 className="text-xl font-semibold">Forgot your password?</h2>
-          <FormMessage type="error" message={errorMsg} />
-          <FormMessage type="success" message={successMsg} />
-        </div>
+      <CardHeader className="flex flex-col items-start space-y-4">
+        <h2 className="text-xl font-semibold">Forgot your password?</h2>
+        <FormMessage type="error" message={errorMsg} />
+        <FormMessage type="success" message={successMsg} />
       </CardHeader>
       <CardBody className="space-y-4">
         <form
           action={() => {}}
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-2"
+          className="space-y-3"
         >
           <Input
             {...register('email', { required: true })}
@@ -67,7 +64,7 @@ export default function ResetPasswordForm() {
               label: 'max-h-5', // Restrict label to 1 line
             }}
             endContent={
-              <MailIcon className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />
+              <CiMail className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />
             }
             label={`Email ${
               errors?.email ? `- ${errors?.email?.message}` : ''
@@ -89,7 +86,7 @@ export default function ResetPasswordForm() {
         </form>
       </CardBody>
       <CardFooter className="flex justify-center">
-        <Link href="/auth/login" size="sm" color="primary">
+        <Link href="/login" size="sm" color="primary">
           Back to login
         </Link>
       </CardFooter>

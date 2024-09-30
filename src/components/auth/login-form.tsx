@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { CiLock, CiMail } from 'react-icons/ci';
 import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Input,
   Card,
@@ -12,17 +14,16 @@ import {
   CardFooter,
   Button,
   Link,
+  Spinner,
 } from '@nextui-org/react';
-import { useSearchParams } from 'next/navigation';
 
-import { LoginSchema } from '../../schemas/auth-schema';
-import { loginAction } from '../../actions/auth-actions';
-import { LockIcon, MailIcon } from '../../assets/svgs';
-import Divider from '../divider';
-import FormMessage from './form-message';
-import OAuthLogins from './oAuth-logins';
+import { loginAction } from '@/actions/auth-actions';
+import FormMessage from '@/components/auth/form-message';
+import OAuthLogins from '@/components/auth/oauth-logins';
+import Divider from '@/components/divider';
+import { LoginSchema } from '@/schemas/auth-schema';
 
-export default function LoginForm() {
+function LoginContent() {
   const searchParams = useSearchParams();
   const urlError =
     searchParams.get('error') === 'OAuthAccountNotLinked'
@@ -34,7 +35,7 @@ export default function LoginForm() {
   const {
     handleSubmit,
     register,
-    formState: { errors, isSubmitting, isDirty, isValid },
+    formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -44,7 +45,6 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
-    console.log('onSubmit', values);
     setErrorMsg('');
     setSuccessMsg('');
 
@@ -56,22 +56,20 @@ export default function LoginForm() {
   };
 
   return (
-    <Card className="w-full max-w-md p-6">
+    <>
       <CardHeader className="flex flex-col items-start space-y-2">
         <div className="flex w-full items-center justify-between">
           <h2 className="text-xl font-semibold">Sign in</h2>
           <FormMessage type="error" message={errorMsg || urlError} />
           <FormMessage type="success" message={successMsg} />
         </div>
-        <p className="line-clamp-1 text-base text-light-400 dark:text-dark-400">
-          to your account
-        </p>
+        <p className="line-clamp-1 text-base">to your account</p>
       </CardHeader>
       <CardBody className="space-y-4">
         <form
           action={() => {}}
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-2"
+          className="space-y-3"
         >
           <Input
             {...register('email', { required: true })}
@@ -81,7 +79,7 @@ export default function LoginForm() {
               label: 'max-h-5', // Restrict label to 1 line
             }}
             endContent={
-              <MailIcon className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />
+              <CiMail className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />
             }
             label={`Email ${
               errors?.email ? `- ${errors?.email?.message}` : ''
@@ -100,7 +98,7 @@ export default function LoginForm() {
               label: 'max-h-5', // Restrict label to 1 line
             }}
             endContent={
-              <LockIcon className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />
+              <CiLock className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />
             }
             label={`Password ${
               errors?.password ? `- ${errors?.password?.message}` : ''
@@ -110,7 +108,7 @@ export default function LoginForm() {
             isInvalid={!!errors?.password}
             autoComplete="off"
           />
-          <Link href="/auth/reset-password" size="sm" color="primary">
+          <Link href="/reset-password" size="sm" color="primary">
             Forgot password?
           </Link>
           <Button
@@ -120,16 +118,26 @@ export default function LoginForm() {
             isLoading={isSubmitting}
             isDisabled={isSubmitting}
           >
-            Login
+            Sign in
           </Button>
         </form>
         <Divider label="or" />
         <OAuthLogins />
       </CardBody>
+    </>
+  );
+}
+
+export default function LoginForm() {
+  return (
+    <Card className="w-full max-w-md p-6">
+      <Suspense fallback={<Spinner label="Loading..." />}>
+        <LoginContent />
+      </Suspense>
       <CardFooter className="flex space-x-2 text-sm">
         <span className="line-clamp-1">Need an account?</span>
-        <Link href="/auth/register" size="sm" color="primary">
-          Register
+        <Link href="/register" size="sm" color="primary">
+          Sign up
         </Link>
       </CardFooter>
     </Card>

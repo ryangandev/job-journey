@@ -5,7 +5,7 @@
  */
 export const publicRoutes = [
   '/',
-  '/auth/new-verification', // User will be able to change their email from the settings page while logged in, so public route is the best place instead of auth route
+  '/new-verification', // User will be able to change their email from the settings page while logged in, so public route is the best place instead of auth route
 ];
 
 /**
@@ -14,11 +14,11 @@ export const publicRoutes = [
  * @type {string[]}
  */
 export const authRoutes = [
-  '/auth/login',
-  '/auth/register',
-  '/auth/error',
-  '/auth/reset-password',
-  '/auth/new-password',
+  '/login',
+  '/register',
+  '/error',
+  '/reset-password',
+  '/new-password',
 ];
 
 /**
@@ -32,4 +32,4 @@ export const apiAuthPrefix = '/api/auth'; // This is a special case so we never 
  * The default redirect path after logging in.
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT = '/dashboard'; // The default redirect path after logging out
+export const DEFAULT_LOGIN_REDIRECT = '/dashboard'; // The default redirect path after logging in

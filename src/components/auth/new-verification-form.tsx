@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import {
   Card,
   CardBody,
@@ -11,10 +11,10 @@ import {
   Spinner,
 } from '@nextui-org/react';
 
-import { newVerificationAction } from '../../actions/auth-actions';
-import FormMessage from './form-message';
+import { newVerificationAction } from '@/actions/auth-actions';
+import FormMessage from '@/components/auth/form-message';
 
-export default function NewVerificationForm() {
+function VerificationContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
 
@@ -42,20 +42,30 @@ export default function NewVerificationForm() {
   }, [onSubmit]);
 
   return (
+    <>
+      {!errorMsg && !successMsg && (
+        <Spinner label="Confirming your verification..." />
+      )}
+      <FormMessage type={'error'} message={errorMsg} />
+      <FormMessage type={'success'} message={successMsg} />
+    </>
+  );
+}
+
+export default function NewVerificationForm() {
+  return (
     <Card className="w-full max-w-md space-y-6 p-6">
       <CardHeader className="w-full">
         <h2 className="text-lg">Verify your email</h2>
       </CardHeader>
       <CardBody className="flex flex-col items-center justify-center">
-        {!errorMsg && !successMsg && (
-          <Spinner label="Confirming your verification..." />
-        )}
-        <FormMessage type={'error'} message={errorMsg} />
-        <FormMessage type={'success'} message={successMsg} />
+        <Suspense fallback={<Spinner label="Loading..." />}>
+          <VerificationContent />
+        </Suspense>
       </CardBody>
       <CardFooter className="flex justify-center">
-        <Link href="/auth/login" size="sm">
-          Back to login
+        <Link href="/login" size="sm">
+          Back to sign in
         </Link>
       </CardFooter>
     </Card>

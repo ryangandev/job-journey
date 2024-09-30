@@ -4,25 +4,26 @@ import bcrypt from 'bcryptjs';
 import { AuthError } from 'next-auth';
 import { z } from 'zod';
 
-import { signIn, signOut } from '@/auth';
-import { prisma } from '@/libs/db';
-import {
-  generateVerificationToken,
-  generateResetPasswordToken,
-} from '@/libs/tokens';
+import { getResetPasswordTokenByToken } from '@/data/reset-password-token';
+import { getUserByEmail } from '@/data/users';
+import { getVerificationTokenByToken } from '@/data/verification-token';
+import { signIn, signOut } from '@/lib/auth';
+import prisma from '@/lib/db';
+
 import {
   sendVerificationEmail,
   sendResetPasswordEmail,
-} from '@/libs/sendEmail';
+} from '@/lib/send-email';
+import {
+  generateVerificationToken,
+  generateResetPasswordToken,
+} from '@/lib/tokens';
 import {
   LoginSchema,
   RegisterSchema,
   ResetPasswordSchema,
   NewPasswordSchema,
 } from '@/schemas/auth-schema';
-import { getUserByEmail } from '@/libs/repositories/users';
-import { getVerificationTokenByToken } from '@/data/verification-token';
-import { getResetPasswordTokenByToken } from '@/data/reset-password-token';
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 
 export async function registerAction(
@@ -112,7 +113,7 @@ export async function loginAction(loginData: z.infer<typeof LoginSchema>) {
 
 export async function logoutAction() {
   await signOut({
-    redirectTo: '/auth/login',
+    redirectTo: '/login',
   });
 }
 
@@ -176,6 +177,7 @@ export const resetPasswordAction = async (
   }
 
   const resetPasswordToken = await generateResetPasswordToken(email);
+
   await sendResetPasswordEmail(
     resetPasswordToken.email,
     resetPasswordToken.token,

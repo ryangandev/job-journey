@@ -1,31 +1,46 @@
-import { AppProviders } from '../providers/app-providers';
-import './globals.css';
-import ThemeSwitch from '../components/theme-switch';
-import { Toaster } from 'react-hot-toast';
-import NavBar from '../components/navbar';
-import { inter } from '../assets/fonts';
+import type { Metadata } from 'next';
 
-export const metadata = {
-  title: 'JobJourney',
-  description:
-    'An app to help you organize and streamline your job application process.',
+import localFont from 'next/font/local';
+import { Toaster } from 'sonner';
+
+import { cn } from '@/lib/utils';
+import AppProviders from '@/providers/app-providers';
+import '@/styles/globals.css';
+
+const geistSans = localFont({
+  src: '../assets/fonts/GeistVF.woff',
+  variable: '--font-geist-sans',
+  weight: '100 900',
+});
+
+const geistMono = localFont({
+  src: '../assets/fonts/GeistMonoVF.woff',
+  variable: '--font-geist-mono',
+  weight: '100 900',
+});
+
+export const metadata: Metadata = {
+  title: 'Job Journey',
+  description: 'Organize and streamline your job search with JobJourney',
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    // added 'suppressHydrationWarning' to the html tag to avoid warning (solution from reddit below)
-    // https://www.reddit.com/r/nextjs/comments/138smpm/how_to_fix_extra_attributes_from_the_server_error/
-    // https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} relative`}>
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <body
+        className={cn(
+          geistSans.variable,
+          geistMono.variable,
+          'relative min-h-screen antialiased',
+        )}
+      >
         <AppProviders>
           {children}
-          <Toaster position="top-center" />
-          <ThemeSwitch />
+          <Toaster richColors />
         </AppProviders>
       </body>
     </html>

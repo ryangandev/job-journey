@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { CiLock, CiMail, CiUser } from 'react-icons/ci';
 import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Input,
   Card,
@@ -14,12 +15,11 @@ import {
   Link,
 } from '@nextui-org/react';
 
-import { RegisterSchema } from '../../schemas/auth-schema';
-import { registerAction } from '../../actions/auth-actions';
-import { LockIcon, MailIcon, UserIcon } from '../../assets/svgs';
-import Divider from '../divider';
-import FormMessage from './form-message';
-import OAuthLogins from './oAuth-logins';
+import { registerAction } from '@/actions/auth-actions';
+import Divider from '@/components/divider';
+import FormMessage from '@/components/auth/form-message';
+import OAuthLogins from '@/components/auth/oauth-logins';
+import { RegisterSchema } from '@/schemas/auth-schema';
 
 export default function RegisterForm() {
   const [errorMsg, setErrorMsg] = useState<string | undefined>('');
@@ -27,7 +27,7 @@ export default function RegisterForm() {
   const {
     handleSubmit,
     register,
-    formState: { errors, isSubmitting, isDirty, isValid },
+    formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -38,7 +38,6 @@ export default function RegisterForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
-    console.log('onSubmit', values);
     setErrorMsg('');
     setSuccessMsg('');
 
@@ -52,13 +51,11 @@ export default function RegisterForm() {
     <Card className="w-full max-w-md p-6">
       <CardHeader className="flex flex-col items-start space-y-2">
         <div className="flex w-full items-center justify-between">
-          <h2 className="text-xl font-semibold">Register</h2>
+          <h2 className="text-xl font-semibold">Sign up</h2>
           <FormMessage type="error" message={errorMsg} />
           <FormMessage type="success" message={successMsg} />
         </div>
-        <p className="line-clamp-1 text-base text-light-400 dark:text-dark-400">
-          to create an account
-        </p>
+        <p className="line-clamp-1 text-base">to create an account</p>
       </CardHeader>
       <CardBody className="space-y-4">
         <form
@@ -74,7 +71,7 @@ export default function RegisterForm() {
               label: 'max-h-5', // Restrict label to 1 line
             }}
             endContent={
-              <UserIcon className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />
+              <CiUser className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />
             }
             label={`Name ${errors?.name ? `- ${errors?.name?.message}` : ''}`}
             placeholder="Enter your name"
@@ -91,7 +88,7 @@ export default function RegisterForm() {
               label: 'max-h-5', // Restrict label to 1 line
             }}
             endContent={
-              <MailIcon className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />
+              <CiMail className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />
             }
             label={`Email ${
               errors?.email ? `- ${errors?.email?.message}` : ''
@@ -109,7 +106,7 @@ export default function RegisterForm() {
               label: 'max-h-5', // Restrict label to 1 line
             }}
             endContent={
-              <LockIcon className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />
+              <CiLock className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />
             }
             label={`Password ${
               errors?.password ? `- ${errors?.password?.message}` : ''
@@ -134,7 +131,7 @@ export default function RegisterForm() {
       </CardBody>
       <CardFooter className="flex space-x-2 text-sm">
         <span className="line-clamp-1">Already have an account?</span>
-        <Link href="/auth/login" size="sm" color="primary">
+        <Link href="/login" size="sm" color="primary">
           Login
         </Link>
       </CardFooter>

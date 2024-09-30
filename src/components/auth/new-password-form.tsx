@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { Suspense, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { CiLock } from 'react-icons/ci';
 import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Input,
   Card,
@@ -13,14 +14,14 @@ import {
   CardFooter,
   Button,
   Link,
+  Spinner,
 } from '@nextui-org/react';
 
-import { NewPasswordSchema } from '../../schemas/auth-schema';
-import { newPasswordAction } from '../../actions/auth-actions';
-import { LockIcon } from '../../assets/svgs';
-import FormMessage from './form-message';
+import { newPasswordAction } from '@/actions/auth-actions';
+import FormMessage from '@/components/auth/form-message';
+import { NewPasswordSchema } from '@/schemas/auth-schema';
 
-export default function NewPasswordForm() {
+function NewPasswordContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
 
@@ -48,19 +49,17 @@ export default function NewPasswordForm() {
   };
 
   return (
-    <Card className="w-full max-w-md p-6">
-      <CardHeader className="flex flex-col items-start space-y-2">
-        <div className="flex w-full items-center justify-between">
-          <h2 className="text-xl font-semibold">Enter a new password</h2>
-          <FormMessage type="error" message={errorMsg} />
-          <FormMessage type="success" message={successMsg} />
-        </div>
+    <>
+      <CardHeader className="flex flex-col items-start space-y-4">
+        <h2 className="text-xl font-semibold">Enter a new password</h2>
+        <FormMessage type="error" message={errorMsg} />
+        <FormMessage type="success" message={successMsg} />
       </CardHeader>
       <CardBody className="space-y-4">
         <form
           action={() => {}}
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-2"
+          className="space-y-3"
         >
           <Input
             {...register('password', { required: true })}
@@ -70,7 +69,7 @@ export default function NewPasswordForm() {
               label: 'max-h-5', // Restrict label to 1 line
             }}
             endContent={
-              <LockIcon className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />
+              <CiLock className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />
             }
             label={`Password ${
               errors?.password ? `- ${errors?.password?.message}` : ''
@@ -91,8 +90,18 @@ export default function NewPasswordForm() {
           </Button>
         </form>
       </CardBody>
+    </>
+  );
+}
+
+export default function NewPasswordForm() {
+  return (
+    <Card className="w-full max-w-md p-6">
+      <Suspense fallback={<Spinner label="Loading..." />}>
+        <NewPasswordContent />
+      </Suspense>
       <CardFooter className="flex justify-center">
-        <Link href="/auth/login" size="sm" color="primary">
+        <Link href="/login" size="sm" color="primary">
           Back to login
         </Link>
       </CardFooter>

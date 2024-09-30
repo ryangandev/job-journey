@@ -1,4 +1,4 @@
-import { prisma } from '@/libs/db';
+import prisma from '@/lib/db';
 
 export const getResetPasswordTokenByToken = async (token: string) => {
   try {
@@ -10,6 +10,7 @@ export const getResetPasswordTokenByToken = async (token: string) => {
 
     return resetPasswordToken;
   } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -24,6 +25,7 @@ export const getResetPasswordTokenByEmail = async (email: string) => {
 
     return resetPasswordToken;
   } catch (error) {
+    console.error(error);
     return null;
   }
 };

@@ -1,4 +1,4 @@
-import { prisma } from '@/libs/db';
+import prisma from '@/lib/db';
 
 export const getVerificationTokenByToken = async (token: string) => {
   try {
@@ -10,6 +10,7 @@ export const getVerificationTokenByToken = async (token: string) => {
 
     return verificationToken;
   } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -24,6 +25,7 @@ export const getVerificationTokenByEmail = async (email: string) => {
 
     return verificationToken;
   } catch (error) {
+    console.error(error);
     return null;
   }
 };

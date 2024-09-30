@@ -1,9 +1,6 @@
 import { SessionProvider } from 'next-auth/react';
 
-import { auth } from '../../auth';
-import NavBar from '../../components/navbar';
-import { ConfirmModalProvider } from '../../providers/confirm-modal-provider';
-import ConfirmModal from '../../components/confirm-modal';
+import { auth } from '@/lib/auth';
 
 export default async function AuthorizedLayout({
   children,
@@ -12,13 +9,5 @@ export default async function AuthorizedLayout({
 }) {
   const session = await auth();
 
-  return (
-    <SessionProvider session={session}>
-      <ConfirmModalProvider>
-        <NavBar />
-        {children}
-        <ConfirmModal />
-      </ConfirmModalProvider>
-    </SessionProvider>
-  );
+  return <SessionProvider session={session}>{children}</SessionProvider>;
 }

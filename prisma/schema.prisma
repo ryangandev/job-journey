@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -20,69 +21,6 @@ enum UserPlan {
   PREMIUM
 }
 
-enum JobSetting {
-  on_site
-  remote
-  hybrid
-}
-
-enum JobType {
-  full_time
-  part_time
-  contract
-  freelance
-}
-
-enum JobLevel {
-  intern
-  entry
-  junior
-  associate
-  mid
-  mid_senior
-  senior
-  lead
-  manager
-  director
-  executive
-}
-
-enum JobStatus {
-  not_applied
-  applied
-  interviewing
-  offered
-  rejected
-  not_selected
-  ghosted
-}
-
-enum ApplicationUpdateType {
-  submission
-  note
-  interview
-  offer
-  rejection
-  auto_generated
-}
-
-enum ProfilePlatform {
-  discord
-  git_hub
-  gmail
-  hacker_rank
-  leet_code
-  linked_in
-  twitter
-  portfolio
-}
-
-enum InterviewQuestionType {
-  behavioral
-  technical
-  company
-}
-
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -90,31 +28,30 @@ model User {
   emailVerified DateTime? @map("email_verified")
   image         String?
   password      String?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
   userPlan      UserPlan  @default(FREE)
 
-  accounts           Account[]
-  applications       Application[]
-  socialProfiles     SocialProfile[]
-  resumes            Resume[]
-  interviewQuestions InterviewQuestion[]
-  tags               Tag[]
+  accounts Account[]
 
   @@map("users")
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String  @map("user_id")
+  id                String   @id @default(cuid())
+  userId            String   @map("user_id")
   type              String
   provider          String
-  providerAccountId String  @map("provider_account_id")
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  providerAccountId String   @map("provider_account_id")
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?  @db.Text
   session_state     String?
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -140,105 +77,4 @@ model ResetPasswordToken {
 
   @@unique([email, token])
   @@map("reset_password_tokens")
-}
-
-model Application {
-  id                  String     @id @default(cuid())
-  userId              String     @map("user_id")
-  title               String     @default("N/A")
-  company             String     @default("N/A")
-  location            String     @default("United States")
-  setting             JobSetting @default(on_site)
-  type                JobType    @default(full_time)
-  level               JobLevel   @default(entry)
-  status              JobStatus  @default(applied)
-  isFavorite          Boolean    @default(false) @map("is_favorite")
-  replied             Boolean    @default(false)
-  interviewAquired    Boolean    @default(false) @map("interview_aquired")
-  appliedAt           DateTime   @default(now()) @map("applied_at")
-  updatedAt           DateTime   @updatedAt @map("updated_at")
-  salary              String     @default("N/A")
-  jobPostingLink      String     @map("job_posting_link")
-  statusTrackingLinks String[]   @map("status_tracking_links")
-
-  updates ApplicationUpdate[]
-  user    User                @relation(fields: [userId], references: [id])
-
-  @@map("applications")
-}
-
-model ApplicationUpdate {
-  id            String                @id @default(cuid())
-  applicationId String                @map("application_id")
-  type          ApplicationUpdateType @default(note)
-  content       String
-  createdAt     DateTime              @default(now()) @map("created_at")
-
-  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-
-  @@map("application_updates")
-}
-
-model SocialProfile {
-  id       String          @id @default(cuid())
-  userId   String          @map("user_id")
-  platform ProfilePlatform
-  url      String
-  position Int             @default(0)
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@unique([userId, position])
-  @@map("social_profiles")
-}
-
-model Resume {
-  id        String   @id @default(cuid())
-  userId    String   @map("user_id")
-  filename  String
-  content   Bytes
-  isMain    Boolean  @default(false) @map("is_main")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@map("resumes")
-}
-
-model InterviewQuestion {
-  id        String                @id @default(cuid())
-  userId    String                @map("user_id")
-  type      InterviewQuestionType
-  question  String
-  answer    String
-  createdAt DateTime              @default(now()) @map("created_at")
-  updatedAt DateTime              @updatedAt @map("updated_at")
-
-  user User          @relation(fields: [userId], references: [id])
-  tags QuestionTag[]
-
-  @@map("interview_questions")
-}
-
-model Tag {
-  id        String   @id @default(cuid())
-  userId    String   @map("user_id")
-  name      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-
-  user      User          @relation(fields: [userId], references: [id])
-  questions QuestionTag[]
-
-  @@map("tags")
-}
-
-model QuestionTag {
-  questionId String @map("question_id")
-  tagId      String @map("tag_id")
-
-  question InterviewQuestion @relation(fields: [questionId], references: [id])
-  tag      Tag               @relation(fields: [tagId], references: [id])
-
-  @@id([questionId, tagId])
-  @@map("question_tags")
 }
