@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import {
   Card,
   CardBody,
@@ -14,7 +14,7 @@ import {
 import { newVerificationAction } from '@/actions/auth-actions';
 import FormMessage from '@/components/auth/form-message';
 
-export default function NewVerificationForm() {
+function VerificationContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
 
@@ -42,16 +42,26 @@ export default function NewVerificationForm() {
   }, [onSubmit]);
 
   return (
+    <>
+      {!errorMsg && !successMsg && (
+        <Spinner label="Confirming your verification..." />
+      )}
+      <FormMessage type={'error'} message={errorMsg} />
+      <FormMessage type={'success'} message={successMsg} />
+    </>
+  );
+}
+
+export default function NewVerificationForm() {
+  return (
     <Card className="w-full max-w-md space-y-6 p-6">
       <CardHeader className="w-full">
         <h2 className="text-lg">Verify your email</h2>
       </CardHeader>
       <CardBody className="flex flex-col items-center justify-center">
-        {!errorMsg && !successMsg && (
-          <Spinner label="Confirming your verification..." />
-        )}
-        <FormMessage type={'error'} message={errorMsg} />
-        <FormMessage type={'success'} message={successMsg} />
+        <Suspense fallback={<Spinner label="Loading..." />}>
+          <VerificationContent />
+        </Suspense>
       </CardBody>
       <CardFooter className="flex justify-center">
         <Link href="/login" size="sm">

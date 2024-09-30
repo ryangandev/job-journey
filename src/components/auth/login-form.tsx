@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { CiLock, CiMail } from 'react-icons/ci';
 import { z } from 'zod';
@@ -14,6 +14,7 @@ import {
   CardFooter,
   Button,
   Link,
+  Spinner,
 } from '@nextui-org/react';
 
 import { loginAction } from '@/actions/auth-actions';
@@ -22,7 +23,7 @@ import OAuthLogins from '@/components/auth/oauth-logins';
 import Divider from '@/components/divider';
 import { LoginSchema } from '@/schemas/auth-schema';
 
-export default function LoginForm() {
+function LoginContent() {
   const searchParams = useSearchParams();
   const urlError =
     searchParams.get('error') === 'OAuthAccountNotLinked'
@@ -55,7 +56,7 @@ export default function LoginForm() {
   };
 
   return (
-    <Card className="w-full max-w-md p-6">
+    <>
       <CardHeader className="flex flex-col items-start space-y-2">
         <div className="flex w-full items-center justify-between">
           <h2 className="text-xl font-semibold">Sign in</h2>
@@ -123,6 +124,16 @@ export default function LoginForm() {
         <Divider label="or" />
         <OAuthLogins />
       </CardBody>
+    </>
+  );
+}
+
+export default function LoginForm() {
+  return (
+    <Card className="w-full max-w-md p-6">
+      <Suspense fallback={<Spinner label="Loading..." />}>
+        <LoginContent />
+      </Suspense>
       <CardFooter className="flex space-x-2 text-sm">
         <span className="line-clamp-1">Need an account?</span>
         <Link href="/register" size="sm" color="primary">

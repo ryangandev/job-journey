@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { CiLock } from 'react-icons/ci';
 import { z } from 'zod';
@@ -14,13 +14,14 @@ import {
   CardFooter,
   Button,
   Link,
+  Spinner,
 } from '@nextui-org/react';
 
 import { newPasswordAction } from '@/actions/auth-actions';
 import FormMessage from '@/components/auth/form-message';
 import { NewPasswordSchema } from '@/schemas/auth-schema';
 
-export default function NewPasswordForm() {
+function NewPasswordContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
 
@@ -48,7 +49,7 @@ export default function NewPasswordForm() {
   };
 
   return (
-    <Card className="w-full max-w-md p-6">
+    <>
       <CardHeader className="flex flex-col items-start space-y-4">
         <h2 className="text-xl font-semibold">Enter a new password</h2>
         <FormMessage type="error" message={errorMsg} />
@@ -89,6 +90,16 @@ export default function NewPasswordForm() {
           </Button>
         </form>
       </CardBody>
+    </>
+  );
+}
+
+export default function NewPasswordForm() {
+  return (
+    <Card className="w-full max-w-md p-6">
+      <Suspense fallback={<Spinner label="Loading..." />}>
+        <NewPasswordContent />
+      </Suspense>
       <CardFooter className="flex justify-center">
         <Link href="/login" size="sm" color="primary">
           Back to login
