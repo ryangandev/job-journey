@@ -1,5 +1,3 @@
-import type { DefaultSession } from 'next-auth';
-
 import NextAuth from 'next-auth';
 import GitHub from 'next-auth/providers/github';
 import Google from 'next-auth/providers/google';
@@ -7,15 +5,6 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 
 import { getUserById } from '@/data/users';
 import prisma from '@/lib/db';
-
-// Adding props to the Session object
-declare module 'next-auth' {
-  interface Session {
-    user: {
-      userPlan: 'FREE' | 'PREMIUM';
-    } & DefaultSession['user'];
-  }
-}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
