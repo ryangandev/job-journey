@@ -8,7 +8,6 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Input,
-  Card,
   CardHeader,
   CardBody,
   CardFooter,
@@ -18,6 +17,7 @@ import {
 } from '@nextui-org/react';
 
 import { loginAction } from '@/actions/auth-actions';
+import CardWrapper from '@/components/auth/card-wrapper';
 import FormMessage from '@/components/auth/form-message';
 import OAuthLogins from '@/components/auth/oauth-logins';
 import Divider from '@/components/divider';
@@ -130,7 +130,7 @@ function LoginContent() {
 
 export default function LoginForm() {
   return (
-    <Card className="w-full max-w-md p-6">
+    <CardWrapper>
       <Suspense fallback={<Spinner label="Loading..." />}>
         <LoginContent />
       </Suspense>
@@ -140,6 +140,6 @@ export default function LoginForm() {
           Sign up
         </Link>
       </CardFooter>
-    </Card>
+    </CardWrapper>
   );
 }

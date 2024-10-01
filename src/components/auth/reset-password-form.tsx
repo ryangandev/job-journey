@@ -7,7 +7,6 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Input,
-  Card,
   CardHeader,
   CardBody,
   CardFooter,
@@ -16,6 +15,7 @@ import {
 } from '@nextui-org/react';
 
 import { resetPasswordAction } from '@/actions/auth-actions';
+import CardWrapper from '@/components/auth/card-wrapper';
 import FormMessage from '@/components/auth/form-message';
 import { ResetPasswordSchema } from '@/schemas/auth-schema';
 
@@ -44,7 +44,7 @@ export default function ResetPasswordForm() {
   };
 
   return (
-    <Card className="w-full max-w-md p-6">
+    <CardWrapper>
       <CardHeader className="flex flex-col items-start space-y-4">
         <h2 className="text-xl font-semibold">Forgot your password?</h2>
         <FormMessage type="error" message={errorMsg} />
@@ -90,6 +90,6 @@ export default function ResetPasswordForm() {
           Back to login
         </Link>
       </CardFooter>
-    </Card>
+    </CardWrapper>
   );
 }

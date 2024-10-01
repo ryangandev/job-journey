@@ -3,7 +3,6 @@
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import {
-  Card,
   CardBody,
   CardFooter,
   CardHeader,
@@ -12,6 +11,7 @@ import {
 } from '@nextui-org/react';
 
 import { newVerificationAction } from '@/actions/auth-actions';
+import CardWrapper from '@/components/auth/card-wrapper';
 import FormMessage from '@/components/auth/form-message';
 
 function VerificationContent() {
@@ -54,7 +54,7 @@ function VerificationContent() {
 
 export default function NewVerificationForm() {
   return (
-    <Card className="w-full max-w-md space-y-6 p-6">
+    <CardWrapper className="space-y-4">
       <CardHeader className="w-full">
         <h2 className="text-lg">Verify your email</h2>
       </CardHeader>
@@ -68,6 +68,6 @@ export default function NewVerificationForm() {
           Back to sign in
         </Link>
       </CardFooter>
-    </Card>
+    </CardWrapper>
   );
 }

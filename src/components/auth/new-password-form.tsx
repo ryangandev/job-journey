@@ -8,7 +8,6 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Input,
-  Card,
   CardHeader,
   CardBody,
   CardFooter,
@@ -18,6 +17,7 @@ import {
 } from '@nextui-org/react';
 
 import { newPasswordAction } from '@/actions/auth-actions';
+import CardWrapper from '@/components/auth/card-wrapper';
 import FormMessage from '@/components/auth/form-message';
 import { NewPasswordSchema } from '@/schemas/auth-schema';
 
@@ -96,7 +96,7 @@ function NewPasswordContent() {
 
 export default function NewPasswordForm() {
   return (
-    <Card className="w-full max-w-md p-6">
+    <CardWrapper>
       <Suspense fallback={<Spinner label="Loading..." />}>
         <NewPasswordContent />
       </Suspense>
@@ -105,6 +105,6 @@ export default function NewPasswordForm() {
           Back to login
         </Link>
       </CardFooter>
-    </Card>
+    </CardWrapper>
   );
 }

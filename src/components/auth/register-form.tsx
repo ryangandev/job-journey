@@ -7,7 +7,6 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Input,
-  Card,
   CardHeader,
   CardBody,
   CardFooter,
@@ -16,6 +15,7 @@ import {
 } from '@nextui-org/react';
 
 import { registerAction } from '@/actions/auth-actions';
+import CardWrapper from '@/components/auth/card-wrapper';
 import Divider from '@/components/divider';
 import FormMessage from '@/components/auth/form-message';
 import OAuthLogins from '@/components/auth/oauth-logins';
@@ -48,7 +48,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <Card className="w-full max-w-md p-6">
+    <CardWrapper>
       <CardHeader className="flex flex-col items-start space-y-2">
         <div className="flex w-full items-center justify-between">
           <h2 className="text-xl font-semibold">Sign up</h2>
@@ -135,6 +135,6 @@ export default function RegisterForm() {
           Login
         </Link>
       </CardFooter>
-    </Card>
+    </CardWrapper>
   );
 }
