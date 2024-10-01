@@ -5,8 +5,8 @@ import { Adapter } from 'next-auth/adapters';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 
 import { getUserById } from '@/data/users';
+import authConfig from '@/lib/auth.config';
 import prisma from '@/lib/db';
-import authConfig from './auth.config';
 
 // Adding props to the Session object
 declare module 'next-auth' {

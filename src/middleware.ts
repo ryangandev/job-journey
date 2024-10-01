@@ -41,6 +41,8 @@ export default auth((req) => {
 });
 
 // Optionally, don't invoke Middleware on some paths
+// And all routes besides some next static files and images will invoke the middleware
+// And from above middleware function we decide what to do with those route regardless of whether they are public or private
 export const config = {
   matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 };
