@@ -6,6 +6,7 @@ import { Toaster } from 'sonner';
 import { cn } from '@/lib/utils';
 import AppProviders from '@/providers/app-providers';
 import '@/styles/globals.css';
+import SiteFooter from '@/components/site-footer';
 
 const geistSans = localFont({
   src: '../assets/fonts/GeistVF.woff',
@@ -35,13 +36,14 @@ export default function RootLayout({
         className={cn(
           geistSans.variable,
           geistMono.variable,
-          'relative min-h-screen antialiased',
+          'relative flex min-h-screen flex-col antialiased',
         )}
       >
         <AppProviders>
           {children}
           <Toaster richColors />
         </AppProviders>
+        <SiteFooter />
       </body>
     </html>
   );

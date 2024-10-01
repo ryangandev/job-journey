@@ -13,7 +13,7 @@ export default async function AuthorizedLayout({
   return (
     <SessionProvider session={session}>
       <SiteHeader />
-      <div className="p-4">{children}</div>
+      <div className="w-full px-4 py-6">{children}</div>
     </SessionProvider>
   );
 }

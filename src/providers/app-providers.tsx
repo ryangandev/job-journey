@@ -13,7 +13,7 @@ export default function AppProviders({
   const router = useRouter();
 
   return (
-    <NextUIProvider navigate={router.push}>
+    <NextUIProvider navigate={router.push} className="flex flex-grow flex-col">
       <ThemeProvider
         attribute="class"
         defaultTheme="system"
