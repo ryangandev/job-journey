@@ -7,7 +7,7 @@ const sendVerificationEmail = async (email: string, token: string) => {
 
   await resend.emails
     .send({
-      from: 'JobJourney Email Verification<onboarding@resend.dev>',
+      from: 'JobJourney Email Verification<jobjourney@ryangan.me>',
       to: email,
       subject: 'Verify your email',
       html: `<p>Thanks for using JobJourney. Please use this <a href="${confirmLink}">link</a> to verify your email.</p><p>If the above link does not work, please copy and paste the following link in your browser:</p><p>${confirmLink}</p><br/><p>The verification link will expire in 1 hour. If you did not request this email, please ignore it.</p>`,
@@ -25,7 +25,7 @@ const sendResetPasswordEmail = async (email: string, token: string) => {
 
   await resend.emails
     .send({
-      from: 'JobJourney Reset Password<onboarding@resend.dev>',
+      from: 'JobJourney Reset Password<jobjourney@ryangan.me>',
       to: email,
       subject: 'Reset your password',
       html: `<p>Thanks for using JobJourney. Please use this <a href="${resetLink}">link</a> to reset your password.</p><p>If the above link does not work, please copy and paste the following link in your browser:</p><p>${resetLink}</p><br/><p>The reset link will expire in 1 hour. If you did not request this email, please ignore it.</p>`,
