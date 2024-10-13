@@ -113,7 +113,7 @@ export async function loginAction(loginData: z.infer<typeof LoginSchema>) {
 
 export async function logoutAction() {
   await signOut({
-    redirectTo: '/login',
+    redirectTo: '/',
   });
 }
 

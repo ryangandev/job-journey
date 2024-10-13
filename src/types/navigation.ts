@@ -1,11 +1,11 @@
-export type NavbarSectionName =
-  | 'Home'
-  | 'Dashboard'
-  | 'Digital Profile'
-  | 'Interview Prep'
-  | 'Goal Tracker';
+export type LandingNavbarSection =
+  | 'Features'
+  | 'Changelog'
+  | 'Pricing'
+  | 'FAQs'
+  | 'README';
 
-export type NavbarLink = {
-  name: NavbarSectionName;
-  url: string;
+export type LandingNavbarLink = {
+  title: LandingNavbarSection;
+  href: string;
 };

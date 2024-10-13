@@ -1,20 +1,24 @@
-import { NavbarLink } from '@/types/navigation';
+import { LandingNavbarLink } from '@/types/navigation';
 
-export const navbarLinks: NavbarLink[] = [
+export const landingNavbarLinks: LandingNavbarLink[] = [
   {
-    name: 'Dashboard',
-    url: '/dashboard',
+    title: 'Features',
+    href: '/features',
   },
   {
-    name: 'Digital Profile',
-    url: '/digital-profile',
+    title: 'Changelog',
+    href: '/changelog',
   },
   {
-    name: 'Interview Prep',
-    url: '/interview-prep',
+    title: 'Pricing',
+    href: '/pricing',
   },
   {
-    name: 'Goal Tracker',
-    url: '/goal-tracker',
+    title: 'FAQs',
+    href: '/faqs',
   },
-] as const;
+  {
+    title: 'README',
+    href: '/readme',
+  },
+];
