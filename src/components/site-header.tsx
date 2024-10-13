@@ -1,135 +1,121 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useMemo } from 'react';
-import { IoPersonOutline, IoSettingsOutline, IoPower } from 'react-icons/io5';
-import {
-  Navbar,
-  NavbarContent,
-  NavbarItem,
-  Dropdown,
-  DropdownTrigger,
-  Avatar,
-  DropdownMenu,
-  DropdownItem,
-  User,
-} from '@nextui-org/react';
+import { GrGlobe } from 'react-icons/gr';
+import { HiOutlineMenuAlt4 } from 'react-icons/hi';
+import { Button } from '@nextui-org/react';
 
-import { logoutAction } from '@/actions/auth-actions';
-import { beauRivage } from '@/assets/fonts/fonts';
-import { navbarLinks } from '@/data/navigation';
+import { landingNavbarLinks } from '@/data/navigation';
 import useCurrentUser from '@/hooks/use-current-user';
-import { getNavbarSectionPath } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 export default function SiteHeader() {
-  const user = useCurrentUser();
-  const pathName = usePathname();
+  return (
+    <header
+      className={cn('sticky top-0 mx-auto w-full max-w-5xl py-2 sm:py-4')}
+    >
+      <div
+        className={cn(
+          'relative flex w-full justify-between px-3',
+          // 'before:absolute before:left-0 before:top-0 before:z-[-1] before:h-12 before:w-full before:rounded-xl before:border before:border-black/5 before:content-[""]',
+        )}
+      >
+        <MainNav />
+        <MobileNav />
+      </div>
+    </header>
+  );
+}
 
-  const userImage = useMemo(() => user?.image || '', [user?.image]);
-  const userName = useMemo(() => user?.name || '', [user?.name]);
-  const userEmail = useMemo(() => user?.email || '', [user?.email]);
+function MainNav() {
+  return (
+    <nav className="w-full">
+      <ul className="flex justify-between">
+        <li key="home" className="flex h-12 items-center px-2">
+          <Link href="/" className="flex items-center text-sm font-semibold">
+            <GrGlobe className="mr-2" size={16} />
+            <span className="hidden sm:inline-block md:hidden lg:inline-block">
+              JobJourney
+            </span>
+          </Link>
+        </li>
+        {landingNavbarLinks.map((link) => (
+          <li
+            key={link.title}
+            className="hidden h-12 items-center px-4 md:flex"
+          >
+            <Link
+              href={link.href}
+              className={cn(
+                'text-sm font-semibold text-black/70 transition-colors hover:text-black',
+              )}
+            >
+              {link.title}
+            </Link>
+          </li>
+        ))}
+        <ButtonGroup />
+      </ul>
+    </nav>
+  );
+}
+
+function ButtonGroup() {
+  const user = useCurrentUser();
 
   return (
-    <Navbar
-      maxWidth="2xl"
-      isBordered
-      classNames={{
-        item: [
-          'text-light-300, dark:text-dark-300',
-          'hover:text-light-200, dark:hover:text-dark-200',
-          'active:text-light-200/90, dark:active:text-dark-200/90',
-          'data-[active=true]:text-blue-500',
-          'data-[active=true]:dark:text-blue-600',
-          'data-[active=true]:font-medium',
-          'transition-colors duration-100',
-        ],
-      }}
-    >
-      <NavbarContent justify="center" className="space-x-8">
-        <Link
-          href="/"
-          className={`hidden md:block ${beauRivage.className} select-none text-3xl`}
-        >
-          JobJourney
-        </Link>
-        <NavbarContent className="space-x-2 font-medium" justify="center">
-          {navbarLinks.map((link) => (
-            <NavbarItem
-              key={link.url}
-              isActive={getNavbarSectionPath(pathName) === link.url}
-            >
-              <Link href={link.url} className="text-sm">
-                {link.name}
-              </Link>
-            </NavbarItem>
-          ))}
-        </NavbarContent>
-      </NavbarContent>
-
-      <NavbarContent justify="center">
-        <Dropdown placement="bottom-end">
-          <DropdownTrigger>
-            <Avatar
-              isBordered
-              as="button"
-              className="transition-transform"
-              name={userName}
+    <>
+      {user ? (
+        <li className="flex h-12 items-center space-x-4">
+          <Link href="/dashboard">
+            <Button
               size="sm"
-              src={userImage}
-            />
-          </DropdownTrigger>
-          <DropdownMenu
-            className="w-64"
-            aria-label="Profile Actions"
-            variant="flat"
-          >
-            <DropdownItem key="user-info" textValue="User Info">
-              <div className="flex">
-                <User
-                  avatarProps={{
-                    src: userImage,
-                  }}
-                  description={userEmail}
-                  name={userName}
-                />
-              </div>
-            </DropdownItem>
-            <DropdownItem key="profile" textValue="Profile">
-              <div className="ml-2 flex items-center">
-                <IoPersonOutline
-                  className="text-light-300 dark:text-dark-300 mr-2"
-                  size={16}
-                />
-                Profile
-              </div>
-            </DropdownItem>
-            <DropdownItem key="settings" textValue="Settings">
-              <div className="ml-2 flex items-center">
-                <IoSettingsOutline
-                  className="text-light-300 dark:text-dark-300 mr-2"
-                  size={16}
-                />
-                Settings
-              </div>
-            </DropdownItem>
-            <DropdownItem
-              key="logout"
-              color="danger"
-              textValue="Log Out"
-              onClick={async () => await logoutAction()}
+              variant="flat"
+              className="flex items-center text-sm font-semibold"
             >
-              <div className="ml-2 flex items-center">
-                <IoPower
-                  className="text-light-300 dark:text-dark-300 mr-2"
-                  size={16}
-                />
-                Log Out
-              </div>
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-      </NavbarContent>
-    </Navbar>
+              Dashboard
+              <kbd className="rounded-md bg-gray-300 px-1.5 text-[12px] font-bold">
+                L
+              </kbd>
+            </Button>
+          </Link>
+        </li>
+      ) : (
+        <li className="flex h-12 items-center space-x-4">
+          <Link href="/login">
+            <Button
+              size="sm"
+              variant="flat"
+              className="flex items-center text-sm font-semibold"
+            >
+              Log in
+              <kbd className="rounded-md bg-gray-300 px-1.5 text-[12px] font-bold">
+                L
+              </kbd>
+            </Button>
+          </Link>
+          <Link href="/register">
+            <Button
+              size="sm"
+              variant="flat"
+              className="flex items-center bg-foreground text-sm font-semibold text-background"
+            >
+              Sign up
+            </Button>
+          </Link>
+        </li>
+      )}
+    </>
+  );
+}
+
+function MobileNav() {
+  return (
+    <span className="ml-4 flex h-12 items-center justify-center md:hidden">
+      <HiOutlineMenuAlt4
+        size={24}
+        className="cursor-pointer rounded-md text-black/60 transition-colors hover:text-black"
+      />
+    </span>
   );
 }
