@@ -3,12 +3,11 @@ import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'sonner';
 
+import { inter } from '@/assets/fonts/fonts';
 import { auth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import AppProviders from '@/providers/app-providers';
 import '@/styles/globals.css';
-import SiteFooter from '@/components/site-footer';
-import { inter } from '@/assets/fonts/fonts';
 
 export const metadata: Metadata = {
   title: 'Job Journey',
@@ -36,7 +35,6 @@ export default async function RootLayout({
             <Toaster richColors />
           </SessionProvider>
         </AppProviders>
-        <SiteFooter />
       </body>
     </html>
   );
