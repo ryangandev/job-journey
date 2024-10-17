@@ -3,8 +3,8 @@
 import { signIn } from 'next-auth/react';
 import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
-import { Button } from '@nextui-org/button';
 
+import { Button } from '@/components/ui/button';
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 
 export default function OAuthLogins() {
@@ -15,25 +15,27 @@ export default function OAuthLogins() {
   };
 
   return (
-    <div className="flex w-full flex-col justify-center space-y-2">
+    <>
       <Button
-        variant="bordered"
-        onPress={() => {
+        size="auth"
+        variant="outline"
+        onClick={() => {
           onClick('google');
         }}
       >
-        <FcGoogle size={24} />
-        <span>Sign in with Google</span>
+        <FcGoogle className="mr-2" size={18} />
+        Continue with Google
       </Button>
       <Button
-        variant="bordered"
-        onPress={() => {
+        size="auth"
+        variant="outline"
+        onClick={() => {
           onClick('github');
         }}
       >
-        <FaGithub size={24} />
-        <span>Sign in with GitHub</span>
+        <FaGithub size={18} className="mr-2" />
+        Continue with GitHub
       </Button>
-    </div>
+    </>
   );
 }

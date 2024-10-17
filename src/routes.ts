@@ -6,6 +6,12 @@
 export const publicRoutes = [
   '/',
   '/new-verification', // User will be able to change their email from the settings page while logged in, so public route is the best place instead of auth route
+  '/home',
+  '/features',
+  '/changelog',
+  '/pricing',
+  '/faqs',
+  '/readme',
 ];
 
 /**
