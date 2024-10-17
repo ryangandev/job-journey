@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { GrGlobe } from 'react-icons/gr';
 import { HiOutlineMenuAlt4 } from 'react-icons/hi';
-import { Button } from '@nextui-org/react';
 
+import { Button } from '@/components/ui/button';
 import { landingNavbarLinks } from '@/data/navigation';
 import useCurrentUser from '@/hooks/use-current-user';
 import { cn } from '@/lib/utils';
@@ -70,11 +70,10 @@ function ButtonGroup() {
           <Link href="/dashboard">
             <Button
               size="sm"
-              variant="flat"
               className="flex items-center text-sm font-semibold"
             >
               Dashboard
-              <kbd className="rounded-md bg-gray-300 px-1.5 text-[12px] font-bold">
+              <kbd className="ml-3 rounded-md bg-neutral-600 px-1.5 text-[12px] font-bold">
                 L
               </kbd>
             </Button>
@@ -85,11 +84,10 @@ function ButtonGroup() {
           <Link href="/login">
             <Button
               size="sm"
-              variant="flat"
               className="flex items-center text-sm font-semibold"
             >
               Log in
-              <kbd className="rounded-md bg-gray-300 px-1.5 text-[12px] font-bold">
+              <kbd className="ml-3 rounded-md bg-neutral-600 px-1.5 text-[12px] font-bold">
                 L
               </kbd>
             </Button>
@@ -97,8 +95,8 @@ function ButtonGroup() {
           <Link href="/register">
             <Button
               size="sm"
-              variant="flat"
-              className="flex items-center bg-foreground text-sm font-semibold text-background"
+              variant="secondary"
+              className="flex items-center text-sm font-semibold"
             >
               Sign up
             </Button>

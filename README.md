@@ -75,7 +75,7 @@
 - **[Prisma ORM](https://www.prisma.io/)**: Simplifies database workflows with its object-relational mapping capabilities
 - **[PostgreSQL](https://www.postgresql.org/)**: Powerful relational database system for complex data storage and retrieva
 - **[Tailwind CSS](https://tailwindcss.com/)**: A utility-first CSS framework for rapidly building modern applications
-- **[NextUI](https://nextui.org/)**: UI Library with high-quality React components built on top of Tailwind CSS and React Aria
+- **[ShadcnUi](https://ui.shadcn.com/)**
 - **[Framer Motion](https://www.framer.com/motion/)**: A flexible library for animating React components
 - **[Zod](https://zod.dev/)**: TypeScript-first schema validation with static type inference
 
