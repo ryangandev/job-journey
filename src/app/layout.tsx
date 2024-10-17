@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ViewTransitions } from 'next-view-transitions';
 
 import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'sonner';
@@ -22,20 +23,22 @@ export default async function RootLayout({
   const session = await auth();
 
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body
-        className={cn(
-          inter.className,
-          'relative flex min-h-screen flex-col antialiased',
-        )}
-      >
-        <AppProviders>
-          <SessionProvider session={session}>
-            {children}
-            <Toaster richColors />
-          </SessionProvider>
-        </AppProviders>
-      </body>
-    </html>
+    <ViewTransitions>
+      <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+        <body
+          className={cn(
+            inter.className,
+            'relative flex min-h-screen flex-col antialiased',
+          )}
+        >
+          <AppProviders>
+            <SessionProvider session={session}>
+              {children}
+              <Toaster richColors />
+            </SessionProvider>
+          </AppProviders>
+        </body>
+      </html>
+    </ViewTransitions>
   );
 }
