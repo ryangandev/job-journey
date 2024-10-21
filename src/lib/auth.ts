@@ -7,6 +7,8 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import { getUserById } from '@/data/users';
 import authConfig from '@/lib/auth.config';
 import prisma from '@/lib/db';
+import { sendVerificationEmail } from '@/lib/send-email';
+import { generateVerificationToken } from '@/lib/tokens';
 
 // Adding props to the Session object
 declare module 'next-auth' {
@@ -28,8 +30,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       const existingUser = await getUserById(user.id || '');
 
-      // Prevent sign in without email verification
-      if (!existingUser?.emailVerified) return false;
+      // Prevent sign in without email verification and send verification email
+      if (existingUser?.email && !existingUser?.emailVerified) {
+        const verificationToken = await generateVerificationToken(
+          existingUser.email,
+        );
+
+        await sendVerificationEmail(
+          verificationToken.email,
+          verificationToken.token,
+        );
+
+        return false;
+      }
 
       // TODO: Add 2FA check here
 

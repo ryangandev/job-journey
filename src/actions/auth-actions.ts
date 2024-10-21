@@ -9,7 +9,6 @@ import { getUserByEmail } from '@/data/users';
 import { getVerificationTokenByToken } from '@/data/verification-token';
 import { signIn, signOut } from '@/lib/auth';
 import prisma from '@/lib/db';
-
 import {
   sendVerificationEmail,
   sendResetPasswordEmail,
@@ -70,22 +69,9 @@ export async function loginAction(loginData: z.infer<typeof LoginSchema>) {
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser || !existingUser.email) {
-    return { error: 'Email does not exist!' };
+    return { error: 'The email address or password you entered is incorrect' };
   } else if (!existingUser.password) {
     return { error: 'Email used with a provider sign in' };
-  }
-
-  if (!existingUser.emailVerified) {
-    const verificationToken = await generateVerificationToken(
-      existingUser.email,
-    );
-
-    await sendVerificationEmail(
-      verificationToken.email,
-      verificationToken.token,
-    );
-
-    return { success: 'Verification Email Sent!' };
   }
 
   try {
@@ -94,16 +80,21 @@ export async function loginAction(loginData: z.infer<typeof LoginSchema>) {
       password,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
-
-    return { success: 'Logged in!' };
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin': {
-          return { error: 'Invalid credentials!' };
+          return {
+            error: 'The email address or password you entered is incorrect',
+          };
+        }
+        case 'AccessDenied': {
+          return {
+            verificationNeeded: true,
+          };
         }
         default: {
-          return { error: 'Something went wrong!' };
+          return { error: 'Something went wrong! Please try again' };
         }
       }
     }
