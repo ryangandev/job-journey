@@ -1,16 +1,11 @@
 import type { Metadata } from 'next';
 
-import LoginForm from '@/components/auth/login-form';
+import LoginClientPage from '@/app/(auth)/login/page.client';
 
 export const metadata: Metadata = {
-  title: 'Sign In - JobJourney',
-  description: 'Sign in to your dashboard',
+  title: 'Log in - JobJourney',
 };
 
 export default function Page() {
-  return (
-    <main className="flex justify-center">
-      <LoginForm />
-    </main>
-  );
+  return <LoginClientPage />;
 }

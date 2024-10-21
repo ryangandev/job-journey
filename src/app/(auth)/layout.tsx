@@ -8,11 +8,9 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mx-auto my-auto flex h-[400px] w-[336px] flex-col items-center">
+    <div className="mx-auto my-auto flex h-[400px] w-[336px] select-none flex-col items-center">
       <GrGlobe size={48} className="mb-8 flex-shrink-0" />
-      <AnimatedLayoutWrapper>
-        <div className="w-full">{children}</div>
-      </AnimatedLayoutWrapper>
+      <AnimatedLayoutWrapper>{children}</AnimatedLayoutWrapper>
     </div>
   );
 }

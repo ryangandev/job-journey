@@ -28,7 +28,7 @@ export default function AnimatedLayoutWrapper({
   const pathname = usePathname();
 
   return (
-    <motion.div
+    <motion.main
       key={pathname}
       initial="initial"
       animate="in"
@@ -37,6 +37,6 @@ export default function AnimatedLayoutWrapper({
       className="w-full"
     >
       {children}
-    </motion.div>
+    </motion.main>
   );
 }
