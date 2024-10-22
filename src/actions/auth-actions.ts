@@ -19,28 +19,26 @@ import {
 } from '@/lib/tokens';
 import {
   LoginSchema,
-  RegisterSchema,
-  ResetPasswordSchema,
   NewPasswordSchema,
+  ResetPasswordSchema,
+  SignupSchema,
 } from '@/schemas/auth-schema';
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 
-export async function registerAction(
-  registerData: z.infer<typeof RegisterSchema>,
-) {
-  const parsedRegisterData = RegisterSchema.safeParse(registerData);
+export async function signupAction(signupData: z.infer<typeof SignupSchema>) {
+  const parsedSignupData = SignupSchema.safeParse(signupData);
 
-  if (!parsedRegisterData.success) {
+  if (!parsedSignupData.success) {
     return { error: 'Invalid data' };
   }
 
-  const { name, email, password } = registerData;
+  const { name, email, password } = signupData;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const existingUser = await getUserByEmail(email);
 
   if (existingUser) {
-    return { error: 'Email already in use!' };
+    return { error: 'The email address you entered is already in use' };
   }
 
   await prisma.user.create({
@@ -54,7 +52,7 @@ export async function registerAction(
   const verificationToken = await generateVerificationToken(email);
   await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
-  return { success: 'Verification Email Sent!' };
+  return { verificationEmailSent: 'Verification Email Sent!' };
 }
 
 export async function loginAction(loginData: z.infer<typeof LoginSchema>) {

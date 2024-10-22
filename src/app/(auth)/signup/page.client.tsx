@@ -1,13 +1,12 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
 import { Link } from 'next-view-transitions';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { loginAction } from '@/actions/auth-actions';
+import { signupAction } from '@/actions/auth-actions';
 import {
   AuthContent,
   AuthErrorMessage,
@@ -17,18 +16,12 @@ import {
 import OAuthLogins from '@/components/auth/oauth-logins';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { LoginSchema } from '@/schemas/auth-schema';
+import { SignupSchema } from '@/schemas/auth-schema';
 
 export default function ClientPage() {
-  const searchParams = useSearchParams();
-  const urlError =
-    searchParams.get('error') === 'OAuthAccountNotLinked'
-      ? 'Email used with another provider'
-      : '';
-
   const [pageState, setPageState] = useState<
-    'login' | 'emailLogin' | 'verificationNeeded'
-  >('login');
+    'signup' | 'emailSignup' | 'verificationNeeded'
+  >('signup');
   const [resendTimer, setResendTimer] = useState(0);
 
   useEffect(() => {
@@ -48,31 +41,40 @@ export default function ClientPage() {
     };
   }, [pageState]);
 
-  const renderLogin = () => {
+  const renderSignup = () => {
     return (
       <>
-        <AuthHero>Login to JobJourney</AuthHero>
+        <AuthHero>Create your account</AuthHero>
 
         <AuthContent>
           <OAuthLogins />
           <Button
             size="auth"
             variant="outline"
-            onClick={() => setPageState('emailLogin')}
+            onClick={() => setPageState('emailSignup')}
           >
             Continue with Email
           </Button>
-          <AuthErrorMessage message={urlError} />
         </AuthContent>
 
         <AuthFooter>
           <div>
-            Need an account?{' '}
+            By signing up, you agree to our{' '}
             <Link
-              href="/signup"
+              href="/readme"
               className="text-accent-foreground underline-offset-2 hover:underline"
             >
-              Sign up -{'>'}
+              Terms of Service
+            </Link>
+            .
+          </div>
+          <div>
+            Already have an account?{' '}
+            <Link
+              href="/login"
+              className="text-accent-foreground underline-offset-2 hover:underline"
+            >
+              Log in -{'>'}
             </Link>
           </div>
         </AuthFooter>
@@ -80,26 +82,19 @@ export default function ClientPage() {
     );
   };
 
-  const renderEmailLogin = () => {
+  const renderEmailSignup = () => {
     return (
       <>
-        <AuthHero>Login via email</AuthHero>
+        <AuthHero>Signup via email</AuthHero>
 
-        <LoginForm setPageState={setPageState} />
+        <SignupForm setPageState={setPageState} />
 
         <AuthFooter>
-          <Link
-            href="/reset-password"
-            className="text-accent-foreground underline-offset-2 hover:underline"
-          >
-            Forgot password -{'>'}
-          </Link>
-
           <div
             className="cursor-pointer transition-colors hover:text-accent-foreground"
-            onClick={() => setPageState('login')}
+            onClick={() => setPageState('signup')}
           >
-            Back to login
+            Back to signup
           </div>
         </AuthFooter>
       </>
@@ -141,12 +136,12 @@ export default function ClientPage() {
         <AuthFooter>
           <div>
             Already verified?{' '}
-            <span
-              className="cursor-pointer transition-colors hover:text-accent-foreground"
-              onClick={() => setPageState('login')}
+            <Link
+              href="/login"
+              className="inline-block text-accent-foreground underline-offset-2 hover:underline"
             >
-              Back to login
-            </span>
+              Log in -{'>'}
+            </Link>
           </div>
         </AuthFooter>
       </>
@@ -155,20 +150,20 @@ export default function ClientPage() {
 
   // TODO: Implement animation when switching between rendering
   switch (pageState) {
-    case 'login':
-      return renderLogin();
-    case 'emailLogin':
-      return renderEmailLogin();
+    case 'signup':
+      return renderSignup();
+    case 'emailSignup':
+      return renderEmailSignup();
     case 'verificationNeeded':
       return renderVerificationNeeded();
   }
 }
 
-function LoginForm({
+function SignupForm({
   setPageState,
 }: {
   setPageState: React.Dispatch<
-    React.SetStateAction<'login' | 'emailLogin' | 'verificationNeeded'>
+    React.SetStateAction<'signup' | 'emailSignup' | 'verificationNeeded'>
   >;
 }) {
   const [errorMsg, setErrorMsg] = useState<string | undefined>('');
@@ -176,23 +171,24 @@ function LoginForm({
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  } = useForm<z.infer<typeof SignupSchema>>({
+    resolver: zodResolver(SignupSchema),
     defaultValues: {
+      name: '',
       email: '',
       password: '',
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof SignupSchema>) => {
     setErrorMsg('');
 
-    await loginAction(values).then((res) => {
+    await signupAction(values).then((res) => {
       if (!res) return;
 
       setErrorMsg(res.error);
 
-      if (res.verificationNeeded) {
+      if (res.verificationEmailSent) {
         setPageState('verificationNeeded');
       }
     });
@@ -205,11 +201,23 @@ function LoginForm({
     >
       <div>
         <Input
+          {...register('name')}
+          className="h-12 placeholder:text-[13px]"
+          type="text"
+          placeholder="Enter your name..."
+          autoFocus
+          autoComplete="off"
+          disabled={isSubmitting}
+        />
+        <AuthErrorMessage message={errors.name?.message} />
+      </div>
+
+      <div>
+        <Input
           {...register('email')}
           className="h-12 placeholder:text-[13px]"
           type="text"
           placeholder="Enter your email address..."
-          autoFocus
           autoComplete="off"
           disabled={isSubmitting}
         />
@@ -234,7 +242,7 @@ function LoginForm({
         variant="outline"
         isLoading={isSubmitting}
       >
-        Log in
+        Sign up
       </Button>
 
       <AuthErrorMessage message={errorMsg} />

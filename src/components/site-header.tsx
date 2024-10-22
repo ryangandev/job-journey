@@ -92,7 +92,7 @@ function ButtonGroup() {
               </kbd>
             </Button>
           </Link>
-          <Link href="/register">
+          <Link href="/signup">
             <Button
               size="sm"
               variant="secondary"
