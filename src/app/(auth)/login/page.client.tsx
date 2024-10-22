@@ -190,11 +190,11 @@ function LoginForm({
     await loginAction(values).then((res) => {
       if (!res) return;
 
-      setErrorMsg(res.error);
-
       if (res.verificationNeeded) {
         setPageState('verificationNeeded');
       }
+
+      setErrorMsg(res.error);
     });
   };
 

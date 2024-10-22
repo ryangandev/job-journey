@@ -1,16 +1,11 @@
 import type { Metadata } from 'next';
 
-import ResetPasswordForm from '@/components/auth/reset-password-form';
+import ResetPasswordClientPage from '@/app/(auth)/reset-password/page.client';
 
 export const metadata: Metadata = {
   title: 'Reset Password - JobJourney',
-  description: 'Reset your password',
 };
 
 export default function Page() {
-  return (
-    <main className="flex justify-center">
-      <ResetPasswordForm />
-    </main>
-  );
+  return <ResetPasswordClientPage />;
 }

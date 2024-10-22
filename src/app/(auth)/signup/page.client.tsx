@@ -186,11 +186,11 @@ function SignupForm({
     await signupAction(values).then((res) => {
       if (!res) return;
 
-      setErrorMsg(res.error);
-
-      if (res.verificationEmailSent) {
+      if (res.success) {
         setPageState('verificationNeeded');
       }
+
+      setErrorMsg(res.error);
     });
   };
 

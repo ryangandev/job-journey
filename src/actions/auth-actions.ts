@@ -52,7 +52,7 @@ export async function signupAction(signupData: z.infer<typeof SignupSchema>) {
   const verificationToken = await generateVerificationToken(email);
   await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
-  return { verificationEmailSent: 'Verification Email Sent!' };
+  return { success: true };
 }
 
 export async function loginAction(loginData: z.infer<typeof LoginSchema>) {
@@ -157,22 +157,20 @@ export const resetPasswordAction = async (
 
   const existingUser = await getUserByEmail(email);
 
-  if (!existingUser) {
-    return { error: 'Email not found!' };
-  }
-
-  if (!existingUser.password) {
+  if (existingUser && !existingUser.password) {
     return { error: 'Email used with a provider sign in' };
   }
 
-  const resetPasswordToken = await generateResetPasswordToken(email);
+  if (existingUser && existingUser.password) {
+    const resetPasswordToken = await generateResetPasswordToken(email);
 
-  await sendResetPasswordEmail(
-    resetPasswordToken.email,
-    resetPasswordToken.token,
-  );
+    await sendResetPasswordEmail(
+      resetPasswordToken.email,
+      resetPasswordToken.token,
+    );
+  }
 
-  return { success: 'Reset email sent!' };
+  return { success: true };
 };
 
 export const newPasswordAction = async (
