@@ -204,7 +204,7 @@ export const newPasswordAction = async (
   const existingUser = await getUserByEmail(existingToken.email);
 
   if (!existingUser) {
-    return { error: 'Email does not exist!' };
+    return { error: 'This account no longer exists' };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -224,5 +224,5 @@ export const newPasswordAction = async (
     },
   });
 
-  return { success: 'Password reset!' };
+  return { success: true };
 };

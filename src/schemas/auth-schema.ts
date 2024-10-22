@@ -20,10 +20,17 @@ export const ResetPasswordSchema = z.object({
   }),
 });
 
-// TODO: Add confirm password field later
-export const NewPasswordSchema = z.object({
-  password: z
-    .string()
-    .min(8, { message: 'Must be at least 8 characters' })
-    .max(30, { message: 'Must be within 30 characters' }),
-});
+export const NewPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, { message: 'Must be at least 8 characters' })
+      .max(30, { message: 'Must be within 30 characters' }),
+    confirmPassword: z
+      .string()
+      .min(1, { message: 'Confirm password is required' }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords must match',
+    path: ['confirmPassword'], // Shows error on confirmPassword field
+  });
