@@ -51,7 +51,7 @@ export default function ClientPage() {
         <AuthHero>Password reset completed</AuthHero>
 
         <AuthContent>
-          <p className="text-[13px] text-muted-foreground">
+          <p className="text-center text-[13px] text-muted-foreground">
             Your password has been successfully reset. You can now log in with
             your new password.
           </p>
