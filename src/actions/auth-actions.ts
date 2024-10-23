@@ -141,7 +141,7 @@ export async function newVerificationAction(token: string) {
     },
   });
 
-  return { success: 'Email verified!' };
+  return { success: true };
 }
 
 export const resetPasswordAction = async (
