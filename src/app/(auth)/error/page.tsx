@@ -2,19 +2,33 @@ import type { Metadata } from 'next';
 
 import { Link } from 'next-view-transitions';
 
+import {
+  AuthContent,
+  AuthFooter,
+  AuthHero,
+} from '@/components/auth/auth-components';
+
 export const metadata: Metadata = {
   title: 'Auth Error - JobJourney',
-  description: 'Something went wrong',
 };
 
 export default function Page() {
   return (
-    <main className="flex flex-col items-center space-y-4">
-      <h1 className="text-lg font-semibold">🔐 Auth Error</h1>
-      <p>Oops! Something went wrong!</p>
-      <Link href="/login" className="text-blue-500 underline">
-        Back to login
-      </Link>
-    </main>
+    <>
+      <AuthHero>You encountered an error</AuthHero>
+      <AuthContent>
+        <p className="text-center text-[13px] text-muted-foreground">
+          Oops! Something went wrong!
+        </p>
+      </AuthContent>
+      <AuthFooter>
+        <Link
+          href="/login"
+          className="text-accent-foreground underline-offset-2 hover:underline"
+        >
+          Back to Login -{'>'}
+        </Link>
+      </AuthFooter>
+    </>
   );
 }
