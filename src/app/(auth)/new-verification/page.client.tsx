@@ -2,7 +2,7 @@
 
 import { Link } from 'next-view-transitions';
 import { useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CgSpinnerTwoAlt } from 'react-icons/cg';
 
 import { newVerificationAction } from '@/actions/auth-actions';
@@ -20,30 +20,27 @@ export default function ClientPage() {
   const [pageState, setPageState] = useState<
     'newPasswordRequest' | 'completed'
   >('newPasswordRequest');
-  const [errorMsg, setErrorMsg] = useState<string | undefined>('');
+  const [verificationError, setVerificationError] = useState<
+    string | undefined
+  >('');
+  // A missing token is known during render, so derive it instead of setting state in the effect
+  const errorMsg = token ? verificationError : 'Missing valid token!';
 
-  const onSubmit = useCallback(async () => {
-    if (!token) {
-      setErrorMsg('Missing valid token!');
-      return;
-    }
+  useEffect(() => {
+    if (!token) return;
 
-    await newVerificationAction(token)
+    newVerificationAction(token)
       .then((res) => {
         if (res.success) {
           setPageState('completed');
         }
 
-        setErrorMsg(res.error);
+        setVerificationError(res.error);
       })
       .catch(() => {
-        setErrorMsg('Something went wrong!');
+        setVerificationError('Something went wrong!');
       });
   }, [token]);
-
-  useEffect(() => {
-    onSubmit();
-  }, [onSubmit]);
 
   const renderEmailRequest = () => {
     return (

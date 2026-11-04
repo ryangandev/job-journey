@@ -91,14 +91,18 @@ function ResetPasswordForm({
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof ResetPasswordSchema>>({
+  } = useForm<
+    z.input<typeof ResetPasswordSchema>,
+    unknown,
+    z.output<typeof ResetPasswordSchema>
+  >({
     resolver: zodResolver(ResetPasswordSchema),
     defaultValues: {
       email: '',
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof ResetPasswordSchema>) => {
+  const onSubmit = async (values: z.output<typeof ResetPasswordSchema>) => {
     setErrorMsg('');
 
     await resetPasswordAction(values).then((res) => {
