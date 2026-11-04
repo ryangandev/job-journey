@@ -111,10 +111,7 @@ function AuthErrorMessage({
     <span
       id={id}
       role="alert"
-      className={cn(
-        'mt-2 inline-block text-xs text-destructive dark:text-red-400',
-        className,
-      )}
+      className={cn('mt-2 inline-block text-xs text-error', className)}
     >
       {message}
     </span>

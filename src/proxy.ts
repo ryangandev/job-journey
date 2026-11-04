@@ -5,7 +5,7 @@ import {
   DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
   authRoutes,
-  publicRoutes,
+  protectedRoutePrefixes,
 } from '@/routes';
 
 // Next.js 16 renamed Middleware to Proxy. Proxy always runs on the Node.js
@@ -18,7 +18,10 @@ export const proxy = auth((req) => {
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+  const isProtectedRoute = protectedRoutePrefixes.some(
+    (prefix) =>
+      nextUrl.pathname === prefix || nextUrl.pathname.startsWith(`${prefix}/`),
+  );
 
   // If it is an API route, we allow it regardless login status
   if (isApiAuthRoute) {
@@ -33,12 +36,12 @@ export const proxy = auth((req) => {
     return;
   }
 
-  // If it is not a public route and not logged in, redirect to login
-  if (!isLoggedIn && !isPublicRoute) {
+  // Protected routes need a session
+  if (!isLoggedIn && isProtectedRoute) {
     return Response.redirect(new URL('/login', nextUrl));
   }
 
-  // Otherwise, allow all the public routes
+  // Everything else (public pages, unknown paths -> 404) is allowed through
   return;
 });
 
