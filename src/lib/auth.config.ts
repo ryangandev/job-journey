@@ -30,7 +30,16 @@ export default {
 
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
-          if (passwordsMatch) return user;
+          // Only hand Auth.js the public fields, so the password hash never
+          // reaches the signIn/jwt callbacks, the token or the session.
+          if (passwordsMatch) {
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              image: user.image,
+            };
+          }
         }
 
         return null;

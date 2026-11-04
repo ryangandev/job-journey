@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { getResetPasswordTokenByToken } from '@/data/reset-password-token';
 import { getUserByEmail } from '@/data/users';
 import { getVerificationTokenByToken } from '@/data/verification-token';
-import { signIn, signOut } from '@/lib/auth';
+import { signIn, signOut, VerificationEmailError } from '@/lib/auth';
 import prisma from '@/lib/db';
 import {
   sendVerificationEmail,
@@ -32,14 +32,15 @@ export async function signupAction(signupData: z.infer<typeof SignupSchema>) {
     return { error: 'Invalid data' };
   }
 
-  const { name, email, password } = signupData;
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const { name, email, password } = parsedSignupData.data;
 
   const existingUser = await getUserByEmail(email);
 
   if (existingUser) {
     return { error: 'The email address you entered is already in use' };
   }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   await prisma.user.create({
     data: {
@@ -50,7 +51,17 @@ export async function signupAction(signupData: z.infer<typeof SignupSchema>) {
   });
 
   const verificationToken = await generateVerificationToken(email);
-  await sendVerificationEmail(verificationToken.email, verificationToken.token);
+  const emailResult = await sendVerificationEmail(
+    verificationToken.email,
+    verificationToken.token,
+  );
+
+  if (!emailResult.success) {
+    return {
+      error:
+        'Your account was created, but we could not send the verification email. Please log in to receive a new one',
+    };
+  }
 
   return { success: true };
 }
@@ -62,7 +73,7 @@ export async function loginAction(loginData: z.infer<typeof LoginSchema>) {
     return { error: 'Invalid data' };
   }
 
-  const { email, password } = loginData;
+  const { email, password } = parsedLoginData.data;
 
   const existingUser = await getUserByEmail(email);
 
@@ -79,6 +90,13 @@ export async function loginAction(loginData: z.infer<typeof LoginSchema>) {
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
   } catch (error) {
+    if (error instanceof VerificationEmailError) {
+      return {
+        error:
+          'We could not send the verification email. Please try again later',
+      };
+    }
+
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin': {
@@ -164,10 +182,16 @@ export const resetPasswordAction = async (
   if (existingUser && existingUser.password) {
     const resetPasswordToken = await generateResetPasswordToken(email);
 
-    await sendResetPasswordEmail(
+    const emailResult = await sendResetPasswordEmail(
       resetPasswordToken.email,
       resetPasswordToken.token,
     );
+
+    if (!emailResult.success) {
+      return {
+        error: 'We could not send the reset email. Please try again later',
+      };
+    }
   }
 
   return { success: true };
