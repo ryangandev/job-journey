@@ -4,9 +4,26 @@ import prisma from '@/lib/db';
 import { getVerificationTokenByEmail } from '@/data/verification-token';
 import { getResetPasswordTokenByEmail } from '@/data/reset-password-token';
 
+const TOKEN_TTL_MS = 3600 * 1000; // 1 hour
+
+/** Minimum time between two verification emails sent to the same address. */
+export const VERIFICATION_EMAIL_COOLDOWN_MS = 60 * 1000;
+
+/**
+ * Whether a verification email was sent to this address within the cooldown window.
+ * Tokens don't store a creation time, so it is derived from the expiry.
+ */
+export const wasVerificationEmailSentRecently = async (email: string) => {
+  const existingToken = await getVerificationTokenByEmail(email);
+  if (!existingToken) return false;
+
+  const createdAt = existingToken.expiresAt.getTime() - TOKEN_TTL_MS;
+  return Date.now() - createdAt < VERIFICATION_EMAIL_COOLDOWN_MS;
+};
+
 const generateVerificationToken = async (email: string) => {
   const token = uuidv4();
-  const expiresAt = new Date(new Date().getTime() + 3600 * 1000); // 1 hour from now
+  const expiresAt = new Date(Date.now() + TOKEN_TTL_MS);
 
   const existingToken = await getVerificationTokenByEmail(email);
 
@@ -31,7 +48,7 @@ const generateVerificationToken = async (email: string) => {
 
 const generateResetPasswordToken = async (email: string) => {
   const token = uuidv4();
-  const expiresAt = new Date(new Date().getTime() + 3600 * 1000); // 1 hour from now
+  const expiresAt = new Date(Date.now() + TOKEN_TTL_MS);
 
   const existingToken = await getResetPasswordTokenByEmail(email);
 

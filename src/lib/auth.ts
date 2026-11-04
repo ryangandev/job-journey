@@ -8,7 +8,10 @@ import { getUserById } from '@/data/users';
 import authConfig from '@/lib/auth.config';
 import prisma from '@/lib/db';
 import { sendVerificationEmail } from '@/lib/send-email';
-import { generateVerificationToken } from '@/lib/tokens';
+import {
+  generateVerificationToken,
+  wasVerificationEmailSentRecently,
+} from '@/lib/tokens';
 
 // Adding props to the Session object
 declare module 'next-auth' {
@@ -37,6 +40,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       // Prevent sign in without email verification and send verification email
       if (existingUser?.email && !existingUser?.emailVerified) {
+        // Repeated login attempts shouldn't flood the inbox: reuse the email sent moments ago
+        if (await wasVerificationEmailSentRecently(existingUser.email)) {
+          return false;
+        }
+
         const verificationToken = await generateVerificationToken(
           existingUser.email,
         );
