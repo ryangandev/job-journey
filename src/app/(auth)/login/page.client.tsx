@@ -62,7 +62,7 @@ export default function ClientPage() {
           >
             Continue with Email
           </Button>
-          <AuthErrorMessage message={urlError} />
+          <AuthErrorMessage message={urlError} className="mt-0" />
         </AuthContent>
 
         <AuthFooter>
@@ -237,7 +237,7 @@ function LoginForm({
         Log in
       </Button>
 
-      <AuthErrorMessage message={errorMsg} />
+      <AuthErrorMessage message={errorMsg} className="mt-0" />
     </form>
   );
 }

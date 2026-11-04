@@ -139,7 +139,7 @@ function ResetPasswordForm({
         Send reset email
       </Button>
 
-      <AuthErrorMessage message={errorMsg} />
+      <AuthErrorMessage message={errorMsg} className="mt-0" />
     </form>
   );
 }
