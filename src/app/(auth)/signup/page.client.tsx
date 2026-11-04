@@ -1,7 +1,7 @@
 'use client';
 
 import { Link } from 'next-view-transitions';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,6 +14,7 @@ import {
   AuthHero,
 } from '@/components/auth/auth-components';
 import OAuthLogins from '@/components/auth/oauth-logins';
+import VerificationNeeded from '@/components/auth/verification-needed';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SignupSchema } from '@/schemas/auth-schema';
@@ -22,26 +23,12 @@ export default function ClientPage() {
   const [pageState, setPageState] = useState<
     'signup' | 'emailSignup' | 'verificationNeeded'
   >('signup');
-  const [resendTimer, setResendTimer] = useState(0);
+  const [verificationEmail, setVerificationEmail] = useState('');
 
-  // Start the resend cooldown in the event that shows the verification screen,
-  // instead of setting state synchronously inside the effect below.
-  const showVerificationNeeded = () => {
-    setResendTimer(60);
+  const showVerificationNeeded = (email: string) => {
+    setVerificationEmail(email);
     setPageState('verificationNeeded');
   };
-
-  useEffect(() => {
-    if (pageState !== 'verificationNeeded') return;
-
-    const timerInterval = setInterval(() => {
-      setResendTimer((prevTimer) => prevTimer - 1);
-    }, 1000);
-
-    return () => {
-      clearInterval(timerInterval);
-    };
-  }, [pageState]);
 
   const renderSignup = () => {
     return (
@@ -103,52 +90,22 @@ export default function ClientPage() {
     );
   };
 
-  const renderVerificationNeeded = () => {
-    const handleResendEmail = async () => {
-      setResendTimer(60);
-
-      // TODO: Implement resend email functionality
-    };
-
-    return (
-      <>
-        <AuthHero>Please verify your email</AuthHero>
-
-        <AuthContent className="space-y-6 text-center">
-          <p className="text-[13px] text-muted-foreground">
-            We&apos;ve sent a verification email to your inbox. Please click the
-            link to complete your registration.
-          </p>
-          <p className="text-[13px] text-muted-foreground">
-            Didn&apos;t receive the email? Check your spam folder or click below
-            to resend it.
-          </p>
-          <Button
-            size="auth"
-            variant="outline"
-            onClick={handleResendEmail}
-            disabled={resendTimer > 0}
+  const renderVerificationNeeded = () => (
+    <VerificationNeeded
+      email={verificationEmail}
+      footer={
+        <div>
+          Already verified?{' '}
+          <Link
+            href="/login"
+            className="inline-block text-accent-foreground underline-offset-2 hover:underline"
           >
-            {resendTimer > 0
-              ? `Resend verification email (${resendTimer}s)`
-              : 'Resend verification email'}
-          </Button>
-        </AuthContent>
-
-        <AuthFooter>
-          <div>
-            Already verified?{' '}
-            <Link
-              href="/login"
-              className="inline-block text-accent-foreground underline-offset-2 hover:underline"
-            >
-              Log in -{'>'}
-            </Link>
-          </div>
-        </AuthFooter>
-      </>
-    );
-  };
+            Log in -{'>'}
+          </Link>
+        </div>
+      }
+    />
+  );
 
   // TODO: Implement animation when switching between rendering
   switch (pageState) {
@@ -164,7 +121,7 @@ export default function ClientPage() {
 function SignupForm({
   onVerificationNeeded,
 }: {
-  onVerificationNeeded: () => void;
+  onVerificationNeeded: (email: string) => void;
 }) {
   const [errorMsg, setErrorMsg] = useState<string | undefined>('');
   const {
@@ -191,7 +148,7 @@ function SignupForm({
       if (!res) return;
 
       if (res.success) {
-        onVerificationNeeded();
+        onVerificationNeeded(values.email);
       }
 
       setErrorMsg(res.error);
