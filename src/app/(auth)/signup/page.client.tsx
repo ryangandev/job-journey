@@ -12,11 +12,15 @@ import {
   AuthErrorMessage,
   AuthFooter,
   AuthHero,
+  AuthTextButton,
+  authLinkClassName,
 } from '@/components/auth/auth-components';
+import AuthField from '@/components/auth/auth-field';
+import AuthStepTransition from '@/components/auth/auth-step-transition';
 import OAuthLogins from '@/components/auth/oauth-logins';
 import VerificationNeeded from '@/components/auth/verification-needed';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import { SignupSchema } from '@/schemas/auth-schema';
 
 export default function ClientPage() {
@@ -49,20 +53,14 @@ export default function ClientPage() {
         <AuthFooter>
           <div>
             By signing up, you agree to our{' '}
-            <Link
-              href="/readme"
-              className="text-accent-foreground underline-offset-2 hover:underline"
-            >
+            <Link href="/readme" className={authLinkClassName}>
               Terms of Service
             </Link>
             .
           </div>
           <div>
             Already have an account?{' '}
-            <Link
-              href="/login"
-              className="text-accent-foreground underline-offset-2 hover:underline"
-            >
+            <Link href="/login" className={authLinkClassName}>
               Log in -{'>'}
             </Link>
           </div>
@@ -79,11 +77,10 @@ export default function ClientPage() {
         <SignupForm onVerificationNeeded={showVerificationNeeded} />
 
         <AuthFooter>
-          <div
-            className="cursor-pointer transition-colors hover:text-accent-foreground"
-            onClick={() => setPageState('signup')}
-          >
-            Back to signup
+          <div>
+            <AuthTextButton onClick={() => setPageState('signup')}>
+              Back to signup
+            </AuthTextButton>
           </div>
         </AuthFooter>
       </>
@@ -96,10 +93,7 @@ export default function ClientPage() {
       footer={
         <div>
           Already verified?{' '}
-          <Link
-            href="/login"
-            className="inline-block text-accent-foreground underline-offset-2 hover:underline"
-          >
+          <Link href="/login" className={cn('inline-block', authLinkClassName)}>
             Log in -{'>'}
           </Link>
         </div>
@@ -107,15 +101,20 @@ export default function ClientPage() {
     />
   );
 
-  // TODO: Implement animation when switching between rendering
-  switch (pageState) {
-    case 'signup':
-      return renderSignup();
-    case 'emailSignup':
-      return renderEmailSignup();
-    case 'verificationNeeded':
-      return renderVerificationNeeded();
-  }
+  const renderStep = () => {
+    switch (pageState) {
+      case 'signup':
+        return renderSignup();
+      case 'emailSignup':
+        return renderEmailSignup();
+      case 'verificationNeeded':
+        return renderVerificationNeeded();
+    }
+  };
+
+  return (
+    <AuthStepTransition step={pageState}>{renderStep()}</AuthStepTransition>
+  );
 }
 
 function SignupForm({
@@ -158,44 +157,39 @@ function SignupForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
+      noValidate
       className="flex flex-col space-y-[14px] pt-[14px]"
     >
-      <div>
-        <Input
-          {...register('name')}
-          className="h-12 placeholder:text-[13px]"
-          type="text"
-          placeholder="Enter your name..."
-          autoFocus
-          autoComplete="off"
-          disabled={isSubmitting}
-        />
-        <AuthErrorMessage message={errors.name?.message} />
-      </div>
+      <AuthField
+        {...register('name')}
+        label="Name"
+        error={errors.name?.message}
+        type="text"
+        placeholder="Enter your name..."
+        autoFocus
+        autoComplete="name"
+        disabled={isSubmitting}
+      />
 
-      <div>
-        <Input
-          {...register('email')}
-          className="h-12 placeholder:text-[13px]"
-          type="text"
-          placeholder="Enter your email address..."
-          autoComplete="off"
-          disabled={isSubmitting}
-        />
-        <AuthErrorMessage message={errors.email?.message} />
-      </div>
+      <AuthField
+        {...register('email')}
+        label="Email address"
+        error={errors.email?.message}
+        type="email"
+        placeholder="Enter your email address..."
+        autoComplete="email"
+        disabled={isSubmitting}
+      />
 
-      <div>
-        <Input
-          {...register('password')}
-          className="h-12 placeholder:text-[13px]"
-          type="password"
-          placeholder="Enter your password..."
-          autoComplete="off"
-          disabled={isSubmitting}
-        />
-        <AuthErrorMessage message={errors.password?.message} />
-      </div>
+      <AuthField
+        {...register('password')}
+        label="Password"
+        error={errors.password?.message}
+        type="password"
+        placeholder="Enter your password..."
+        autoComplete="new-password"
+        disabled={isSubmitting}
+      />
 
       <Button
         type="submit"

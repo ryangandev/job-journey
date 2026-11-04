@@ -11,15 +11,17 @@ import {
   AuthErrorMessage,
   AuthFooter,
   AuthHero,
+  authLinkClassName,
 } from '@/components/auth/auth-components';
+import AuthStepTransition from '@/components/auth/auth-step-transition';
 
 export default function ClientPage() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
 
-  const [pageState, setPageState] = useState<
-    'newPasswordRequest' | 'completed'
-  >('newPasswordRequest');
+  const [pageState, setPageState] = useState<'verifying' | 'completed'>(
+    'verifying',
+  );
   const [verificationError, setVerificationError] = useState<
     string | undefined
   >('');
@@ -42,7 +44,7 @@ export default function ClientPage() {
       });
   }, [token]);
 
-  const renderEmailRequest = () => {
+  const renderVerifying = () => {
     return (
       <>
         <AuthHero>Account verification</AuthHero>
@@ -51,20 +53,21 @@ export default function ClientPage() {
           {errorMsg ? (
             <AuthErrorMessage message={errorMsg} className="mx-auto" />
           ) : (
-            <>
-              <CgSpinnerTwoAlt className="mx-auto animate-spin" size={24} />
+            <div role="status" className="flex flex-col space-y-[14px]">
+              <CgSpinnerTwoAlt
+                className="mx-auto animate-spin motion-reduce:animate-none"
+                size={24}
+                aria-hidden="true"
+              />
               <p className="text-center text-[13px] text-muted-foreground">
                 Hang tight, verifying your account...
               </p>
-            </>
+            </div>
           )}
         </AuthContent>
 
         <AuthFooter>
-          <Link
-            href="/login"
-            className="text-accent-foreground underline-offset-2 hover:underline"
-          >
+          <Link href="/login" className={authLinkClassName}>
             Back to Login -{'>'}
           </Link>
         </AuthFooter>
@@ -72,7 +75,7 @@ export default function ClientPage() {
     );
   };
 
-  const renderVerificationNeeded = () => {
+  const renderCompleted = () => {
     return (
       <>
         <AuthHero>Verification completed</AuthHero>
@@ -84,10 +87,7 @@ export default function ClientPage() {
         </AuthContent>
 
         <AuthFooter>
-          <Link
-            href="/login"
-            className="text-accent-foreground underline-offset-2 hover:underline"
-          >
+          <Link href="/login" className={authLinkClassName}>
             Back to Login -{'>'}
           </Link>
         </AuthFooter>
@@ -95,11 +95,16 @@ export default function ClientPage() {
     );
   };
 
-  // TODO: Implement animation when switching between rendering
-  switch (pageState) {
-    case 'newPasswordRequest':
-      return renderEmailRequest();
-    case 'completed':
-      return renderVerificationNeeded();
-  }
+  const renderStep = () => {
+    switch (pageState) {
+      case 'verifying':
+        return renderVerifying();
+      case 'completed':
+        return renderCompleted();
+    }
+  };
+
+  return (
+    <AuthStepTransition step={pageState}>{renderStep()}</AuthStepTransition>
+  );
 }

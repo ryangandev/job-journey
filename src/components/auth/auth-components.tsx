@@ -1,5 +1,21 @@
+import { GrGlobe } from 'react-icons/gr';
+
 import { cn } from '@/lib/utils';
 
+/** Centered column with the logo: the frame shared by the auth pages, 404 and error pages. */
+function AuthShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mx-auto my-auto flex h-[400px] w-[336px] flex-col items-center select-none">
+      <GrGlobe size={48} className="mb-8 shrink-0" aria-hidden="true" />
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Page heading for an auth step. `tabIndex={-1}` lets AuthStepTransition move focus here
+ * after a step switch, so keyboard and screen reader users land at the top of the new step.
+ */
 function AuthHero({
   children,
   className,
@@ -8,9 +24,15 @@ function AuthHero({
   className?: string;
 }) {
   return (
-    <h2 className={cn('mb-6 text-center text-2xl font-medium', className)}>
+    <h1
+      tabIndex={-1}
+      className={cn(
+        'mb-6 text-center text-2xl font-medium outline-none',
+        className,
+      )}
+    >
       {children}
-    </h2>
+    </h1>
   );
 }
 
@@ -47,27 +69,64 @@ function AuthFooter({
   );
 }
 
-function AuthErrorMessage({
-  message,
+/** Underlined text link style used in auth footers (apply to a next-view-transitions `Link`). */
+const authLinkClassName =
+  'rounded-sm text-accent-foreground underline-offset-2 hover:underline focus-visible:underline focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none';
+
+/** A text-styled `<button>` for in-page actions such as "Back to login". */
+function AuthTextButton({
   className,
-}: {
-  message?: string;
-  className?: string;
-}) {
+  type = 'button',
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <>
-      {message && (
-        <span
-          className={cn(
-            'mt-2 inline-block text-xs text-destructive',
-            className,
-          )}
-        >
-          {message}
-        </span>
+    <button
+      type={type}
+      className={cn(
+        'cursor-pointer rounded-sm transition-colors hover:text-accent-foreground focus-visible:text-accent-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none',
+        className,
       )}
-    </>
+      {...props}
+    />
   );
 }
 
-export { AuthContent, AuthErrorMessage, AuthFooter, AuthHero };
+/**
+ * Inline error text. `role="alert"` makes screen readers announce it as soon as it appears.
+ * The `--destructive` token is a background colour and is too dark to read as text on the
+ * dark background, so dark mode uses a lighter red.
+ */
+function AuthErrorMessage({
+  id,
+  message,
+  className,
+}: {
+  id?: string;
+  message?: string;
+  className?: string;
+}) {
+  if (!message) return null;
+
+  return (
+    <span
+      id={id}
+      role="alert"
+      className={cn(
+        'mt-2 inline-block text-xs text-destructive dark:text-red-400',
+        className,
+      )}
+    >
+      {message}
+    </span>
+  );
+}
+
+export {
+  AuthContent,
+  AuthErrorMessage,
+  AuthFooter,
+  AuthHero,
+  AuthShell,
+  AuthTextButton,
+  authLinkClassName,
+};

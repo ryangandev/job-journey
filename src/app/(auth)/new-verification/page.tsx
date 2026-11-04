@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import NewVerificationClientPage from '@/app/(auth)/new-verification/page.client';
 
 export const metadata: Metadata = {
-  title: 'New Verification - JobJourney',
+  title: 'Verify email',
 };
 
 export default function Page() {
