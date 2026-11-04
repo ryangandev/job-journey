@@ -1,6 +1,5 @@
-import { GrGlobe } from 'react-icons/gr';
-
 import AnimatedLayoutWrapper from '@/components/animated-layout-wrapper';
+import { AuthShell } from '@/components/auth/auth-components';
 
 export default async function AuthLayout({
   children,
@@ -8,9 +7,8 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mx-auto my-auto flex h-[400px] w-[336px] flex-col items-center select-none">
-      <GrGlobe size={48} className="mb-8 shrink-0" />
+    <AuthShell>
       <AnimatedLayoutWrapper>{children}</AnimatedLayoutWrapper>
-    </div>
+    </AuthShell>
   );
 }

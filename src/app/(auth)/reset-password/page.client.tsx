@@ -12,9 +12,11 @@ import {
   AuthErrorMessage,
   AuthFooter,
   AuthHero,
+  authLinkClassName,
 } from '@/components/auth/auth-components';
+import AuthField from '@/components/auth/auth-field';
+import AuthStepTransition from '@/components/auth/auth-step-transition';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { ResetPasswordSchema } from '@/schemas/auth-schema';
 
 export default function ClientPage() {
@@ -30,10 +32,7 @@ export default function ClientPage() {
         <ResetPasswordForm setPageState={setPageState} />
 
         <AuthFooter>
-          <Link
-            href="/login"
-            className="text-accent-foreground underline-offset-2 hover:underline"
-          >
+          <Link href="/login" className={authLinkClassName}>
             Back to Login -{'>'}
           </Link>
         </AuthFooter>
@@ -41,7 +40,7 @@ export default function ClientPage() {
     );
   };
 
-  const renderVerificationNeeded = () => {
+  const renderEmailSent = () => {
     return (
       <>
         <AuthHero>A reset email has been sent</AuthHero>
@@ -59,10 +58,7 @@ export default function ClientPage() {
         </AuthContent>
 
         <AuthFooter>
-          <Link
-            href="/login"
-            className="text-accent-foreground underline-offset-2 hover:underline"
-          >
+          <Link href="/login" className={authLinkClassName}>
             Back to Login -{'>'}
           </Link>
         </AuthFooter>
@@ -70,13 +66,18 @@ export default function ClientPage() {
     );
   };
 
-  // TODO: Implement animation when switching between rendering
-  switch (pageState) {
-    case 'emailRequest':
-      return renderEmailRequest();
-    case 'emailSent':
-      return renderVerificationNeeded();
-  }
+  const renderStep = () => {
+    switch (pageState) {
+      case 'emailRequest':
+        return renderEmailRequest();
+      case 'emailSent':
+        return renderEmailSent();
+    }
+  };
+
+  return (
+    <AuthStepTransition step={pageState}>{renderStep()}</AuthStepTransition>
+  );
 }
 
 function ResetPasswordForm({
@@ -119,20 +120,19 @@ function ResetPasswordForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
+      noValidate
       className="flex flex-col space-y-[14px] pt-[14px]"
     >
-      <div>
-        <Input
-          {...register('email')}
-          className="h-12 placeholder:text-[13px]"
-          type="text"
-          placeholder="Enter your email address..."
-          autoFocus
-          autoComplete="off"
-          disabled={isSubmitting}
-        />
-        <AuthErrorMessage message={errors.email?.message} />
-      </div>
+      <AuthField
+        {...register('email')}
+        label="Email address"
+        error={errors.email?.message}
+        type="email"
+        placeholder="Enter your email address..."
+        autoFocus
+        autoComplete="email"
+        disabled={isSubmitting}
+      />
 
       <Button
         type="submit"

@@ -13,9 +13,11 @@ import {
   AuthErrorMessage,
   AuthFooter,
   AuthHero,
+  authLinkClassName,
 } from '@/components/auth/auth-components';
+import AuthField from '@/components/auth/auth-field';
+import AuthStepTransition from '@/components/auth/auth-step-transition';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { NewPasswordSchema } from '@/schemas/auth-schema';
 
 export default function ClientPage() {
@@ -26,7 +28,7 @@ export default function ClientPage() {
     'newPasswordRequest' | 'completed'
   >('newPasswordRequest');
 
-  const renderEmailRequest = () => {
+  const renderNewPasswordRequest = () => {
     return (
       <>
         <AuthHero>What is your new password?</AuthHero>
@@ -34,10 +36,7 @@ export default function ClientPage() {
         <NewPasswordForm token={token} setPageState={setPageState} />
 
         <AuthFooter>
-          <Link
-            href="/login"
-            className="text-accent-foreground underline-offset-2 hover:underline"
-          >
+          <Link href="/login" className={authLinkClassName}>
             Back to Login -{'>'}
           </Link>
         </AuthFooter>
@@ -45,7 +44,7 @@ export default function ClientPage() {
     );
   };
 
-  const renderVerificationNeeded = () => {
+  const renderCompleted = () => {
     return (
       <>
         <AuthHero>Password reset completed</AuthHero>
@@ -58,10 +57,7 @@ export default function ClientPage() {
         </AuthContent>
 
         <AuthFooter>
-          <Link
-            href="/login"
-            className="text-accent-foreground underline-offset-2 hover:underline"
-          >
+          <Link href="/login" className={authLinkClassName}>
             Back to Login -{'>'}
           </Link>
         </AuthFooter>
@@ -69,13 +65,18 @@ export default function ClientPage() {
     );
   };
 
-  // TODO: Implement animation when switching between rendering
-  switch (pageState) {
-    case 'newPasswordRequest':
-      return renderEmailRequest();
-    case 'completed':
-      return renderVerificationNeeded();
-  }
+  const renderStep = () => {
+    switch (pageState) {
+      case 'newPasswordRequest':
+        return renderNewPasswordRequest();
+      case 'completed':
+        return renderCompleted();
+    }
+  };
+
+  return (
+    <AuthStepTransition step={pageState}>{renderStep()}</AuthStepTransition>
+  );
 }
 
 function NewPasswordForm({
@@ -121,33 +122,29 @@ function NewPasswordForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
+      noValidate
       className="flex flex-col space-y-[14px] pt-[14px]"
     >
-      <div>
-        <Input
-          {...register('password')}
-          className="h-12 placeholder:text-[13px]"
-          type="password"
-          placeholder="Enter a new password..."
-          autoFocus
-          autoComplete="off"
-          disabled={isSubmitting}
-        />
-        <AuthErrorMessage message={errors.password?.message} />
-      </div>
+      <AuthField
+        {...register('password')}
+        label="New password"
+        error={errors.password?.message}
+        type="password"
+        placeholder="Enter a new password..."
+        autoFocus
+        autoComplete="new-password"
+        disabled={isSubmitting}
+      />
 
-      <div>
-        <Input
-          {...register('confirmPassword')}
-          className="h-12 placeholder:text-[13px]"
-          type="password"
-          placeholder="Confirm your password..."
-          autoFocus
-          autoComplete="off"
-          disabled={isSubmitting}
-        />
-        <AuthErrorMessage message={errors.confirmPassword?.message} />
-      </div>
+      <AuthField
+        {...register('confirmPassword')}
+        label="Confirm new password"
+        error={errors.confirmPassword?.message}
+        type="password"
+        placeholder="Confirm your password..."
+        autoComplete="new-password"
+        disabled={isSubmitting}
+      />
 
       <Button
         type="submit"

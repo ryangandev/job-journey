@@ -6,10 +6,11 @@ import {
   AuthContent,
   AuthFooter,
   AuthHero,
+  authLinkClassName,
 } from '@/components/auth/auth-components';
 
 export const metadata: Metadata = {
-  title: 'Auth Error - JobJourney',
+  title: 'Error',
 };
 
 export default function Page() {
@@ -22,10 +23,7 @@ export default function Page() {
         </p>
       </AuthContent>
       <AuthFooter>
-        <Link
-          href="/login"
-          className="text-accent-foreground underline-offset-2 hover:underline"
-        >
+        <Link href="/login" className={authLinkClassName}>
           Back to Login -{'>'}
         </Link>
       </AuthFooter>
