@@ -1,14 +1,14 @@
-// import { Pool } from '@neondatabase/serverless';
-// import { PrismaNeon } from '@prisma/adapter-neon';
-import { PrismaClient } from '@prisma/client';
+import { PrismaNeon } from '@prisma/adapter-neon';
+
+import { PrismaClient } from '@/generated/prisma/client';
 
 const prismaClientSingleton = () => {
-  // Edge-compatibility setup for Prisma with Vercel Postgres (Neon)
-  // const neon = new Pool({ connectionString: process.env.POSTGRES_PRISMA_URL });
-  // const adapter = new PrismaNeon(neon);
-  // return new PrismaClient({ adapter });
+  // Vercel Postgres (Neon): the runtime uses the pooled connection string.
+  const adapter = new PrismaNeon({
+    connectionString: process.env.POSTGRES_PRISMA_URL,
+  });
 
-  return new PrismaClient();
+  return new PrismaClient({ adapter });
 };
 
 declare const globalThis: {

@@ -5,14 +5,16 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  // previewFeatures = ["driverAdapters"]
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
+// Since Prisma 7, connection URLs are no longer set in the schema:
+// - the CLI / Migrate use the direct connection (POSTGRES_URL_NON_POOLING), see prisma.config.ts
+// - the runtime client uses the pooled connection (POSTGRES_PRISMA_URL) through the Neon
+//   driver adapter, see src/lib/db.ts
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider = "postgresql"
 }
 
 enum UserPlan {
