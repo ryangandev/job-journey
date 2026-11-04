@@ -92,7 +92,11 @@ function NewPasswordForm({
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof NewPasswordSchema>>({
+  } = useForm<
+    z.input<typeof NewPasswordSchema>,
+    unknown,
+    z.output<typeof NewPasswordSchema>
+  >({
     resolver: zodResolver(NewPasswordSchema),
     defaultValues: {
       password: '',
@@ -100,7 +104,7 @@ function NewPasswordForm({
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof NewPasswordSchema>) => {
+  const onSubmit = async (values: z.output<typeof NewPasswordSchema>) => {
     setErrorMsg('');
 
     await newPasswordAction(values, token).then((res) => {
@@ -154,7 +158,7 @@ function NewPasswordForm({
         Reset Password
       </Button>
 
-      <AuthErrorMessage message={errorMsg} />
+      <AuthErrorMessage message={errorMsg} className="mt-0" />
     </form>
   );
 }

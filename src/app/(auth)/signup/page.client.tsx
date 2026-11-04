@@ -24,20 +24,22 @@ export default function ClientPage() {
   >('signup');
   const [resendTimer, setResendTimer] = useState(0);
 
-  useEffect(() => {
-    let timerInterval: ReturnType<typeof setInterval> | null = null;
+  // Start the resend cooldown in the event that shows the verification screen,
+  // instead of setting state synchronously inside the effect below.
+  const showVerificationNeeded = () => {
+    setResendTimer(60);
+    setPageState('verificationNeeded');
+  };
 
-    if (pageState === 'verificationNeeded') {
-      setResendTimer(60);
-      timerInterval = setInterval(() => {
-        setResendTimer((prevTimer) => prevTimer - 1);
-      }, 1000);
-    }
+  useEffect(() => {
+    if (pageState !== 'verificationNeeded') return;
+
+    const timerInterval = setInterval(() => {
+      setResendTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
 
     return () => {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-      }
+      clearInterval(timerInterval);
     };
   }, [pageState]);
 
@@ -87,7 +89,7 @@ export default function ClientPage() {
       <>
         <AuthHero>Signup via email</AuthHero>
 
-        <SignupForm setPageState={setPageState} />
+        <SignupForm onVerificationNeeded={showVerificationNeeded} />
 
         <AuthFooter>
           <div
@@ -160,18 +162,20 @@ export default function ClientPage() {
 }
 
 function SignupForm({
-  setPageState,
+  onVerificationNeeded,
 }: {
-  setPageState: React.Dispatch<
-    React.SetStateAction<'signup' | 'emailSignup' | 'verificationNeeded'>
-  >;
+  onVerificationNeeded: () => void;
 }) {
   const [errorMsg, setErrorMsg] = useState<string | undefined>('');
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof SignupSchema>>({
+  } = useForm<
+    z.input<typeof SignupSchema>,
+    unknown,
+    z.output<typeof SignupSchema>
+  >({
     resolver: zodResolver(SignupSchema),
     defaultValues: {
       name: '',
@@ -180,14 +184,14 @@ function SignupForm({
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof SignupSchema>) => {
+  const onSubmit = async (values: z.output<typeof SignupSchema>) => {
     setErrorMsg('');
 
     await signupAction(values).then((res) => {
       if (!res) return;
 
       if (res.success) {
-        setPageState('verificationNeeded');
+        onVerificationNeeded();
       }
 
       setErrorMsg(res.error);
@@ -245,7 +249,7 @@ function SignupForm({
         Sign up
       </Button>
 
-      <AuthErrorMessage message={errorMsg} />
+      <AuthErrorMessage message={errorMsg} className="mt-0" />
     </form>
   );
 }

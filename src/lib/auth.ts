@@ -1,4 +1,4 @@
-import type { DefaultSession } from 'next-auth';
+import { CredentialsSignin, type DefaultSession } from 'next-auth';
 
 import NextAuth from 'next-auth';
 import { Adapter } from 'next-auth/adapters';
@@ -19,8 +19,13 @@ declare module 'next-auth' {
   }
 }
 
+// Thrown from the signIn callback when the verification email cannot be sent.
+// Auth.js rethrows AuthError subclasses as-is, so loginAction can catch it.
+export class VerificationEmailError extends CredentialsSignin {
+  code = 'verification_email_failed';
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  trustHost: true,
   adapter: PrismaAdapter(prisma) as Adapter,
   // Callbacks are asynchronous functions you can use to control what happens when an action is performed
   callbacks: {
@@ -36,10 +41,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           existingUser.email,
         );
 
-        await sendVerificationEmail(
+        const emailResult = await sendVerificationEmail(
           verificationToken.email,
           verificationToken.token,
         );
+
+        if (!emailResult.success) throw new VerificationEmailError();
 
         return false;
       }

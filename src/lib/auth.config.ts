@@ -9,6 +9,8 @@ import { getUserByEmail } from '@/data/users';
 import { LoginSchema } from '@/schemas/auth-schema';
 
 export default {
+  // Shared by both the full auth instance (lib/auth.ts) and the proxy (src/proxy.ts)
+  trustHost: true,
   providers: [
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID,
@@ -30,7 +32,16 @@ export default {
 
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
-          if (passwordsMatch) return user;
+          // Only hand Auth.js the public fields, so the password hash never
+          // reaches the signIn/jwt callbacks, the token or the session.
+          if (passwordsMatch) {
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              image: user.image,
+            };
+          }
         }
 
         return null;

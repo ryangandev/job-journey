@@ -31,20 +31,22 @@ export default function ClientPage() {
   >('login');
   const [resendTimer, setResendTimer] = useState(0);
 
-  useEffect(() => {
-    let timerInterval: ReturnType<typeof setInterval> | null = null;
+  // Start the resend cooldown in the event that shows the verification screen,
+  // instead of setting state synchronously inside the effect below.
+  const showVerificationNeeded = () => {
+    setResendTimer(60);
+    setPageState('verificationNeeded');
+  };
 
-    if (pageState === 'verificationNeeded') {
-      setResendTimer(60);
-      timerInterval = setInterval(() => {
-        setResendTimer((prevTimer) => prevTimer - 1);
-      }, 1000);
-    }
+  useEffect(() => {
+    if (pageState !== 'verificationNeeded') return;
+
+    const timerInterval = setInterval(() => {
+      setResendTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
 
     return () => {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-      }
+      clearInterval(timerInterval);
     };
   }, [pageState]);
 
@@ -62,7 +64,7 @@ export default function ClientPage() {
           >
             Continue with Email
           </Button>
-          <AuthErrorMessage message={urlError} />
+          <AuthErrorMessage message={urlError} className="mt-0" />
         </AuthContent>
 
         <AuthFooter>
@@ -85,7 +87,7 @@ export default function ClientPage() {
       <>
         <AuthHero>Login via email</AuthHero>
 
-        <LoginForm setPageState={setPageState} />
+        <LoginForm onVerificationNeeded={showVerificationNeeded} />
 
         <AuthFooter>
           <Link
@@ -165,18 +167,20 @@ export default function ClientPage() {
 }
 
 function LoginForm({
-  setPageState,
+  onVerificationNeeded,
 }: {
-  setPageState: React.Dispatch<
-    React.SetStateAction<'login' | 'emailLogin' | 'verificationNeeded'>
-  >;
+  onVerificationNeeded: () => void;
 }) {
   const [errorMsg, setErrorMsg] = useState<string | undefined>('');
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof LoginSchema>>({
+  } = useForm<
+    z.input<typeof LoginSchema>,
+    unknown,
+    z.output<typeof LoginSchema>
+  >({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: '',
@@ -184,14 +188,14 @@ function LoginForm({
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (values: z.output<typeof LoginSchema>) => {
     setErrorMsg('');
 
     await loginAction(values).then((res) => {
       if (!res) return;
 
       if (res.verificationNeeded) {
-        setPageState('verificationNeeded');
+        onVerificationNeeded();
       }
 
       setErrorMsg(res.error);
@@ -237,7 +241,7 @@ function LoginForm({
         Log in
       </Button>
 
-      <AuthErrorMessage message={errorMsg} />
+      <AuthErrorMessage message={errorMsg} className="mt-0" />
     </form>
   );
 }
