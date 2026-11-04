@@ -1,10 +1,19 @@
 'use client';
 
-import { Link } from 'next-view-transitions';
+import { Link, useTransitionRouter } from 'next-view-transitions';
+import { useEffect, useState } from 'react';
 import { GrGlobe } from 'react-icons/gr';
 import { HiOutlineMenuAlt4 } from 'react-icons/hi';
 
 import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import { landingNavbarLinks } from '@/data/navigation';
 import useCurrentUser from '@/hooks/use-current-user';
 import { cn } from '@/lib/utils';
@@ -60,47 +69,82 @@ function MainNav() {
   );
 }
 
+const isTypingTarget = (target: EventTarget | null) =>
+  target instanceof HTMLElement &&
+  (target.isContentEditable ||
+    ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName));
+
+/** Pressing "L" opens the dashboard when signed in, or the login page otherwise. */
+function useLoginShortcut(href: string) {
+  const router = useTransitionRouter();
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() !== 'l' || event.repeat) return;
+      if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) {
+        return;
+      }
+      if (isTypingTarget(event.target)) return;
+
+      event.preventDefault();
+      router.push(href);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [href, router]);
+}
+
+function ShortcutHint() {
+  return (
+    <kbd
+      aria-hidden
+      className="ml-3 rounded-md bg-neutral-600 px-1.5 text-[12px] font-bold"
+    >
+      L
+    </kbd>
+  );
+}
+
 function ButtonGroup() {
   const user = useCurrentUser();
+  useLoginShortcut(user ? '/dashboard' : '/login');
 
   return (
     <>
       {user ? (
         <li className="flex h-12 items-center space-x-4">
-          <Link href="/dashboard">
-            <Button
-              size="sm"
-              className="flex items-center text-sm font-semibold"
-            >
+          <Button
+            asChild
+            size="sm"
+            className="flex items-center text-sm font-semibold"
+          >
+            <Link href="/dashboard" aria-keyshortcuts="L">
               Dashboard
-              <kbd className="ml-3 rounded-md bg-neutral-600 px-1.5 text-[12px] font-bold">
-                L
-              </kbd>
-            </Button>
-          </Link>
+              <ShortcutHint />
+            </Link>
+          </Button>
         </li>
       ) : (
         <li className="flex h-12 items-center space-x-4">
-          <Link href="/login">
-            <Button
-              size="sm"
-              className="flex items-center text-sm font-semibold"
-            >
+          <Button
+            asChild
+            size="sm"
+            className="flex items-center text-sm font-semibold"
+          >
+            <Link href="/login" aria-keyshortcuts="L">
               Log in
-              <kbd className="ml-3 rounded-md bg-neutral-600 px-1.5 text-[12px] font-bold">
-                L
-              </kbd>
-            </Button>
-          </Link>
-          <Link href="/signup">
-            <Button
-              size="sm"
-              variant="secondary"
-              className="flex items-center text-sm font-semibold"
-            >
-              Sign up
-            </Button>
-          </Link>
+              <ShortcutHint />
+            </Link>
+          </Button>
+          <Button
+            asChild
+            size="sm"
+            variant="secondary"
+            className="hidden items-center text-sm font-semibold sm:flex"
+          >
+            <Link href="/signup">Sign up</Link>
+          </Button>
         </li>
       )}
     </>
@@ -108,12 +152,73 @@ function ButtonGroup() {
 }
 
 function MobileNav() {
+  const user = useCurrentUser();
+  const [open, setOpen] = useState(false);
+
   return (
-    <span className="ml-4 flex h-12 items-center justify-center md:hidden">
-      <HiOutlineMenuAlt4
-        size={24}
-        className="cursor-pointer rounded-md text-black/60 transition-colors hover:text-black"
-      />
-    </span>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <button
+          type="button"
+          aria-label="Open menu"
+          className="ml-4 flex h-12 items-center justify-center rounded-md text-black/60 transition-colors hover:text-black md:hidden"
+        >
+          <HiOutlineMenuAlt4 size={24} />
+        </button>
+      </SheetTrigger>
+
+      <SheetContent side="right" className="w-72">
+        <SheetTitle className="flex items-center text-sm font-semibold">
+          <GrGlobe className="mr-2" size={16} />
+          JobJourney
+        </SheetTitle>
+        <SheetDescription className="sr-only">Site navigation</SheetDescription>
+
+        <nav className="mt-8">
+          <ul className="flex flex-col gap-1">
+            {landingNavbarLinks.map((link) => (
+              <li key={link.title}>
+                <SheetClose asChild>
+                  <Link
+                    href={link.href}
+                    className="block rounded-md px-2 py-2 text-sm font-semibold text-black/70 transition-colors hover:bg-accent hover:text-black"
+                  >
+                    {link.title}
+                  </Link>
+                </SheetClose>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className="mt-8 flex flex-col gap-2">
+          {user ? (
+            <SheetClose asChild>
+              <Button asChild size="sm" className="font-semibold">
+                <Link href="/dashboard">Dashboard</Link>
+              </Button>
+            </SheetClose>
+          ) : (
+            <>
+              <SheetClose asChild>
+                <Button asChild size="sm" className="font-semibold">
+                  <Link href="/login">Log in</Link>
+                </Button>
+              </SheetClose>
+              <SheetClose asChild>
+                <Button
+                  asChild
+                  size="sm"
+                  variant="secondary"
+                  className="font-semibold"
+                >
+                  <Link href="/signup">Sign up</Link>
+                </Button>
+              </SheetClose>
+            </>
+          )}
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }
