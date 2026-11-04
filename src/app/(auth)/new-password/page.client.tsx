@@ -154,7 +154,7 @@ function NewPasswordForm({
         Reset Password
       </Button>
 
-      <AuthErrorMessage message={errorMsg} />
+      <AuthErrorMessage message={errorMsg} className="mt-0" />
     </form>
   );
 }

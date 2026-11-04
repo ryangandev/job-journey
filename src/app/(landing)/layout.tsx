@@ -9,7 +9,7 @@ export default async function LandingLayout({
   return (
     <>
       <SiteHeader />
-      <div className="mx-auto flex-grow px-4 py-8 sm:py-16">{children}</div>
+      <div className="mx-auto grow px-4 py-8 sm:py-16">{children}</div>
       <SiteFooter />
     </>
   );

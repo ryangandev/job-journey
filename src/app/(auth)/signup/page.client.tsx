@@ -245,7 +245,7 @@ function SignupForm({
         Sign up
       </Button>
 
-      <AuthErrorMessage message={errorMsg} />
+      <AuthErrorMessage message={errorMsg} className="mt-0" />
     </form>
   );
 }
