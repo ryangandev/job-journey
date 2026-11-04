@@ -1,9 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, type Transition, type Variants } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 
-const pageVariants = {
+const pageVariants: Variants = {
   initial: {
     opacity: 0,
     y: -10,
@@ -14,7 +14,7 @@ const pageVariants = {
   },
 };
 
-const pageTransition = {
+const pageTransition: Transition = {
   type: 'tween',
   ease: 'easeInOut',
   duration: 0.3,
