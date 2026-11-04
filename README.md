@@ -10,9 +10,9 @@
 
 ## 📌 Key Features
 
-> **Status:** account management is in place (email/password sign-up with email verification and password reset, GitHub and Google sign-in) along with the signed-in app shell. The features below are the roadmap and are still being built.
+> **Status:** account management (email/password sign-up with email verification and password reset, GitHub and Google sign-in), the signed-in app shell and the job applications dashboard are in place. The other features below are on the roadmap.
 
-- **Job Applications Dashboard**: Track all your job applications in one intuitive dashboard. View details such as job titles, company names, application statuses, and recent updates, enabling you to stay organized and informed throughout your job search.
+- **Job Applications Dashboard** _(available)_: Track all your job applications in one intuitive dashboard. View details such as job titles, company names, application statuses, and recent updates, enabling you to stay organized and informed throughout your job search.
 
 - **Digital Profile Management**: Easily manage and update your digital profiles and resumes. Store multiple versions of your resume and quickly access your social media links, making it simpler to submit applications and maintain your online presence.
 
@@ -45,11 +45,13 @@
    pnpm install
    ```
 
-4. **Create the database schema:**
+4. **Create (or update) the database schema:**
 
    ```zsh
-   pnpm prisma migrate dev
+   pnpm prisma db push
    ```
+
+   The project has no migration history yet, so the schema is applied with `db push`. Run it again whenever `prisma/schema.prisma` changes (for example after pulling a new feature).
 
 5. **Start the development server:**
 
