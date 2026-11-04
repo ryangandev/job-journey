@@ -1,17 +1,23 @@
 'use client';
 
-import { ChevronsUpDown, House, LogOut } from 'lucide-react';
+import { ChevronsUpDown, House, LogOut, Moon, Sun } from 'lucide-react';
 import Image from 'next/image';
 import { Link } from 'next-view-transitions';
-import { useTransition } from 'react';
+import { useId, useTransition } from 'react';
 
 import { logoutAction } from '@/actions/auth-actions';
+import { ThemeRadioItems } from '@/components/theme-toggle';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
@@ -54,6 +60,7 @@ export default function NavUser() {
   const user = useCurrentUser();
   const { isMobile } = useSidebar();
   const [isLoggingOut, startLogout] = useTransition();
+  const themeLabelId = useId();
 
   if (!user) return null;
 
@@ -104,6 +111,38 @@ export default function NavUser() {
                 Home page
               </Link>
             </DropdownMenuItem>
+            {isMobile ? (
+              // The mobile sidebar is nearly as wide as the screen, so a submenu would open off-screen:
+              // list the options inline instead
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup aria-labelledby={themeLabelId}>
+                  <DropdownMenuLabel
+                    id={themeLabelId}
+                    className="text-xs font-medium text-muted-foreground"
+                  >
+                    Theme
+                  </DropdownMenuLabel>
+                  <ThemeRadioItems />
+                </DropdownMenuGroup>
+              </>
+            ) : (
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className="gap-2">
+                  {/* Switched with CSS so server and client render the same markup */}
+                  <Sun className="size-4 dark:hidden" />
+                  <Moon className="hidden size-4 dark:block" />
+                  Theme
+                </DropdownMenuSubTrigger>
+                {/* Portalled: the menu's open animation (a transform) would otherwise clip it */}
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="min-w-36">
+                    <ThemeRadioItems />
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+            )}
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               className="gap-2"
               disabled={isLoggingOut}

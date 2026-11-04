@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -9,7 +9,6 @@ import {
   createJobApplicationAction,
   updateJobApplicationAction,
 } from '@/actions/job-application-actions';
-import { AuthErrorMessage } from '@/components/auth/auth-components';
 import { toDateInputValue } from '@/components/job-applications/format';
 import { Button } from '@/components/ui/button';
 import {
@@ -35,8 +34,14 @@ import {
   type JobApplicationFormInput,
 } from '@/schemas/job-application-schema';
 
-const selectClassName =
-  'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50';
+// `text-destructive` is too dark to read on the dark background, hence the dark: override
+const errorTextClassName = 'text-xs text-destructive dark:text-red-400';
+const invalidClassName =
+  'aria-invalid:border-destructive dark:aria-invalid:border-red-400';
+const selectClassName = cn(
+  'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:bg-background',
+  invalidClassName,
+);
 
 const toFormValues = (
   application?: JobApplication | null,
@@ -54,54 +59,102 @@ const toFormValues = (
   notes: application?.notes ?? '',
 });
 
+type FieldName = keyof JobApplicationFormInput;
+
 function Field({
   label,
-  htmlFor,
+  name,
   error,
   className,
   children,
 }: {
   label: string;
-  htmlFor: string;
+  name: FieldName;
   error?: string;
   className?: string;
   children: React.ReactNode;
 }) {
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
-      <label htmlFor={htmlFor} className="text-sm font-medium">
+      <label htmlFor={name} className="text-sm font-medium">
         {label}
       </label>
       {children}
-      <AuthErrorMessage message={error} className="mt-0" />
+      {error && (
+        <p id={`${name}-error`} className={errorTextClassName}>
+          {error}
+        </p>
+      )}
     </div>
   );
 }
 
+type DirtyCheck = () => boolean;
+
 function JobApplicationForm({
   application,
-  onDone,
+  onSaved,
+  onCancel,
+  onSubmittingChange,
+  registerDirtyCheck,
 }: {
   application?: JobApplication | null;
-  onDone: () => void;
+  onSaved: () => void;
+  onCancel: () => void;
+  onSubmittingChange: (isSubmitting: boolean) => void;
+  registerDirtyCheck: (check: DirtyCheck | null) => void;
 }) {
   const [errorMsg, setErrorMsg] = useState<string>();
+  const [defaultValues] = useState(() => toFormValues(application));
   const {
+    getValues,
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
   } = useForm<JobApplicationFormInput, unknown, JobApplicationFormInput>({
     resolver: zodResolver(JobApplicationSchema, undefined, { raw: true }),
-    defaultValues: toFormValues(application),
+    defaultValues,
+  });
+
+  // The dialog asks at close time whether anything changed. Reading the live values (rather than
+  // a reported `isDirty`) means an Escape pressed right after typing can't slip past the guard.
+  useEffect(() => {
+    registerDirtyCheck(() => {
+      const values = getValues();
+      return (Object.keys(defaultValues) as FieldName[]).some(
+        (name) => values[name] !== defaultValues[name],
+      );
+    });
+    return () => registerDirtyCheck(null);
+  }, [defaultValues, getValues, registerDirtyCheck]);
+
+  // ...and closing is blocked while saving
+  useEffect(() => {
+    onSubmittingChange(isSubmitting);
+  }, [isSubmitting, onSubmittingChange]);
+  useEffect(() => () => onSubmittingChange(false), [onSubmittingChange]);
+
+  const fieldProps = (name: FieldName) => ({
+    id: name,
+    ...register(name),
+    disabled: isSubmitting,
+    'aria-invalid': errors[name] ? true : undefined,
+    'aria-describedby': errors[name] ? `${name}-error` : undefined,
   });
 
   // Submit the raw form values: the server action parses them again with the same schema
   const onSubmit = async (values: JobApplicationFormInput) => {
     setErrorMsg(undefined);
 
-    const res = application
-      ? await updateJobApplicationAction(application.id, values)
-      : await createJobApplicationAction(values);
+    let res: Awaited<ReturnType<typeof createJobApplicationAction>>;
+    try {
+      res = application
+        ? await updateJobApplicationAction(application.id, values)
+        : await createJobApplicationAction(values);
+    } catch {
+      setErrorMsg("Couldn't save. Check your connection and try again.");
+      return;
+    }
 
     if ('error' in res) {
       setErrorMsg(res.error);
@@ -109,44 +162,34 @@ function JobApplicationForm({
     }
 
     toast.success(application ? 'Application updated' : 'Application added');
-    onDone();
+    onSaved();
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4" noValidate>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field
-          label="Company"
-          htmlFor="company"
-          error={errors.company?.message}
-        >
+        <Field label="Company" name="company" error={errors.company?.message}>
           <Input
-            id="company"
-            {...register('company')}
+            {...fieldProps('company')}
             placeholder="Acme Inc."
-            autoFocus
-            disabled={isSubmitting}
+            autoComplete="organization"
+            className={invalidClassName}
           />
         </Field>
         <Field
           label="Position"
-          htmlFor="position"
+          name="position"
           error={errors.position?.message}
         >
           <Input
-            id="position"
-            {...register('position')}
+            {...fieldProps('position')}
             placeholder="Frontend Engineer"
-            disabled={isSubmitting}
+            autoComplete="organization-title"
+            className={invalidClassName}
           />
         </Field>
-        <Field label="Status" htmlFor="status" error={errors.status?.message}>
-          <select
-            id="status"
-            {...register('status')}
-            className={selectClassName}
-            disabled={isSubmitting}
-          >
+        <Field label="Status" name="status" error={errors.status?.message}>
+          <select {...fieldProps('status')} className={selectClassName}>
             {APPLICATION_STATUSES.map((status) => (
               <option key={status} value={status}>
                 {STATUS_LABELS[status]}
@@ -156,39 +199,32 @@ function JobApplicationForm({
         </Field>
         <Field
           label="Date applied"
-          htmlFor="appliedAt"
+          name="appliedAt"
           error={errors.appliedAt?.message}
         >
           <Input
-            id="appliedAt"
+            {...fieldProps('appliedAt')}
             type="date"
-            {...register('appliedAt')}
-            disabled={isSubmitting}
+            className={invalidClassName}
           />
         </Field>
         <Field
           label="Location"
-          htmlFor="location"
+          name="location"
           error={errors.location?.message}
         >
           <Input
-            id="location"
-            {...register('location')}
+            {...fieldProps('location')}
             placeholder="San Francisco, CA"
-            disabled={isSubmitting}
+            className={invalidClassName}
           />
         </Field>
         <Field
           label="Work mode"
-          htmlFor="workMode"
+          name="workMode"
           error={errors.workMode?.message}
         >
-          <select
-            id="workMode"
-            {...register('workMode')}
-            className={selectClassName}
-            disabled={isSubmitting}
-          >
+          <select {...fieldProps('workMode')} className={selectClassName}>
             <option value="">Not specified</option>
             {WORK_MODES.map((mode) => (
               <option key={mode} value={mode}>
@@ -199,44 +235,46 @@ function JobApplicationForm({
         </Field>
         <Field
           label="Job posting link"
-          htmlFor="jobUrl"
+          name="jobUrl"
           error={errors.jobUrl?.message}
         >
           <Input
-            id="jobUrl"
+            {...fieldProps('jobUrl')}
             type="url"
-            {...register('jobUrl')}
+            inputMode="url"
             placeholder="https://..."
-            disabled={isSubmitting}
+            className={invalidClassName}
           />
         </Field>
-        <Field label="Salary" htmlFor="salary" error={errors.salary?.message}>
+        <Field label="Salary" name="salary" error={errors.salary?.message}>
           <Input
-            id="salary"
-            {...register('salary')}
+            {...fieldProps('salary')}
             placeholder="$120k - $140k"
-            disabled={isSubmitting}
+            className={invalidClassName}
           />
         </Field>
       </div>
 
-      <Field label="Notes" htmlFor="notes" error={errors.notes?.message}>
+      <Field label="Notes" name="notes" error={errors.notes?.message}>
         <Textarea
-          id="notes"
-          {...register('notes')}
+          {...fieldProps('notes')}
           placeholder="Recruiter name, interview dates, anything worth remembering..."
           rows={4}
-          disabled={isSubmitting}
+          className={invalidClassName}
         />
       </Field>
 
-      <AuthErrorMessage message={errorMsg} className="mt-0" />
+      {errorMsg && (
+        <p role="alert" className={errorTextClassName}>
+          {errorMsg}
+        </p>
+      )}
 
       <DialogFooter>
         <Button
           type="button"
           variant="outline"
-          onClick={onDone}
+          onClick={onCancel}
           disabled={isSubmitting}
         >
           Cancel
@@ -246,6 +284,43 @@ function JobApplicationForm({
         </Button>
       </DialogFooter>
     </form>
+  );
+}
+
+function DiscardChangesDialog({
+  open,
+  onKeepEditing,
+  onDiscard,
+}: {
+  open: boolean;
+  onKeepEditing: () => void;
+  onDiscard: () => void;
+}) {
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) onKeepEditing();
+      }}
+    >
+      <DialogContent className="sm:max-w-sm">
+        <DialogHeader>
+          <DialogTitle>Discard changes?</DialogTitle>
+          <DialogDescription>
+            You have unsaved changes. If you close the form now, they&apos;ll be
+            lost.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={onKeepEditing}>
+            Keep editing
+          </Button>
+          <Button variant="destructive" onClick={onDiscard}>
+            Discard
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -259,8 +334,28 @@ export default function JobApplicationFormDialog({
   onOpenChange: (open: boolean) => void;
   application?: JobApplication | null;
 }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const dirtyCheckRef = useRef<DirtyCheck | null>(null);
+  const registerDirtyCheck = useCallback((check: DirtyCheck | null) => {
+    dirtyCheckRef.current = check;
+  }, []);
+
+  // Escape, a click outside, the close button and Cancel all come through here
+  const requestClose = () => {
+    if (isSubmitting) return;
+    if (dirtyCheckRef.current?.()) {
+      setConfirmOpen(true);
+      return;
+    }
+    onOpenChange(false);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => (next ? onOpenChange(true) : requestClose())}
+    >
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>
@@ -276,7 +371,18 @@ export default function JobApplicationFormDialog({
         <JobApplicationForm
           key={application?.id ?? 'new'}
           application={application}
-          onDone={() => onOpenChange(false)}
+          onSaved={() => onOpenChange(false)}
+          onCancel={requestClose}
+          onSubmittingChange={setIsSubmitting}
+          registerDirtyCheck={registerDirtyCheck}
+        />
+        <DiscardChangesDialog
+          open={confirmOpen}
+          onKeepEditing={() => setConfirmOpen(false)}
+          onDiscard={() => {
+            setConfirmOpen(false);
+            onOpenChange(false);
+          }}
         />
       </DialogContent>
     </Dialog>

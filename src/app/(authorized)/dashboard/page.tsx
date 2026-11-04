@@ -6,7 +6,7 @@ import { getJobApplicationsByUserId } from '@/data/job-applications';
 import { auth } from '@/lib/auth';
 
 export const metadata: Metadata = {
-  title: 'Dashboard | JobJourney',
+  title: 'Dashboard',
 };
 
 export default async function Page() {
