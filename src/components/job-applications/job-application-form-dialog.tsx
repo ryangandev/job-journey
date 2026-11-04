@@ -34,8 +34,7 @@ import {
   type JobApplicationFormInput,
 } from '@/schemas/job-application-schema';
 
-// `text-destructive` is too dark to read on the dark background, hence the dark: override
-const errorTextClassName = 'text-xs text-destructive dark:text-red-400';
+const errorTextClassName = 'text-xs text-error';
 const invalidClassName =
   'aria-invalid:border-destructive dark:aria-invalid:border-red-400';
 const selectClassName = cn(

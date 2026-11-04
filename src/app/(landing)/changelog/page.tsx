@@ -31,7 +31,7 @@ const RELEASES: Release[] = [
         type: 'New',
         title: 'Dark mode',
         description:
-          'Choose Light, Dark or System from the theme switcher in the site header.',
+          'Choose Light, Dark or System from the theme switcher in the site header, or from your account menu in the app.',
       },
       {
         type: 'New',

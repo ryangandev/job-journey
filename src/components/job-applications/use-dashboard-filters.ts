@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   useEffect,
   useMemo,
@@ -28,7 +28,6 @@ const SEARCH_DEBOUNCE_MS = 300;
  * (e.g. `?status=INTERVIEWING&q=acme&sort=applied`) so a refresh or a shared link keeps them.
  */
 export default function useDashboardFilters() {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const urlFilters = useMemo(
@@ -36,8 +35,7 @@ export default function useDashboardFilters() {
     [searchParams],
   );
 
-  // `router.replace` only updates `useSearchParams` once the navigation commits;
-  // show the new filters right away in the meantime
+  // Show the new filters right away, even before `useSearchParams` reflects the new URL
   const [filters, setOptimisticFilters] = useOptimistic(urlFilters);
   const [, startTransition] = useTransition();
 
@@ -53,9 +51,14 @@ export default function useDashboardFilters() {
 
     startTransition(() => {
       setOptimisticFilters(next);
-      router.replace(`${pathname}${toDashboardSearch(next)}`, {
-        scroll: false,
-      });
+      // Filtering and sorting happen on the client, so update the URL without a navigation:
+      // Next.js syncs `useSearchParams` with the native History API, and nothing is
+      // re-rendered or re-fetched on the server
+      window.history.replaceState(
+        null,
+        '',
+        `${pathname}${toDashboardSearch(next)}`,
+      );
     });
   };
 

@@ -340,7 +340,7 @@ function ApplicationRow({
           )}
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            className="gap-2 text-destructive focus:text-destructive dark:text-red-400 dark:focus:text-red-400"
+            className="gap-2 text-error focus:text-error"
             onSelect={onDelete}
           >
             <Trash2 className="size-4" />
