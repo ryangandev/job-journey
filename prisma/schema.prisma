@@ -22,6 +22,21 @@ enum UserPlan {
   PREMIUM
 }
 
+enum ApplicationStatus {
+  WISHLIST
+  APPLIED
+  INTERVIEWING
+  OFFER
+  REJECTED
+  WITHDRAWN
+}
+
+enum WorkMode {
+  ONSITE
+  HYBRID
+  REMOTE
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -33,7 +48,8 @@ model User {
   updatedAt     DateTime  @updatedAt @map("updated_at")
   userPlan      UserPlan  @default(FREE)
 
-  accounts Account[]
+  accounts        Account[]
+  jobApplications JobApplication[]
 
   @@map("users")
 }
@@ -78,4 +94,25 @@ model ResetPasswordToken {
 
   @@unique([email, token])
   @@map("reset_password_tokens")
+}
+
+model JobApplication {
+  id        String            @id @default(cuid())
+  userId    String            @map("user_id")
+  company   String
+  position  String
+  status    ApplicationStatus @default(APPLIED)
+  location  String?
+  workMode  WorkMode?         @map("work_mode")
+  jobUrl    String?           @map("job_url")
+  salary    String?
+  appliedAt DateTime?         @map("applied_at") @db.Date
+  notes     String?           @db.Text
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, updatedAt])
+  @@map("job_applications")
 }

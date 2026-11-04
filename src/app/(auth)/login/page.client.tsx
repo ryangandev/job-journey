@@ -13,11 +13,14 @@ import {
   AuthErrorMessage,
   AuthFooter,
   AuthHero,
+  AuthTextButton,
+  authLinkClassName,
 } from '@/components/auth/auth-components';
+import AuthField from '@/components/auth/auth-field';
+import AuthStepTransition from '@/components/auth/auth-step-transition';
 import OAuthLogins from '@/components/auth/oauth-logins';
 import VerificationNeeded from '@/components/auth/verification-needed';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { LoginSchema } from '@/schemas/auth-schema';
 
 export default function ClientPage() {
@@ -57,10 +60,7 @@ export default function ClientPage() {
         <AuthFooter>
           <div>
             Need an account?{' '}
-            <Link
-              href="/signup"
-              className="text-accent-foreground underline-offset-2 hover:underline"
-            >
+            <Link href="/signup" className={authLinkClassName}>
               Sign up -{'>'}
             </Link>
           </div>
@@ -77,18 +77,16 @@ export default function ClientPage() {
         <LoginForm onVerificationNeeded={showVerificationNeeded} />
 
         <AuthFooter>
-          <Link
-            href="/reset-password"
-            className="text-accent-foreground underline-offset-2 hover:underline"
-          >
-            Forgot password -{'>'}
-          </Link>
+          <div>
+            <Link href="/reset-password" className={authLinkClassName}>
+              Forgot password -{'>'}
+            </Link>
+          </div>
 
-          <div
-            className="cursor-pointer transition-colors hover:text-accent-foreground"
-            onClick={() => setPageState('login')}
-          >
-            Back to login
+          <div>
+            <AuthTextButton onClick={() => setPageState('login')}>
+              Back to login
+            </AuthTextButton>
           </div>
         </AuthFooter>
       </>
@@ -101,26 +99,28 @@ export default function ClientPage() {
       footer={
         <div>
           Already verified?{' '}
-          <span
-            className="cursor-pointer transition-colors hover:text-accent-foreground"
-            onClick={() => setPageState('login')}
-          >
+          <AuthTextButton onClick={() => setPageState('login')}>
             Back to login
-          </span>
+          </AuthTextButton>
         </div>
       }
     />
   );
 
-  // TODO: Implement animation when switching between rendering
-  switch (pageState) {
-    case 'login':
-      return renderLogin();
-    case 'emailLogin':
-      return renderEmailLogin();
-    case 'verificationNeeded':
-      return renderVerificationNeeded();
-  }
+  const renderStep = () => {
+    switch (pageState) {
+      case 'login':
+        return renderLogin();
+      case 'emailLogin':
+        return renderEmailLogin();
+      case 'verificationNeeded':
+        return renderVerificationNeeded();
+    }
+  };
+
+  return (
+    <AuthStepTransition step={pageState}>{renderStep()}</AuthStepTransition>
+  );
 }
 
 function LoginForm({
@@ -162,32 +162,29 @@ function LoginForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
+      noValidate
       className="flex flex-col space-y-[14px] pt-[14px]"
     >
-      <div>
-        <Input
-          {...register('email')}
-          className="h-12 placeholder:text-[13px]"
-          type="text"
-          placeholder="Enter your email address..."
-          autoFocus
-          autoComplete="off"
-          disabled={isSubmitting}
-        />
-        <AuthErrorMessage message={errors.email?.message} />
-      </div>
+      <AuthField
+        {...register('email')}
+        label="Email address"
+        error={errors.email?.message}
+        type="email"
+        placeholder="Enter your email address..."
+        autoFocus
+        autoComplete="email"
+        disabled={isSubmitting}
+      />
 
-      <div>
-        <Input
-          {...register('password')}
-          className="h-12 placeholder:text-[13px]"
-          type="password"
-          placeholder="Enter your password..."
-          autoComplete="off"
-          disabled={isSubmitting}
-        />
-        <AuthErrorMessage message={errors.password?.message} />
-      </div>
+      <AuthField
+        {...register('password')}
+        label="Password"
+        error={errors.password?.message}
+        type="password"
+        placeholder="Enter your password..."
+        autoComplete="current-password"
+        disabled={isSubmitting}
+      />
 
       <Button
         type="submit"

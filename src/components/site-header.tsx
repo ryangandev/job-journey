@@ -1,10 +1,12 @@
 'use client';
 
 import { Link, useTransitionRouter } from 'next-view-transitions';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { GrGlobe } from 'react-icons/gr';
 import { HiOutlineMenuAlt4 } from 'react-icons/hi';
 
+import ThemeToggle from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -20,15 +22,8 @@ import { cn } from '@/lib/utils';
 
 export default function SiteHeader() {
   return (
-    <header
-      className={cn('sticky top-0 mx-auto w-full max-w-5xl py-2 sm:py-4')}
-    >
-      <div
-        className={cn(
-          'relative flex w-full justify-between px-3',
-          // 'before:absolute before:left-0 before:top-0 before:z-[-1] before:h-12 before:w-full before:rounded-xl before:border before:border-black/5 before:content-[""]',
-        )}
-      >
+    <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-md">
+      <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-3 py-2 sm:px-4 sm:py-3">
         <MainNav />
         <MobileNav />
       </div>
@@ -36,12 +31,23 @@ export default function SiteHeader() {
   );
 }
 
+function useIsActive() {
+  const pathname = usePathname();
+  return (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+}
+
 function MainNav() {
+  const isActive = useIsActive();
+
   return (
-    <nav className="w-full">
-      <ul className="flex justify-between">
+    <nav aria-label="Main" className="w-full">
+      <ul className="flex items-center justify-between">
         <li key="home" className="flex h-12 items-center px-2">
-          <Link href="/" className="flex items-center text-sm font-semibold">
+          <Link
+            href="/"
+            className="flex items-center text-sm font-semibold"
+            aria-label="JobJourney home"
+          >
             <GrGlobe className="mr-2" size={16} />
             <span className="hidden sm:inline-block md:hidden lg:inline-block">
               JobJourney
@@ -51,12 +57,14 @@ function MainNav() {
         {landingNavbarLinks.map((link) => (
           <li
             key={link.title}
-            className="hidden h-12 items-center px-4 md:flex"
+            className="hidden h-12 items-center px-3 md:flex lg:px-4"
           >
             <Link
               href={link.href}
+              aria-current={isActive(link.href) ? 'page' : undefined}
               className={cn(
-                'text-sm font-semibold text-black/70 transition-colors hover:text-black',
+                'text-sm font-semibold text-foreground/70 transition-colors hover:text-foreground',
+                'aria-[current=page]:text-foreground',
               )}
             >
               {link.title}
@@ -99,7 +107,7 @@ function ShortcutHint() {
   return (
     <kbd
       aria-hidden
-      className="ml-3 rounded-md bg-neutral-600 px-1.5 text-[12px] font-bold"
+      className="ml-1 hidden rounded-sm bg-primary-foreground/20 px-1.5 font-sans text-[11px] leading-4 font-bold text-primary-foreground sm:inline-block"
     >
       L
     </kbd>
@@ -111,27 +119,18 @@ function ButtonGroup() {
   useLoginShortcut(user ? '/dashboard' : '/login');
 
   return (
-    <>
+    <li className="flex h-12 items-center gap-2 sm:gap-3">
+      <ThemeToggle />
       {user ? (
-        <li className="flex h-12 items-center space-x-4">
-          <Button
-            asChild
-            size="sm"
-            className="flex items-center text-sm font-semibold"
-          >
-            <Link href="/dashboard" aria-keyshortcuts="L">
-              Dashboard
-              <ShortcutHint />
-            </Link>
-          </Button>
-        </li>
+        <Button asChild size="sm" className="font-semibold">
+          <Link href="/dashboard" aria-keyshortcuts="L">
+            Dashboard
+            <ShortcutHint />
+          </Link>
+        </Button>
       ) : (
-        <li className="flex h-12 items-center space-x-4">
-          <Button
-            asChild
-            size="sm"
-            className="flex items-center text-sm font-semibold"
-          >
+        <>
+          <Button asChild size="sm" className="font-semibold">
             <Link href="/login" aria-keyshortcuts="L">
               Log in
               <ShortcutHint />
@@ -141,18 +140,19 @@ function ButtonGroup() {
             asChild
             size="sm"
             variant="secondary"
-            className="hidden items-center text-sm font-semibold sm:flex"
+            className="hidden font-semibold sm:inline-flex"
           >
             <Link href="/signup">Sign up</Link>
           </Button>
-        </li>
+        </>
       )}
-    </>
+    </li>
   );
 }
 
 function MobileNav() {
   const user = useCurrentUser();
+  const isActive = useIsActive();
   const [open, setOpen] = useState(false);
 
   return (
@@ -161,9 +161,9 @@ function MobileNav() {
         <button
           type="button"
           aria-label="Open menu"
-          className="ml-4 flex h-12 items-center justify-center rounded-md text-black/60 transition-colors hover:text-black md:hidden"
+          className="ml-2 flex size-9 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground md:hidden"
         >
-          <HiOutlineMenuAlt4 size={24} />
+          <HiOutlineMenuAlt4 size={22} />
         </button>
       </SheetTrigger>
 
@@ -174,14 +174,15 @@ function MobileNav() {
         </SheetTitle>
         <SheetDescription className="sr-only">Site navigation</SheetDescription>
 
-        <nav className="mt-8">
+        <nav aria-label="Mobile" className="mt-8">
           <ul className="flex flex-col gap-1">
             {landingNavbarLinks.map((link) => (
               <li key={link.title}>
                 <SheetClose asChild>
                   <Link
                     href={link.href}
-                    className="block rounded-md px-2 py-2 text-sm font-semibold text-black/70 transition-colors hover:bg-accent hover:text-black"
+                    aria-current={isActive(link.href) ? 'page' : undefined}
+                    className="block rounded-md px-2 py-2 text-sm font-semibold text-foreground/70 transition-colors hover:bg-accent hover:text-foreground aria-[current=page]:bg-accent aria-[current=page]:text-foreground"
                   >
                     {link.title}
                   </Link>

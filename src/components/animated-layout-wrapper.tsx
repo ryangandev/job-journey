@@ -1,6 +1,11 @@
 'use client';
 
-import { motion, type Transition, type Variants } from 'framer-motion';
+import {
+  MotionConfig,
+  motion,
+  type Transition,
+  type Variants,
+} from 'framer-motion';
 import { usePathname } from 'next/navigation';
 
 const pageVariants: Variants = {
@@ -28,15 +33,18 @@ export default function AnimatedLayoutWrapper({
   const pathname = usePathname();
 
   return (
-    <motion.main
-      key={pathname}
-      initial="initial"
-      animate="in"
-      variants={pageVariants}
-      transition={pageTransition}
-      className="w-full"
-    >
-      {children}
-    </motion.main>
+    // reducedMotion="user": with `prefers-reduced-motion`, the slide is skipped and only the fade plays
+    <MotionConfig reducedMotion="user">
+      <motion.main
+        key={pathname}
+        initial="initial"
+        animate="in"
+        variants={pageVariants}
+        transition={pageTransition}
+        className="w-full"
+      >
+        {children}
+      </motion.main>
+    </MotionConfig>
   );
 }

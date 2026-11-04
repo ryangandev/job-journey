@@ -1,20 +1,10 @@
 /**
- * An array of routes that are publicly accessible.
- * These routes do not require authentication.
+ * Path prefixes that require a signed-in user. Logged-out visitors are sent to /login.
+ * Anything that is neither protected nor an auth route is left alone, so unknown paths
+ * reach the regular 404 page instead of bouncing to /login.
  * @type {string[]}
  */
-export const publicRoutes = [
-  '/',
-  '/new-verification', // User will be able to change their email from the settings page while logged in, so public route is the best place instead of auth route
-  '/reset-password',
-  '/new-password',
-  '/home',
-  '/features',
-  '/changelog',
-  '/pricing',
-  '/faqs',
-  '/readme',
-];
+export const protectedRoutePrefixes = ['/dashboard'];
 
 /**
  * An array of routes that are used for authentication.

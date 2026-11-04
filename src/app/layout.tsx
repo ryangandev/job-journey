@@ -11,7 +11,7 @@ import AppProviders from '@/providers/app-providers';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
-  title: 'Job Journey',
+  title: { default: 'JobJourney', template: '%s | JobJourney' },
   description: 'Organize and streamline your job search with JobJourney',
 };
 
