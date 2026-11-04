@@ -1,4 +1,6 @@
-import { LandingNavbarLink } from '@/types/navigation';
+import { LayoutDashboard } from 'lucide-react';
+
+import { AppSidebarLink, LandingNavbarLink } from '@/types/navigation';
 
 export const landingNavbarLinks: LandingNavbarLink[] = [
   {
@@ -20,5 +22,14 @@ export const landingNavbarLinks: LandingNavbarLink[] = [
   {
     title: 'README',
     href: '/readme',
+  },
+];
+
+/** Navigation for the signed-in app. Add an entry here when a new app page ships. */
+export const appSidebarLinks: AppSidebarLink[] = [
+  {
+    title: 'Dashboard',
+    href: '/dashboard',
+    icon: LayoutDashboard,
   },
 ];
