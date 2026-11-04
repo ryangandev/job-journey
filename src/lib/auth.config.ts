@@ -9,6 +9,8 @@ import { getUserByEmail } from '@/data/users';
 import { LoginSchema } from '@/schemas/auth-schema';
 
 export default {
+  // Shared by both the full auth instance (lib/auth.ts) and the proxy (src/proxy.ts)
+  trustHost: true,
   providers: [
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID,

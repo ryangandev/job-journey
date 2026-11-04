@@ -26,7 +26,6 @@ export class VerificationEmailError extends CredentialsSignin {
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  trustHost: true,
   adapter: PrismaAdapter(prisma) as Adapter,
   // Callbacks are asynchronous functions you can use to control what happens when an action is performed
   callbacks: {
